@@ -88,8 +88,8 @@ components:
     typography: "{typography.title}"
   book-cover-placeholder:
     rounded: "{rounded.cover}"
-    width: "48px"
-    height: "64px"
+    width: "56px"
+    height: "56px"
   book-list-row:
     padding: "8px 12px"
     height: "80px"
@@ -98,12 +98,12 @@ components:
     height: "280px"
   player-cover-compact:
     rounded: "{rounded.cover}"
-    width: "240px"
-    height: "320px"
+    width: "280px"
+    height: "280px"
   player-cover-expanded:
     rounded: "{rounded.cover}"
-    width: "320px"
-    height: "430px"
+    width: "360px"
+    height: "360px"
   player-play-dark:
     backgroundColor: "{colors.primary-brass-dark}"
     textColor: "{colors.on-primary-dark}"
@@ -222,7 +222,7 @@ The top-level Library uses a conventional fixed native app bar inside the top sa
 
 ### Book List Row
 
-Library entries are flat native list tiles with an 80-logical-pixel minimum height, a 48-by-64 cover placeholder, a two-line ellipsized title, and author metadata. The list tile owns its accessibility semantics without an additional wrapper. Real cover art may replace the placeholder without changing the row rhythm.
+Library entries are flat native list tiles with an 80-logical-pixel minimum height, a 56-by-56 square cover, a two-line ellipsized title, and author metadata. The list tile owns its accessibility semantics without an additional wrapper. Real cover art replaces the placeholder without changing the row rhythm. Covers are square: artwork is centre-cropped to a square when it is stored, and drawn cropped to fill rather than distorted if it was not.
 
 ### Listening Doorway
 
@@ -234,11 +234,11 @@ Settings uses a native Material segmented control for System, Light, and Dark at
 
 ### Desktop Book Grid
 
-At expanded widths, books use a flat grid with a maximum 220-logical-pixel tile extent and 24-logical-pixel gutters. The cover plane owns most of each tile; title and author sit below without a surrounding card. The entire tile is pointer, keyboard, and screen-reader actionable.
+At expanded widths, books use a flat grid with a maximum 220-logical-pixel tile extent and 24-logical-pixel gutters. The square cover plane owns most of each tile, taking the largest square the tile can spare so it stays square as text scaling grows the lines below; title and author sit below without a surrounding card. The entire tile is pointer, keyboard, and screen-reader actionable.
 
 ### Player
 
-The compact player stacks cover, identity, progress, transport, speed, and chapters. On macOS and other expanded windows it becomes a balanced two-column listening room: a 320-by-430 cover plane on the left and a readable control/chapter column on the right. The warm brass voice is reserved for progress, the play action, and the active chapter. Rewind and forward labels must exactly match their 15- and 30-second behavior.
+The compact player stacks cover, identity, progress, transport, speed, and chapters. On macOS and other expanded windows it becomes a balanced two-column listening room: a 360-by-360 square cover plane on the left and a readable control/chapter column on the right. The warm brass voice is reserved for progress, the play action, and the active chapter. Rewind and forward labels must exactly match their 15- and 30-second behavior.
 
 ## Do's and Don'ts
 

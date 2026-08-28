@@ -58,6 +58,18 @@ List<int> _ilstEntry(String type, String value) => _box(type, [
   ..._box('data', [..._u32(1), ..._zeros(4), ...utf8.encode(value)]),
 ]);
 
+/// A cover entry: type thirteen marks JPEG bytes and fourteen marks PNG.
+List<int> _covr(List<int> image, {int type = 14}) => _box('covr', [
+  ..._box('data', [..._u32(type), ..._zeros(4), ...image]),
+]);
+
+List<int> _tagged(List<int> entries) => _box('udta', [
+  ..._box('meta', [
+    ..._zeros(4), // meta is a full box
+    ..._box('ilst', entries),
+  ]),
+]);
+
 void main() {
   const parser = Mp4MetadataParser();
 
@@ -101,6 +113,41 @@ void main() {
     ]);
     expect(metadata.chapters[1].start, const Duration(hours: 1));
     expect(metadata.chapters[2].start, const Duration(hours: 2));
+  });
+
+  test('reads cover art out of the tag list', () async {
+    const png = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x07];
+    final bytes = [
+      ..._ftyp(),
+      ..._box('moov', [..._mvhd(60), ..._tagged(_covr(png))]),
+    ];
+
+    final art = await parser.parseCoverArt(await source(bytes));
+
+    expect(art, isNotNull);
+    expect(art!.extension, 'png');
+    expect(art.bytes, png);
+  });
+
+  test('ignores a cover tag that does not hold an image', () async {
+    final bytes = [
+      ..._ftyp(),
+      ..._box('moov', [
+        ..._mvhd(60),
+        ..._tagged(_covr(const [0x00, 0x01, 0x02, 0x03])),
+      ]),
+    ];
+
+    expect(await parser.parseCoverArt(await source(bytes)), isNull);
+  });
+
+  test('reads no cover from a file that carries none', () async {
+    final bytes = [
+      ..._ftyp(),
+      ..._box('moov', [..._mvhd(60)]),
+    ];
+
+    expect(await parser.parseCoverArt(await source(bytes)), isNull);
   });
 
   test('reads chapters from a QuickTime text track', () async {

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:audiobooks/core/audio/metadata/audio_file_metadata.dart';
 import 'package:audiobooks/core/audio/metadata/byte_source.dart';
+import 'package:audiobooks/core/audio/metadata/cover_art.dart';
 
 /// Reads duration, tags, and chapter markers straight out of an MP4 container
 /// (`.m4a`, `.m4b`, and `.aac` files that are really MP4).
@@ -21,16 +22,9 @@ class Mp4MetadataParser {
 
   /// Returns `null` when [source] is not an MP4 container.
   Future<AudioFileMetadata?> parse(ByteSource source) async {
-    final length = await source.length();
-    final topLevel = await _boxes(source, 0, length);
-    if (!topLevel.any((box) => box.type == 'ftyp' || box.type == 'moov')) {
-      return null;
-    }
+    final moovChildren = await _moovChildren(source);
+    if (moovChildren == null) return null;
 
-    final moov = topLevel.where((box) => box.type == 'moov').firstOrNull;
-    if (moov == null) return null;
-
-    final moovChildren = await _boxes(source, moov.payloadStart, moov.end);
     final duration = await _readDuration(source, moovChildren);
     final tags = await _readTags(source, moovChildren);
 
@@ -46,6 +40,44 @@ class Mp4MetadataParser {
       narrator: tags[_Tag.narrator],
       chapters: _sanitise(chapters, duration),
     );
+  }
+
+  /// Returns the artwork an MP4 carries in its `covr` tag, or `null` when the
+  /// container holds none that can be drawn.
+  Future<CoverArt?> parseCoverArt(ByteSource source) async {
+    final moovChildren = await _moovChildren(source);
+    if (moovChildren == null) return null;
+
+    final covr = (await _tagEntries(
+      source,
+      moovChildren,
+    )).where((entry) => entry.type == 'covr').firstOrNull;
+    if (covr == null) return null;
+
+    // A tag may hold several images; the first readable one is the cover.
+    for (final data in (await _boxes(source, covr.payloadStart, covr.end))
+        .where((box) => box.type == 'data')) {
+      // A full box header plus the four byte locale field precede the image.
+      final start = data.payloadStart + 8;
+      final size = data.end - start;
+      if (size <= 0 || size > CoverArt.maxBytes) continue;
+      final art = CoverArt.from(await source.read(start, size));
+      if (art != null) return art;
+    }
+    return null;
+  }
+
+  /// The children of `moov`, or `null` when [source] is not an MP4 container.
+  Future<List<_Box>?> _moovChildren(ByteSource source) async {
+    final length = await source.length();
+    final topLevel = await _boxes(source, 0, length);
+    if (!topLevel.any((box) => box.type == 'ftyp' || box.type == 'moov')) {
+      return null;
+    }
+
+    final moov = topLevel.where((box) => box.type == 'moov').firstOrNull;
+    if (moov == null) return null;
+    return _boxes(source, moov.payloadStart, moov.end);
   }
 
   /// Drops markers that fall outside the media and orders what remains, so a
@@ -96,22 +128,27 @@ class Mp4MetadataParser {
     return _scaled(units, timescale);
   }
 
-  Future<Map<_Tag, String>> _readTags(
-    ByteSource source,
-    List<_Box> moov,
-  ) async {
+  /// The entries of `moov/udta/meta/ilst`, where iTunes style tags live.
+  Future<List<_Box>> _tagEntries(ByteSource source, List<_Box> moov) async {
     final udta = moov.where((box) => box.type == 'udta').firstOrNull;
-    if (udta == null) return const {};
+    if (udta == null) return const [];
     final udtaChildren = await _boxes(source, udta.payloadStart, udta.end);
     final meta = udtaChildren.where((box) => box.type == 'meta').firstOrNull;
-    if (meta == null) return const {};
+    if (meta == null) return const [];
 
     // `meta` is a full box: its children start after version and flags.
     final metaChildren = await _boxes(source, meta.payloadStart + 4, meta.end);
     final ilst = metaChildren.where((box) => box.type == 'ilst').firstOrNull;
-    if (ilst == null) return const {};
+    if (ilst == null) return const [];
 
-    final entries = await _boxes(source, ilst.payloadStart, ilst.end);
+    return _boxes(source, ilst.payloadStart, ilst.end);
+  }
+
+  Future<Map<_Tag, String>> _readTags(
+    ByteSource source,
+    List<_Box> moov,
+  ) async {
+    final entries = await _tagEntries(source, moov);
     final tags = <_Tag, String>{};
     for (final entry in entries) {
       final tag = _tagFor(entry.type);

@@ -171,18 +171,43 @@ void main() {
     expect(await repository.findProgress('missing'), isNull);
   });
 
-  test('removing a book removes it from the repository', () async {
+  test('removing a book takes its chapters and progress with it', () async {
     final book = Audiobook(
       id: 'book-1',
       title: 'A Quiet Book',
       author: 'A. Reader',
       dateAdded: DateTime.utc(2026, 8, 28),
       fileType: AudioFileType.mp3,
+      chapters: const [
+        AudiobookChapter(
+          id: 'chapter-1',
+          bookId: 'book-1',
+          title: 'First',
+          index: 0,
+          filePath: '/audio/01.mp3',
+        ),
+      ],
     );
 
     await repository.save(book);
+    await repository.updateProgress(
+      PlaybackProgress(
+        bookId: book.id,
+        chapterId: 'chapter-1',
+        position: const Duration(minutes: 5),
+        bookPosition: const Duration(minutes: 5),
+        updatedAt: DateTime.utc(2026, 8, 28),
+      ),
+      isFinished: false,
+    );
+
     await repository.remove(book.id);
 
     expect(await repository.findById(book.id), isNull);
+    expect(await repository.findProgress(book.id), isNull);
+    expect(
+      await database.select(database.audiobookChapterRows).get(),
+      isEmpty,
+    );
   });
 }

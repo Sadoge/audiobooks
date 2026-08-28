@@ -11,5 +11,8 @@ abstract class LibraryState with _$LibraryState {
     @Default(LibraryStatus.initial) LibraryStatus status,
     @Default(<Audiobook>[]) List<Audiobook> books,
     String? errorMessage,
+
+    /// The outcome of a one-off action on a book, shown once and then dropped.
+    String? actionMessage,
   }) = _LibraryState;
 }

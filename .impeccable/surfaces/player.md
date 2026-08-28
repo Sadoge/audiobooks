@@ -26,7 +26,7 @@
 
 | Ingredient | Commitment | Medium |
 | --- | --- | --- |
-| Cover | 240×320 compact, 320×430 expanded; real art or tonal placeholder | Flutter image / semantic surface |
+| Cover | 280×280 compact, 360×360 expanded; square real art or tonal placeholder | Flutter image / semantic surface |
 | Identity | Chapter, book title, author in one tight hierarchy | Semantic Flutter text |
 | Progress | Native slider, elapsed and remaining time | Material slider |
 | Transport | Previous, -15, play/pause, +30, next | Material icon and filled controls |

@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:audiobooks/core/audio/metadata/audio_file_metadata.dart';
 import 'package:audiobooks/core/audio/metadata/audio_metadata_service.dart';
+import 'package:audiobooks/core/audio/metadata/cover_art.dart';
 import 'package:audiobooks/core/files/device_file_gateway.dart';
 import 'package:audiobooks/core/files/picked_audio_file.dart';
 import 'package:audiobooks/features/import/presentation/cubit/import_cubit.dart';
@@ -144,6 +147,82 @@ void main() {
     await cubit.close();
   });
 
+  test('gives an imported book the artwork stored inside its file', () async {
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(files: const [selected]),
+      repository,
+      _FakeAudioMetadataService(coverArt: _art),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.importSeparateBooks();
+
+    expect(repository.saved.single.coverPath, endsWith('cover.png'));
+    await cubit.close();
+  });
+
+  test('prefers an image the listener attached over embedded art', () async {
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(
+        files: const [selected],
+        pickedCover: '/picker/chosen.jpg',
+      ),
+      repository,
+      _FakeAudioMetadataService(coverArt: _art),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.attachCover();
+    expect(cubit.state.coverPath, '/picker/chosen.jpg');
+
+    await cubit.importSeparateBooks();
+
+    expect(
+      repository.saved.single.coverPath,
+      endsWith('attached-/picker/chosen.jpg'),
+    );
+    await cubit.close();
+  });
+
+  test('falls back to an image sitting beside the audio', () async {
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(
+        files: const [selected],
+        coverBeside: '/picker/cover.jpg',
+      ),
+      repository,
+      const _FakeAudioMetadataService(),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.importSeparateBooks();
+
+    expect(
+      repository.saved.single.coverPath,
+      endsWith('attached-/picker/cover.jpg'),
+    );
+    await cubit.close();
+  });
+
+  test('imports a book without artwork rather than failing', () async {
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(files: const [selected]),
+      repository,
+      const _FakeAudioMetadataService(),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.importSeparateBooks();
+
+    expect(cubit.state.status, ImportStatus.completed);
+    expect(repository.saved.single.coverPath, isNull);
+    await cubit.close();
+  });
+
   test('reports failure when a file cannot be stored', () async {
     final cubit = ImportCubit(
       _FakeDeviceFileGateway(files: const [selected], failOnPersist: true),
@@ -167,25 +246,42 @@ const _book = PickedAudioFile(
   path: '/picker/The Long Walk.m4b',
 );
 
+/// A one pixel PNG stands in for whatever a real file carries.
+final _art = CoverArt(
+  bytes: Uint8List.fromList(const [
+    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+  ]),
+  extension: 'png',
+);
+
 class _FakeAudioMetadataService implements AudioMetadataService {
   const _FakeAudioMetadataService({
     this.metadata = const AudioFileMetadata(),
+    this.coverArt,
   });
 
   final AudioFileMetadata metadata;
+  final CoverArt? coverArt;
 
   @override
   Future<AudioFileMetadata> read(String path) async => metadata;
+
+  @override
+  Future<CoverArt?> readCoverArt(String path) async => coverArt;
 }
 
 class _FakeDeviceFileGateway implements DeviceFileGateway {
-  const _FakeDeviceFileGateway({
+  _FakeDeviceFileGateway({
     required this.files,
     this.failOnPersist = false,
+    this.pickedCover,
+    this.coverBeside,
   });
 
   final List<PickedAudioFile> files;
   final bool failOnPersist;
+  final String? pickedCover;
+  final String? coverBeside;
 
   @override
   Future<bool> canRead(String durablePathOrUri) async => true;
@@ -196,10 +292,31 @@ class _FakeDeviceFileGateway implements DeviceFileGateway {
   }) async => files;
 
   @override
+  Future<String?> pickCoverImage() async => pickedCover;
+
+  @override
   Future<String> persist(PickedAudioFile file, {required String bookId}) async {
     if (failOnPersist) throw StateError('unavailable');
     return '/library/${file.name}';
   }
+
+  @override
+  Future<String?> persistCoverBytes(
+    CoverArt cover, {
+    required String bookId,
+  }) async => '/library/$bookId/cover.${cover.extension}';
+
+  @override
+  Future<String?> persistCoverFile(
+    String sourcePath, {
+    required String bookId,
+  }) async => '/library/$bookId/attached-$sourcePath';
+
+  @override
+  Future<String?> findCoverBeside(PickedAudioFile file) async => coverBeside;
+
+  @override
+  Future<void> deleteBookFiles(String bookId) async {}
 }
 
 class _RecordingAudiobookRepository implements AudiobookRepository {
