@@ -96,7 +96,6 @@ class _AdaptivePlayer extends StatelessWidget {
                         child: _ListeningDetails(
                           book: book,
                           playback: playback,
-                          showChapters: true,
                           showChapterSkipControls: true,
                         ),
                       ),
@@ -109,7 +108,6 @@ class _AdaptivePlayer extends StatelessWidget {
                       _ListeningDetails(
                         book: book,
                         playback: playback,
-                        showChapters: true,
                         showChapterSkipControls: true,
                       ),
                     ],
@@ -198,13 +196,11 @@ class _ListeningDetails extends StatelessWidget {
   const _ListeningDetails({
     required this.book,
     required this.playback,
-    this.showChapters = false,
     this.showChapterSkipControls = false,
   });
 
   final Audiobook book;
   final AudioPlaybackSnapshot playback;
-  final bool showChapters;
   final bool showChapterSkipControls;
 
   @override
@@ -226,7 +222,7 @@ class _ListeningDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _ChapterHeading(chapter: chapter, playback: playback),
+        _ChapterHeading(book: book, chapter: chapter, playback: playback),
         const SizedBox(height: AppSpacing.xs),
         Text(book.title, style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: AppSpacing.xxs),
@@ -251,17 +247,17 @@ class _ListeningDetails extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(_formatDuration(playback.position)),
+              // The scrubber measures the chapter, so the book as a whole gets
+              // one line between its ends rather than a second bar.
+              Expanded(
+                child: _BookRemaining(book: book, playback: playback),
+              ),
               Text('-${_formatDuration(duration - playback.position)}'),
             ],
           ),
         ),
-        if (book.chapters.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.sm),
-          _BookProgress(playback: playback),
-        ],
         const SizedBox(height: AppSpacing.lg),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -336,31 +332,20 @@ class _ListeningDetails extends StatelessWidget {
             ),
           ),
         ),
-        if (showChapters && book.chapters.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.xl),
-          Text('Chapters', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: AppSpacing.sm),
-          ...book.chapters.map(
-            (item) => ListTile(
-              selected: item.id == chapter?.id,
-              contentPadding: EdgeInsets.zero,
-              leading: SizedBox(width: 28, child: Text('${item.index + 1}')),
-              title: Text(item.title),
-              trailing: item.duration > Duration.zero
-                  ? Text(_formatDuration(item.duration))
-                  : null,
-              onTap: () => cubit.selectChapter(item.id),
-            ),
-          ),
-        ],
       ],
     );
   }
 }
 
+/// The chapter being listened to, and the way into every other chapter.
 class _ChapterHeading extends StatelessWidget {
-  const _ChapterHeading({required this.chapter, required this.playback});
+  const _ChapterHeading({
+    required this.book,
+    required this.chapter,
+    required this.playback,
+  });
 
+  final Audiobook book;
   final AudiobookChapter? chapter;
   final AudioPlaybackSnapshot playback;
 
@@ -372,67 +357,210 @@ class _ChapterHeading extends StatelessWidget {
         playback.chapterIndex >= 0 &&
         playback.chapterIndex < playback.chapterCount;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final heading = Row(
       children: [
-        if (numbered)
-          Text(
-            'Chapter ${playback.chapterIndex + 1} of ${playback.chapterCount}',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (numbered)
+                Text(
+                  'Chapter ${playback.chapterIndex + 1} of '
+                  '${playback.chapterCount}',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
           ),
-        Text(
-          title,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodyLarge,
         ),
+        if (book.chapters.length > 1) ...[
+          const SizedBox(width: AppSpacing.sm),
+          Icon(
+            Icons.list_rounded,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ],
       ],
+    );
+
+    if (book.chapters.length < 2) return heading;
+
+    return Semantics(
+      button: true,
+      label: 'Chapters. Now playing $title',
+      child: ExcludeSemantics(
+        child: InkWell(
+          borderRadius: AppRadii.cover,
+          onTap: () => _openChapters(context, book),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: AppSpacing.xs,
+            ),
+            child: heading,
+          ),
+        ),
+      ),
     );
   }
 }
 
-/// Where the chapter scrubber sits in the book as a whole.
-class _BookProgress extends StatelessWidget {
-  const _BookProgress({required this.playback});
+Future<void> _openChapters(BuildContext context, Audiobook book) {
+  // The sheet is a separate route, so the cubit is handed over rather than
+  // looked up again below it.
+  final cubit = context.read<PlayerCubit>();
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (_) => BlocProvider<PlayerCubit>.value(
+      value: cubit,
+      child: _ChapterSheet(
+        book: book,
+        openAt: cubit.state.playback.chapterIndex,
+      ),
+    ),
+  );
+}
 
+/// Every chapter with its length, opening on the one playing now.
+///
+/// Stateful so that playback ticking on underneath cannot rebuild the list back
+/// to where it was opened while the reader is scrolling it.
+class _ChapterSheet extends StatefulWidget {
+  const _ChapterSheet({required this.book, required this.openAt});
+
+  final Audiobook book;
+  final int openAt;
+
+  @override
+  State<_ChapterSheet> createState() => _ChapterSheetState();
+}
+
+class _ChapterSheetState extends State<_ChapterSheet> {
+  static const _rowHeight = 64.0;
+
+  late final ScrollController _controller = ScrollController(
+    initialScrollOffset: widget.openAt > 0 ? widget.openAt * _rowHeight : 0,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.72,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                0,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
+              child: Text(
+                'Chapters',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            Flexible(
+              child: BlocBuilder<PlayerCubit, PlayerViewState>(
+                buildWhen: (previous, current) =>
+                    previous.playback.chapterIndex !=
+                    current.playback.chapterIndex,
+                builder: (context, state) => ListView.builder(
+                  controller: _controller,
+                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                  itemExtent: _rowHeight,
+                  itemCount: widget.book.chapters.length,
+                  itemBuilder: (context, index) => _ChapterRow(
+                    chapter: widget.book.chapters[index],
+                    isPlaying: index == state.playback.chapterIndex,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChapterRow extends StatelessWidget {
+  const _ChapterRow({required this.chapter, required this.isPlaying});
+
+  final AudiobookChapter chapter;
+  final bool isPlaying;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ListTile(
+      selected: isPlaying,
+      leading: SizedBox(
+        width: 28,
+        child: isPlaying
+            ? Icon(Icons.graphic_eq_rounded, color: scheme.primary, size: 20)
+            : Text(
+                '${chapter.index + 1}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+      ),
+      title: Text(chapter.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      trailing: chapter.duration > Duration.zero
+          ? Text(
+              _formatDuration(chapter.duration),
+              style: Theme.of(context).textTheme.bodySmall,
+            )
+          : null,
+      onTap: () {
+        context.read<PlayerCubit>().selectChapter(chapter.id);
+        Navigator.of(context).pop();
+      },
+    );
+  }
+}
+
+/// How much of the whole book is left, sitting between the chapter's own ends.
+class _BookRemaining extends StatelessWidget {
+  const _BookRemaining({required this.book, required this.playback});
+
+  final Audiobook book;
   final AudioPlaybackSnapshot playback;
 
   @override
   Widget build(BuildContext context) {
     final total = playback.bookDuration;
-    if (total <= Duration.zero) return const SizedBox.shrink();
+    // Without chapters the times on either side already measure the book.
+    if (book.chapters.isEmpty || total <= Duration.zero) {
+      return const SizedBox.shrink();
+    }
 
-    final fraction =
-        playback.bookPosition.inMilliseconds / total.inMilliseconds;
-    final remaining = total - playback.bookPosition;
-
-    return Semantics(
-      label: 'Book progress',
-      value: '${_formatDuration(remaining)} left in the book',
-      child: ExcludeSemantics(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-          child: Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: LinearProgressIndicator(
-                    value: fraction.clamp(0.0, 1.0),
-                    minHeight: 3,
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                '${_formatDuration(remaining)} left',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-        ),
+    return Text(
+      '${_formatDuration(total - playback.bookPosition)} left in book',
+      textAlign: TextAlign.center,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     );
   }
@@ -484,7 +612,10 @@ class _RewindFifteenIcon extends StatelessWidget {
   }
 }
 
-AudiobookChapter? _activeChapter(Audiobook book, AudioPlaybackSnapshot playback) {
+AudiobookChapter? _activeChapter(
+  Audiobook book,
+  AudioPlaybackSnapshot playback,
+) {
   if (book.chapters.isEmpty) return null;
   final index = playback.chapterIndex;
   return index >= 0 && index < book.chapters.length
