@@ -15,13 +15,17 @@ The foundation release includes:
 - A Drift database for books, chapters, progress, and bookmarks.
 - Feature-first architecture with Cubit, repositories, dependency injection,
   and typed routing.
-- A functional adaptive player with progress, chapter navigation, speed,
-  keyboard shortcuts, and durable resume position.
+- Chapters from either audiobook layout: markers embedded in a single M4B, and
+  ordered files imported together as one book.
+- A functional adaptive player with chapter navigation, whole-book progress,
+  speed, keyboard shortcuts, and durable resume position.
+- Resume that remembers the chapter and the minute, shown in the Library and
+  restored when a book is reopened.
 - Unit, widget, repository, and golden tests.
 
-Each selected file is currently imported as a separate audiobook. Metadata
-editing, multi-file book grouping, book details, sleep timers, bookmarks, and
-system media controls remain planned for later milestones.
+Selecting several files offers to import them as one book with a chapter per
+file, or as separate books. Metadata editing, book details, sleep timers,
+bookmarks, and system media controls remain planned for later milestones.
 
 ## Development
 

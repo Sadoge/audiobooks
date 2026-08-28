@@ -15,6 +15,7 @@ class PlayerCubit extends Cubit<PlayerViewState> {
   final AudiobookRepository _audiobooks;
   StreamSubscription<AudioPlaybackSnapshot>? _subscription;
 
+  /// Opens a book. Without [chapterId] it continues from the stored place.
   Future<void> load(String bookId, {String? chapterId}) async {
     emit(const PlayerViewState());
     final book = await _audiobooks.findById(bookId);
@@ -64,9 +65,7 @@ class PlayerCubit extends Cubit<PlayerViewState> {
   Future<void> previousChapter() => _player.previousChapter();
 
   Future<void> selectChapter(String chapterId) async {
-    final book = state.book;
-    if (book == null) return;
-    await _player.open(book, chapterId: chapterId);
+    await _player.selectChapter(chapterId);
     await _player.play();
   }
 
@@ -74,6 +73,9 @@ class PlayerCubit extends Cubit<PlayerViewState> {
 
   @override
   Future<void> close() async {
+    // Leaving the player is the moment a listener most expects to be
+    // remembered, so do not wait for the next interval write.
+    await _player.saveProgress();
     await _subscription?.cancel();
     return super.close();
   }

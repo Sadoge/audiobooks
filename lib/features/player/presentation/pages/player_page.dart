@@ -110,6 +110,7 @@ class _AdaptivePlayer extends StatelessWidget {
                         book: book,
                         playback: playback,
                         showChapters: true,
+                        showChapterSkipControls: true,
                       ),
                     ],
                   );
@@ -209,7 +210,7 @@ class _ListeningDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PlayerCubit>();
-    final chapter = _activeChapter(book, playback.chapterId);
+    final chapter = _activeChapter(book, playback);
     final duration = playback.duration > Duration.zero
         ? playback.duration
         : chapter?.duration ?? book.duration;
@@ -219,14 +220,13 @@ class _ListeningDetails extends StatelessWidget {
       durationMs > 0 ? durationMs : 1,
     );
     final isPlaying = playback.status == PlaybackStatus.playing;
+    // Chapter transport only earns its place on a book that has chapters.
+    final skipChapters = showChapterSkipControls && playback.chapterCount > 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          chapter?.title ?? 'Audiobook',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+        _ChapterHeading(chapter: chapter, playback: playback),
         const SizedBox(height: AppSpacing.xs),
         Text(book.title, style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: AppSpacing.xxs),
@@ -258,11 +258,15 @@ class _ListeningDetails extends StatelessWidget {
             ],
           ),
         ),
+        if (book.chapters.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          _BookProgress(playback: playback),
+        ],
         const SizedBox(height: AppSpacing.lg),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (showChapterSkipControls) ...[
+            if (skipChapters) ...[
               IconButton(
                 tooltip: 'Previous chapter',
                 onPressed: cubit.previousChapter,
@@ -294,7 +298,7 @@ class _ListeningDetails extends StatelessWidget {
               onPressed: cubit.forward,
               icon: const Icon(Icons.forward_30_rounded),
             ),
-            if (showChapterSkipControls) ...[
+            if (skipChapters) ...[
               const SizedBox(width: AppSpacing.sm),
               IconButton(
                 tooltip: 'Next chapter',
@@ -338,7 +342,7 @@ class _ListeningDetails extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           ...book.chapters.map(
             (item) => ListTile(
-              selected: item.id == playback.chapterId,
+              selected: item.id == chapter?.id,
               contentPadding: EdgeInsets.zero,
               leading: SizedBox(width: 28, child: Text('${item.index + 1}')),
               title: Text(item.title),
@@ -350,6 +354,86 @@ class _ListeningDetails extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _ChapterHeading extends StatelessWidget {
+  const _ChapterHeading({required this.chapter, required this.playback});
+
+  final AudiobookChapter? chapter;
+  final AudioPlaybackSnapshot playback;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = chapter?.title ?? 'Audiobook';
+    final numbered =
+        playback.chapterCount > 1 &&
+        playback.chapterIndex >= 0 &&
+        playback.chapterIndex < playback.chapterCount;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (numbered)
+          Text(
+            'Chapter ${playback.chapterIndex + 1} of ${playback.chapterCount}',
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ],
+    );
+  }
+}
+
+/// Where the chapter scrubber sits in the book as a whole.
+class _BookProgress extends StatelessWidget {
+  const _BookProgress({required this.playback});
+
+  final AudioPlaybackSnapshot playback;
+
+  @override
+  Widget build(BuildContext context) {
+    final total = playback.bookDuration;
+    if (total <= Duration.zero) return const SizedBox.shrink();
+
+    final fraction =
+        playback.bookPosition.inMilliseconds / total.inMilliseconds;
+    final remaining = total - playback.bookPosition;
+
+    return Semantics(
+      label: 'Book progress',
+      value: '${_formatDuration(remaining)} left in the book',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          child: Row(
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: LinearProgressIndicator(
+                    value: fraction.clamp(0.0, 1.0),
+                    minHeight: 3,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                '${_formatDuration(remaining)} left',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -400,12 +484,12 @@ class _RewindFifteenIcon extends StatelessWidget {
   }
 }
 
-AudiobookChapter? _activeChapter(Audiobook book, String? chapterId) {
+AudiobookChapter? _activeChapter(Audiobook book, AudioPlaybackSnapshot playback) {
   if (book.chapters.isEmpty) return null;
-  return book.chapters.firstWhere(
-    (chapter) => chapter.id == chapterId,
-    orElse: () => book.chapters.first,
-  );
+  final index = playback.chapterIndex;
+  return index >= 0 && index < book.chapters.length
+      ? book.chapters[index]
+      : book.chapters.first;
 }
 
 String _formatDuration(Duration duration) {

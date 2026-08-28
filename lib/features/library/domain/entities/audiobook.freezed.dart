@@ -219,7 +219,7 @@ return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType
 
 class _Audiobook implements Audiobook {
   const _Audiobook({required this.id, required this.title, required this.author, required this.dateAdded, required this.fileType, this.narrator, this.coverPath, this.sourcePath, this.duration = Duration.zero, this.currentPosition = Duration.zero, this.lastPlayedAt, this.isFinished = false, final  List<AudiobookChapter> chapters = const <AudiobookChapter>[]}): _chapters = chapters;
-
+  
 
 @override final  String id;
 @override final  String title;

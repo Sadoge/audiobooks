@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:audio_session/audio_session.dart';
 import 'package:audiobooks/core/audio/audio_playback_service.dart';
 import 'package:audiobooks/core/audio/audio_playback_snapshot.dart';
+import 'package:audiobooks/core/audio/chapter_timeline.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
-import 'package:audiobooks/features/library/domain/entities/audiobook_chapter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -30,15 +30,19 @@ class JustAudioPlaybackService implements AudioPlaybackService {
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   Audiobook? _book;
-  List<AudiobookChapter> _chapters = const [];
+  ChapterTimeline _timeline = ChapterTimeline.empty;
 
   @override
   Stream<AudioPlaybackSnapshot> get snapshots => _snapshots.stream;
 
   @override
-  Future<void> load(Audiobook audiobook, {String? chapterId}) async {
+  Future<void> load(
+    Audiobook audiobook, {
+    String? chapterId,
+    Duration position = Duration.zero,
+  }) async {
     _book = audiobook;
-    _chapters = audiobook.chapters;
+    _timeline = ChapterTimeline.of(audiobook);
     _emitSnapshot(statusOverride: PlaybackStatus.loading);
 
     final session = await AudioSession.instance;
@@ -50,16 +54,18 @@ class JustAudioPlaybackService implements AudioPlaybackService {
       return;
     }
 
-    final requestedIndex = chapterId == null
-        ? 0
-        : _chapters.indexWhere((chapter) => chapter.id == chapterId);
-    final initialIndex = requestedIndex < 0 ? 0 : requestedIndex;
+    final index = _resolveIndex(chapterId, position);
+    final chapterPosition = _resolveChapterPosition(chapterId, position, index);
 
     try {
       await _player.setAudioSources(
         sources,
-        initialIndex: initialIndex,
-        initialPosition: audiobook.currentPosition,
+        // A book kept in one file is a single source, so a chapter is reached
+        // by seeking into it rather than by selecting a playlist item.
+        initialIndex: sources.length == 1 ? 0 : index,
+        initialPosition: sources.length == 1
+            ? _timeline.toBookPosition(index, chapterPosition)
+            : chapterPosition,
         preload: true,
       );
       _emitSnapshot(statusOverride: PlaybackStatus.ready);
@@ -70,16 +76,36 @@ class JustAudioPlaybackService implements AudioPlaybackService {
     }
   }
 
+  /// One source per chapter, unless every chapter lives in the same file.
   List<AudioSource> _audioSourcesFor(Audiobook audiobook) {
-    if (audiobook.chapters.isNotEmpty) {
+    if (audiobook.chapters.isNotEmpty && !_timeline.isSingleFile) {
       return audiobook.chapters
           .map((chapter) => AudioSource.file(chapter.filePath))
           .toList(growable: false);
     }
-    final sourcePath = audiobook.sourcePath;
-    if (sourcePath == null || sourcePath.isEmpty) return const [];
-    return [AudioSource.file(sourcePath)];
+    final path = audiobook.chapters.isNotEmpty
+        ? audiobook.chapters.first.filePath
+        : audiobook.sourcePath;
+    if (path == null || path.isEmpty) return const [];
+    return [AudioSource.file(path)];
   }
+
+  int _resolveIndex(String? chapterId, Duration position) {
+    final requested = _timeline.indexOf(chapterId);
+    if (requested >= 0) return requested;
+    if (_timeline.isEmpty) return 0;
+    // Without a chapter the caller gave us a whole book offset.
+    final resolved = _timeline.indexAt(position);
+    return resolved < 0 ? 0 : resolved;
+  }
+
+  Duration _resolveChapterPosition(
+    String? chapterId,
+    Duration position,
+    int index,
+  ) => _timeline.indexOf(chapterId) >= 0
+      ? position
+      : _timeline.toChapterPosition(index, position);
 
   @override
   Future<void> play() => _player.play();
@@ -88,20 +114,42 @@ class JustAudioPlaybackService implements AudioPlaybackService {
   Future<void> pause() => _player.pause();
 
   @override
-  Future<void> seek(Duration position) => _player.seek(position);
+  Future<void> seek(Duration chapterPosition) => _seekToBookPosition(
+    _timeline.toBookPosition(_currentIndex(), chapterPosition),
+  );
 
   @override
-  Future<void> skipToNextChapter() async {
-    if (_player.hasNext) await _player.seekToNext();
+  Future<void> skipBy(Duration offset) =>
+      _seekToBookPosition(_clampToBook(_currentBookPosition() + offset));
+
+  @override
+  Future<void> seekToChapter(String chapterId) {
+    final index = _timeline.indexOf(chapterId);
+    if (index < 0) return Future<void>.value();
+    return _seekToBookPosition(_timeline.startOf(index));
   }
 
   @override
-  Future<void> skipToPreviousChapter() async {
-    if (_player.position > const Duration(seconds: 3)) {
-      await _player.seek(Duration.zero);
-    } else if (_player.hasPrevious) {
-      await _player.seekToPrevious();
+  Future<void> skipToNextChapter() {
+    final index = _currentIndex();
+    if (index < 0 || index + 1 >= _timeline.length) {
+      return Future<void>.value();
     }
+    return _seekToBookPosition(_timeline.startOf(index + 1));
+  }
+
+  @override
+  Future<void> skipToPreviousChapter() {
+    final index = _currentIndex();
+    if (index < 0) return _player.seek(Duration.zero);
+
+    // Restart the chapter first, the way a physical transport control does.
+    final chapterStart = _timeline.startOf(index);
+    final elapsed = _currentBookPosition() - chapterStart;
+    if (elapsed > const Duration(seconds: 3) || index == 0) {
+      return _seekToBookPosition(chapterStart);
+    }
+    return _seekToBookPosition(_timeline.startOf(index - 1));
   }
 
   @override
@@ -110,23 +158,90 @@ class JustAudioPlaybackService implements AudioPlaybackService {
   @override
   Future<void> stop() => _player.stop();
 
+  Future<void> _seekToBookPosition(Duration bookPosition) {
+    if (_timeline.isEmpty || _timeline.isSingleFile) {
+      return _player.seek(bookPosition);
+    }
+    final index = _timeline.indexAt(bookPosition);
+    return _player.seek(
+      _timeline.toChapterPosition(index, bookPosition),
+      index: index,
+    );
+  }
+
+  int _currentIndex() {
+    if (_timeline.isEmpty) return -1;
+    if (_timeline.isSingleFile) return _timeline.indexAt(_player.position);
+    final index = _player.currentIndex ?? 0;
+    return index.clamp(0, _timeline.length - 1);
+  }
+
+  Duration _currentBookPosition() {
+    if (_timeline.isEmpty || _timeline.isSingleFile) return _player.position;
+    return _timeline.toBookPosition(_currentIndex(), _player.position);
+  }
+
+  Duration _bookDuration() {
+    if (!_timeline.isEmpty) return _timeline.bookDuration;
+    final media = _player.duration ?? Duration.zero;
+    return media > Duration.zero ? media : _book?.duration ?? Duration.zero;
+  }
+
+  Duration _clampToBook(Duration bookPosition) {
+    if (bookPosition.isNegative) return Duration.zero;
+    final duration = _bookDuration();
+    return duration > Duration.zero && bookPosition > duration
+        ? duration
+        : bookPosition;
+  }
+
   void _emitSnapshot({PlaybackStatus? statusOverride, String? errorMessage}) {
     if (_snapshots.isClosed) return;
-    final playerState = _player.playerState;
-    final status = statusOverride ?? _statusFor(playerState);
-    final chapterIndex = _player.currentIndex ?? 0;
-    final chapterId = chapterIndex >= 0 && chapterIndex < _chapters.length
-        ? _chapters[chapterIndex].id
-        : null;
+    final mediaDuration = _player.duration ?? Duration.zero;
+    if (_timeline.isSingleFile && mediaDuration > Duration.zero) {
+      // Only the engine knows how long an untagged file really is.
+      _timeline = _timeline.withBookDuration(mediaDuration);
+    }
+
+    final index = _currentIndex();
+    final bookPosition = _currentBookPosition();
+    final chapterStart = _timeline.startOf(index);
+
+    final Duration position;
+    final Duration duration;
+    if (_timeline.isEmpty) {
+      position = _player.position;
+      duration = mediaDuration > Duration.zero
+          ? mediaDuration
+          : _book?.duration ?? Duration.zero;
+    } else if (_timeline.isSingleFile) {
+      position = _timeline.toChapterPosition(index, bookPosition);
+      duration = _timeline.durationOf(index);
+    } else {
+      position = _player.position;
+      duration = mediaDuration > Duration.zero
+          ? mediaDuration
+          : _timeline.durationOf(index);
+    }
+
+    final buffered = _timeline.isSingleFile && !_timeline.isEmpty
+        ? _player.bufferedPosition - chapterStart
+        : _player.bufferedPosition;
 
     _snapshots.add(
       AudioPlaybackSnapshot(
-        status: errorMessage == null ? status : PlaybackStatus.failed,
+        status: errorMessage == null
+            ? statusOverride ?? _statusFor(_player.playerState)
+            : PlaybackStatus.failed,
         bookId: _book?.id,
-        chapterId: chapterId,
-        position: _player.position,
-        bufferedPosition: _player.bufferedPosition,
-        duration: _player.duration ?? Duration.zero,
+        chapterId: _timeline.chapterAt(index)?.id,
+        chapterIndex: index,
+        chapterCount: _timeline.length,
+        position: position,
+        bufferedPosition: buffered.isNegative ? Duration.zero : buffered,
+        duration: duration,
+        bookPosition: bookPosition,
+        bookDuration: _bookDuration(),
         speed: _player.speed,
         errorMessage: errorMessage,
       ),

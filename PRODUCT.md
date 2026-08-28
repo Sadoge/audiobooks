@@ -50,8 +50,10 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
 - Metadata failure must not block otherwise playable audio.
 - Inaccessible, moved, deleted, corrupt, or unsupported files produce a useful
   recovery state instead of a crash.
-- Embedded M4B chapters are an explicitly deferred capability until reliable
-  cross-platform extraction is verified.
+- Embedded M4B chapters are read in Dart from the MP4 container itself, in both
+  the Nero and QuickTime layouts, so extraction behaves the same on every
+  platform. A file whose markers cannot be read still plays as one chapterless
+  book.
 
 ## Brand Commitments
 

@@ -31,6 +31,9 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
         final busy =
             state.status == ImportStatus.choosing ||
             state.status == ImportStatus.importing;
+        // Several files are usually one book split into chapter tracks, so
+        // that is the offer that leads.
+        final multiple = state.files.length > 1;
         return Scaffold(
           appBar: AppBar(title: const Text('Import Audiobooks')),
           body: SafeArea(
@@ -42,14 +45,24 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                   Text(
                     state.files.isEmpty
                         ? 'Choose audio files'
-                        : '${state.files.length} selected',
+                        : multiple
+                        ? '${state.files.length} files selected'
+                        : '1 file selected',
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
+                  if (multiple) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'They become chapters of one book, in the order shown.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     state.files.isEmpty
                         ? 'Select MP3, M4A, M4B, or AAC files from this device. '
-                              'This first import slice treats each file as a separate book.'
+                              'Chapter markers inside a file are picked up '
+                              'automatically.'
                         : 'Files are copied into app-owned storage so they remain '
                               'available for offline playback.',
                     style: Theme.of(context).textTheme.bodyLarge,
@@ -85,12 +98,27 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                             },
                           ),
                   ),
+                  if (state.status == ImportStatus.importing &&
+                      state.files.length > 1) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Reading ${state.importedFiles + 1} of '
+                      '${state.files.length}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    LinearProgressIndicator(
+                      value: state.importedFiles / state.files.length,
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.md),
                   FilledButton.icon(
                     onPressed: busy
                         ? null
                         : state.files.isEmpty
                         ? context.read<ImportCubit>().chooseFiles
+                        : multiple
+                        ? context.read<ImportCubit>().importAsSingleBook
                         : context.read<ImportCubit>().importSeparateBooks,
                     icon: busy
                         ? const SizedBox.square(
@@ -105,9 +133,23 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                     label: Text(
                       state.files.isEmpty
                           ? 'Choose Files'
-                          : 'Import Audiobooks',
+                          : multiple
+                          ? 'Import as One Book'
+                          : 'Import Audiobook',
                     ),
                   ),
+                  if (multiple) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    OutlinedButton.icon(
+                      onPressed: busy
+                          ? null
+                          : context.read<ImportCubit>().importSeparateBooks,
+                      icon: const Icon(Icons.library_books_outlined),
+                      label: Text(
+                        'Import as ${state.files.length} Separate Books',
+                      ),
+                    ),
+                  ],
                   if (state.files.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.xs),
                     TextButton(

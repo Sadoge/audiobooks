@@ -46,9 +46,15 @@ void main() {
     when(() => audiobooks.findById(book.id)).thenAnswer((_) async => book);
     when(() => player.playback).thenAnswer((_) => Stream.value(playback));
     when(
-      () => player.open(book, chapterId: any(named: 'chapterId')),
+      () => player.open(
+        book,
+        chapterId: any(named: 'chapterId'),
+        position: any(named: 'position'),
+      ),
     ).thenAnswer((_) async {});
     when(() => player.play()).thenAnswer((_) async {});
+    when(() => player.saveProgress()).thenAnswer((_) async {});
+    when(() => player.selectChapter(any())).thenAnswer((_) async {});
   });
 
   test('loads a local audiobook and exposes playback state', () async {
@@ -62,6 +68,45 @@ void main() {
     expect(cubit.state.book, book);
     expect(cubit.state.playback, playback);
     verify(() => player.open(book)).called(1);
+  });
+
+  test('opening without a chapter leaves the stored place to decide', () async {
+    final cubit = PlayerCubit(player, audiobooks);
+    addTearDown(cubit.close);
+
+    await cubit.load(book.id);
+
+    verify(() => player.open(book, chapterId: null)).called(1);
+  });
+
+  test('selecting a chapter seeks instead of reopening the book', () async {
+    final cubit = PlayerCubit(player, audiobooks);
+    addTearDown(cubit.close);
+    await cubit.load(book.id);
+    await Future<void>.delayed(Duration.zero);
+    clearInteractions(player);
+
+    await cubit.selectChapter('chapter-1');
+
+    verify(() => player.selectChapter('chapter-1')).called(1);
+    verify(() => player.play()).called(1);
+    verifyNever(
+      () => player.open(
+        book,
+        chapterId: any(named: 'chapterId'),
+        position: any(named: 'position'),
+      ),
+    );
+  });
+
+  test('stores the current place when the player is closed', () async {
+    final cubit = PlayerCubit(player, audiobooks);
+    await cubit.load(book.id);
+    await Future<void>.delayed(Duration.zero);
+
+    await cubit.close();
+
+    verify(() => player.saveProgress()).called(1);
   });
 
   test('starts playback when the loaded audiobook is paused', () async {

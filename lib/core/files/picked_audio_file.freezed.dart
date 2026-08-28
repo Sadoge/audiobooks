@@ -211,7 +211,7 @@ return $default(_that.name,_that.sizeBytes,_that.extension,_that.path,_that.pers
 
 class _PickedAudioFile implements PickedAudioFile {
   const _PickedAudioFile({required this.name, required this.sizeBytes, required this.extension, this.path, this.persistentUri});
-
+  
 
 @override final  String name;
 @override final  int sizeBytes;

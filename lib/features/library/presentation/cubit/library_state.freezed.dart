@@ -209,7 +209,7 @@ return $default(_that.status,_that.books,_that.errorMessage);case _:
 
 class _LibraryState implements LibraryState {
   const _LibraryState({this.status = LibraryStatus.initial, final  List<Audiobook> books = const <Audiobook>[], this.errorMessage}): _books = books;
-
+  
 
 @override@JsonKey() final  LibraryStatus status;
  final  List<Audiobook> _books;

@@ -14,7 +14,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AudiobookChapter {
 
- String get id; String get bookId; String get title; int get index; String get filePath; Duration get duration; Duration get startPosition;
+ String get id; String get bookId; String get title; int get index; String get filePath; Duration get duration;/// Where the chapter starts inside [filePath].
+///
+/// Zero when the book stores one file per chapter. For a single file book
+/// with embedded markers this is the marker itself, which is also where
+/// the chapter starts on the book timeline.
+ Duration get startPosition;
 /// Create a copy of AudiobookChapter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -213,7 +218,7 @@ return $default(_that.id,_that.bookId,_that.title,_that.index,_that.filePath,_th
 
 class _AudiobookChapter implements AudiobookChapter {
   const _AudiobookChapter({required this.id, required this.bookId, required this.title, required this.index, required this.filePath, this.duration = Duration.zero, this.startPosition = Duration.zero});
-
+  
 
 @override final  String id;
 @override final  String bookId;
@@ -221,6 +226,11 @@ class _AudiobookChapter implements AudiobookChapter {
 @override final  int index;
 @override final  String filePath;
 @override@JsonKey() final  Duration duration;
+/// Where the chapter starts inside [filePath].
+///
+/// Zero when the book stores one file per chapter. For a single file book
+/// with embedded markers this is the marker itself, which is also where
+/// the chapter starts on the book timeline.
 @override@JsonKey() final  Duration startPosition;
 
 /// Create a copy of AudiobookChapter
