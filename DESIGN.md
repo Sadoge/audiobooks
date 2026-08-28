@@ -96,6 +96,19 @@ components:
   listening-doorway:
     width: "250px"
     height: "280px"
+  player-cover-compact:
+    rounded: "{rounded.cover}"
+    width: "240px"
+    height: "320px"
+  player-cover-expanded:
+    rounded: "{rounded.cover}"
+    width: "320px"
+    height: "430px"
+  player-play-dark:
+    backgroundColor: "{colors.primary-brass-dark}"
+    textColor: "{colors.on-primary-dark}"
+    width: "64px"
+    height: "64px"
 ---
 
 # Design System: Audiobooks
@@ -106,7 +119,7 @@ components:
 
 The interface should feel like entering a calm room made for listening: cool semantic surfaces create stillness, tall slate planes suggest an open doorway, and one restrained brass marker signals the listening action. The system is premium and understated without becoming precious; book covers and user content are allowed to carry the personality while the surrounding interface recedes.
 
-The visual language uses flat tonal layering, generous negative space, comfortable reading rhythm, and adaptive native behavior. Material 3 roles structure Android presentation, while iOS navigation and transitions retain familiar platform behavior. Expression belongs in the palette, measured geometry, and the signature listening marker—not in decorative gradients, excessive cards, or custom controls that compete with native expectations.
+The visual language uses flat tonal layering, generous negative space, comfortable reading rhythm, and adaptive native behavior. Material 3 roles structure Android presentation, iOS navigation and transitions retain familiar platform behavior, and macOS restructures content for resizable pointer-and-keyboard windows. Expression belongs in the palette, measured geometry, and the signature listening marker—not in decorative gradients, excessive cards, or custom controls that compete with native expectations.
 
 **Key Characteristics:**
 
@@ -170,9 +183,9 @@ The palette pairs cool paper and blue-charcoal surfaces with slate structure and
 
 The system uses a compact seven-step spacing scale and generous outer breathing room. Top-level library content sits below a conventional app bar in the top safe area; task pages use the same standard app-bar pattern, safe areas, and straightforward vertical flows. Library rows use 16 logical pixels of horizontal page inset, while focused empty and import states use 24 logical pixels.
 
-The empty-library composition remains centered within a maximum content width of 460 logical pixels and keeps a practical minimum vertical canvas of 520 logical pixels. Settings switches from a segmented control to stacked 56-logical-pixel list choices below 360 logical pixels or when text scaling exceeds 1.3. Wider devices preserve readable content widths instead of stretching the composition edge to edge.
+The empty-library composition remains centered within a maximum content width of 460 logical pixels and keeps a practical minimum vertical canvas of 520 logical pixels. Settings switches from a segmented control to stacked 56-logical-pixel list choices below 360 logical pixels or when text scaling exceeds 1.3. On windows at least 720 logical pixels wide, the Library becomes a measured cover grid. At 900 logical pixels, the player restructures into a cover pane and a listening-controls pane, capped together at 1160 logical pixels. Wider devices preserve readable content widths instead of stretching the composition edge to edge.
 
-Touch targets are at least 48 logical pixels in the implemented theme. Safe areas, scroll behavior, text scaling, iOS back transitions, and Android predictive back remain platform-owned.
+Touch targets are at least 48 logical pixels in the implemented theme. Safe areas, scroll behavior, text scaling, iOS back transitions, Android predictive back, macOS pointer focus, and keyboard traversal remain platform-owned. Space toggles playback and the arrow keys seek on the desktop player.
 
 ## Elevation & Depth
 
@@ -218,6 +231,14 @@ The 250-by-280 logical-pixel empty-state mark pairs two surface-highest planes w
 ### Appearance Choice
 
 Settings uses a native Material segmented control for System, Light, and Dark at comfortable widths. It becomes a semantic stacked list with checkmark selection at narrow widths or elevated text scale, preserving legibility and touch targets.
+
+### Desktop Book Grid
+
+At expanded widths, books use a flat grid with a maximum 220-logical-pixel tile extent and 24-logical-pixel gutters. The cover plane owns most of each tile; title and author sit below without a surrounding card. The entire tile is pointer, keyboard, and screen-reader actionable.
+
+### Player
+
+The compact player stacks cover, identity, progress, transport, speed, and chapters. On macOS and other expanded windows it becomes a balanced two-column listening room: a 320-by-430 cover plane on the left and a readable control/chapter column on the right. The warm brass voice is reserved for progress, the play action, and the active chapter. Rewind and forward labels must exactly match their 15- and 30-second behavior.
 
 ## Do's and Don'ts
 

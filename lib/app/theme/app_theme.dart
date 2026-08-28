@@ -1,5 +1,6 @@
 import 'package:audiobooks/app/theme/app_tokens.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
@@ -81,6 +82,7 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
+        centerTitle: defaultTargetPlatform == TargetPlatform.iOS,
         titleTextStyle: textTheme.titleLarge,
       ),
       filledButtonTheme: FilledButtonThemeData(

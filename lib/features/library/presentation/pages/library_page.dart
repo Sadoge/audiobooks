@@ -61,7 +61,11 @@ class LibraryPage extends StatelessWidget {
                             context.router.push(const ImportRoute()),
                       ),
                     ),
-                  LibraryStatus.ready => LibraryBookList(books: state.books),
+                  LibraryStatus.ready => LibraryBookList(
+                    books: state.books,
+                    onOpen: (book) =>
+                        context.router.push(PlayerRoute(bookId: book.id)),
+                  ),
                 },
               ],
             ),

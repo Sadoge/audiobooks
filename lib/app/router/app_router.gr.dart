@@ -43,6 +43,54 @@ class LibraryRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PlayerPage]
+class PlayerRoute extends PageRouteInfo<PlayerRouteArgs> {
+  PlayerRoute({required String bookId, Key? key, List<PageRouteInfo>? children})
+    : super(
+        PlayerRoute.name,
+        args: PlayerRouteArgs(bookId: bookId, key: key),
+        rawPathParams: {'bookId': bookId},
+        initialChildren: children,
+      );
+
+  static const String name = 'PlayerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<PlayerRouteArgs>(
+        orElse: () => PlayerRouteArgs(bookId: pathParams.getString('bookId')),
+      );
+      return PlayerPage(bookId: args.bookId, key: args.key);
+    },
+  );
+}
+
+class PlayerRouteArgs {
+  const PlayerRouteArgs({required this.bookId, this.key});
+
+  final String bookId;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'PlayerRouteArgs{bookId: $bookId, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PlayerRouteArgs) return false;
+    return bookId == other.bookId && key == other.key;
+  }
+
+  @override
+  int get hashCode => bookId.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [SettingsPage]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})

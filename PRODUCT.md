@@ -8,14 +8,14 @@ adaptive
 
 ## Stack
 
-Flutter and Dart, targeting iOS and Android with platform-appropriate navigation,
-system media controls, accessibility, file access, and background playback.
+Flutter and Dart, targeting iOS, Android, and macOS with platform-appropriate
+navigation, accessibility, durable file access, and background-capable playback.
 
 ## Users
 
-People who already own audiobook or long-form audio files on their phone or in a
-device-accessible document provider and want a calm, dependable listening app
-that works without an account or network connection.
+People who already own audiobook or long-form audio files on their phone or Mac,
+or in a device-accessible document provider, and want a calm, dependable
+listening app that works without an account or network connection.
 
 ## Product Purpose
 
@@ -32,11 +32,11 @@ and listening data on the device.
 
 ## Operating Context
 
-Users import MP3, M4A, M4B, or AAC files through iOS and Android document
-providers. They browse a local library, resume recent listening, move through
-chapters, adjust speed, set sleep timers, create bookmarks, and use lock-screen
-or notification playback controls. Sessions often happen while the app is
-backgrounded, the device is locked, or audio routes change.
+Users import MP3, M4A, M4B, or AAC files through native document pickers. On
+phones they listen one-handed or while the app is backgrounded; on macOS they
+browse in a resizable window, use a keyboard and pointer, and often listen while
+working in another application. They resume listening, move through chapters,
+adjust speed, set sleep timers, create bookmarks, and use system media controls.
 
 ## Capabilities and Constraints
 
