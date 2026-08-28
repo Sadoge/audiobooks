@@ -42,12 +42,17 @@ class AudiobookChapterRows extends Table {
 class PlaybackProgressRows extends Table {
   TextColumn get bookId =>
       text().references(AudiobookRows, #id, onDelete: KeyAction.cascade)();
-  TextColumn get chapterId => text().references(
-    AudiobookChapterRows,
-    #id,
-    onDelete: KeyAction.cascade,
-  )();
+
+  /// Null for books with no chapters. Deliberately not a foreign key: chapters
+  /// are rewritten wholesale whenever a book is re-saved, and losing a
+  /// listener's place to that is worse than holding an orphaned id.
+  TextColumn get chapterId => text().nullable()();
+
+  /// Offset inside the chapter, or inside the book when there is no chapter.
   IntColumn get positionMs => integer()();
+
+  /// Offset on the whole book timeline.
+  IntColumn get bookPositionMs => integer().withDefault(const Constant(0))();
   DateTimeColumn get updatedAt => dateTime()();
 
   @override
@@ -87,5 +92,27 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (migrator) => migrator.createAll(),
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        // Progress used to require a chapter, so chapterless books were never
+        // resumable. Rebuild the table without that requirement and seed the
+        // new book offset from the position already stored.
+        await migrator.alterTable(
+          TableMigration(
+            playbackProgressRows,
+            newColumns: [playbackProgressRows.bookPositionMs],
+            columnTransformer: {
+              playbackProgressRows.bookPositionMs:
+                  playbackProgressRows.positionMs,
+            },
+          ),
+        );
+      }
+    },
+  );
 }

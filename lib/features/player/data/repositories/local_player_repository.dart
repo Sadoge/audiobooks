@@ -14,6 +14,8 @@ class LocalPlayerRepository implements PlayerRepository {
     _subscription = _service.snapshots.listen(_handleSnapshot);
   }
 
+  static const _writeInterval = Duration(seconds: 10);
+
   final AudioPlaybackService _service;
   final AudiobookRepository _audiobooks;
   // Retains the progress listener for the lifetime of this singleton.
@@ -23,14 +25,52 @@ class LocalPlayerRepository implements PlayerRepository {
   Audiobook? _activeBook;
   AudioPlaybackSnapshot _latest = const AudioPlaybackSnapshot();
   DateTime? _lastProgressWrite;
+  String? _lastChapterId;
+  Duration _openedAt = Duration.zero;
+  bool _recording = false;
 
   @override
   Stream<AudioPlaybackSnapshot> get playback => _service.snapshots;
 
   @override
-  Future<void> open(Audiobook audiobook, {String? chapterId}) async {
+  Future<void> open(
+    Audiobook audiobook, {
+    String? chapterId,
+    Duration? position,
+  }) async {
     _activeBook = audiobook;
-    await _service.load(audiobook, chapterId: chapterId);
+    _latest = const AudioPlaybackSnapshot();
+    _lastProgressWrite = null;
+    _lastChapterId = null;
+    _openedAt = Duration.zero;
+    // Nothing is worth writing until this book is actually being listened to.
+    _recording = false;
+
+    if (chapterId != null || position != null) {
+      return _service.load(
+        audiobook,
+        chapterId: chapterId,
+        position: position ?? Duration.zero,
+      );
+    }
+
+    // A book played to the end resumes at the end, where play does nothing.
+    // Starting it over is what a listener coming back to it expects.
+    final resume = audiobook.isFinished
+        ? null
+        : await _storedProgress(audiobook.id);
+    _lastChapterId = resume?.chapterId;
+    _openedAt = resume?.bookPosition ?? Duration.zero;
+    return _service.load(
+      audiobook,
+      chapterId: resume?.chapterId,
+      // Without a chapter the engine reads this as a whole book offset.
+      position: resume == null
+          ? Duration.zero
+          : resume.chapterId == null
+          ? resume.bookPosition
+          : resume.position,
+    );
   }
 
   @override
@@ -40,18 +80,10 @@ class LocalPlayerRepository implements PlayerRepository {
   Future<void> pause() => _service.pause();
 
   @override
-  Future<void> seek(Duration position) => _service.seek(position);
+  Future<void> seek(Duration chapterPosition) => _service.seek(chapterPosition);
 
   @override
-  Future<void> skipBy(Duration offset) {
-    final target = _latest.position + offset;
-    final bounded = target < Duration.zero
-        ? Duration.zero
-        : _latest.duration > Duration.zero && target > _latest.duration
-        ? _latest.duration
-        : target;
-    return _service.seek(bounded);
-  }
+  Future<void> skipBy(Duration offset) => _service.skipBy(offset);
 
   @override
   Future<void> nextChapter() => _service.skipToNextChapter();
@@ -60,34 +92,80 @@ class LocalPlayerRepository implements PlayerRepository {
   Future<void> previousChapter() => _service.skipToPreviousChapter();
 
   @override
+  Future<void> selectChapter(String chapterId) =>
+      _service.seekToChapter(chapterId);
+
+  @override
   Future<void> setSpeed(double speed) => _service.setSpeed(speed);
+
+  @override
+  Future<void> saveProgress() async {
+    final book = _activeBook;
+    if (book == null || !_recording || _latest.bookId != book.id) return;
+    await _write(book.id, _latest);
+  }
+
+  Future<PlaybackProgress?> _storedProgress(String bookId) async {
+    try {
+      return await _audiobooks.findProgress(bookId);
+    } catch (_) {
+      // A book that cannot report where it was left still opens from the start.
+      return null;
+    }
+  }
 
   void _handleSnapshot(AudioPlaybackSnapshot snapshot) {
     _latest = snapshot;
     final book = _activeBook;
     if (book == null || snapshot.bookId != book.id) return;
-    final chapterId = snapshot.chapterId;
-    if (chapterId == null) return;
+    if (!_isRecording(snapshot)) return;
 
     final now = DateTime.now();
-    final shouldWrite =
+    final chapterChanged = snapshot.chapterId != _lastChapterId;
+    final due =
         _lastProgressWrite == null ||
-        now.difference(_lastProgressWrite!) >= const Duration(seconds: 10) ||
+        now.difference(_lastProgressWrite!) >= _writeInterval;
+    final settled =
         snapshot.status == PlaybackStatus.paused ||
         snapshot.status == PlaybackStatus.completed;
-    if (!shouldWrite) return;
+    if (!due && !settled && !chapterChanged) return;
 
+    _lastChapterId = snapshot.chapterId;
     _lastProgressWrite = now;
-    unawaited(
-      _audiobooks.updateProgress(
+    unawaited(_write(book.id, snapshot));
+  }
+
+  /// Whether this snapshot describes a book being listened to rather than one
+  /// still opening.
+  ///
+  /// A book reports position zero while it loads, and the resume seek lands
+  /// only once playback is under way. Writing anything before then would erase
+  /// the very place we are resuming to, so recording waits for the first real
+  /// playing snapshot and continues from there.
+  bool _isRecording(AudioPlaybackSnapshot snapshot) {
+    if (_recording) return true;
+    if (snapshot.status != PlaybackStatus.playing) return false;
+    if (_openedAt > Duration.zero && snapshot.bookPosition == Duration.zero) {
+      return false;
+    }
+    return _recording = true;
+  }
+
+  Future<void> _write(String bookId, AudioPlaybackSnapshot snapshot) async {
+    try {
+      await _audiobooks.updateProgress(
         PlaybackProgress(
-          bookId: book.id,
-          chapterId: chapterId,
+          bookId: bookId,
+          chapterId: snapshot.chapterId,
           position: snapshot.position,
-          updatedAt: now,
+          bookPosition: snapshot.bookPosition,
+          updatedAt: DateTime.now(),
         ),
         isFinished: snapshot.status == PlaybackStatus.completed,
-      ),
-    );
+      );
+    } catch (_) {
+      // Progress is written continuously, so a failed write is not worth
+      // interrupting playback for: the next one will carry the same place.
+    }
   }
 }

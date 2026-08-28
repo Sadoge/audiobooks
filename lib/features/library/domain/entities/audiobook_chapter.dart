@@ -11,6 +11,12 @@ abstract class AudiobookChapter with _$AudiobookChapter {
     required int index,
     required String filePath,
     @Default(Duration.zero) Duration duration,
+
+    /// Where the chapter starts inside [filePath].
+    ///
+    /// Zero when the book stores one file per chapter. For a single file book
+    /// with embedded markers this is the marker itself, which is also where
+    /// the chapter starts on the book timeline.
     @Default(Duration.zero) Duration startPosition,
   }) = _AudiobookChapter;
 }

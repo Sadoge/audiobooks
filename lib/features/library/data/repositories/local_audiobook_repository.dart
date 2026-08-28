@@ -135,8 +135,9 @@ class LocalAudiobookRepository implements AudiobookRepository {
             .insertOnConflictUpdate(
               PlaybackProgressRowsCompanion.insert(
                 bookId: progress.bookId,
-                chapterId: progress.chapterId,
+                chapterId: Value(progress.chapterId),
                 positionMs: progress.position.inMilliseconds,
+                bookPositionMs: Value(progress.bookPosition.inMilliseconds),
                 updatedAt: progress.updatedAt,
               ),
             );
@@ -144,7 +145,7 @@ class LocalAudiobookRepository implements AudiobookRepository {
           _database.audiobookRows,
         )..where((row) => row.id.equals(progress.bookId))).write(
           AudiobookRowsCompanion(
-            currentPositionMs: Value(progress.position.inMilliseconds),
+            currentPositionMs: Value(progress.bookPosition.inMilliseconds),
             lastPlayedAt: Value(progress.updatedAt),
             isFinished: Value(isFinished),
           ),
@@ -153,6 +154,28 @@ class LocalAudiobookRepository implements AudiobookRepository {
     } catch (error) {
       throw DatabaseFailure(
         'Listening progress could not be saved.',
+        cause: error,
+      );
+    }
+  }
+
+  @override
+  Future<PlaybackProgress?> findProgress(String bookId) async {
+    try {
+      final row = await (_database.select(
+        _database.playbackProgressRows,
+      )..where((table) => table.bookId.equals(bookId))).getSingleOrNull();
+      if (row == null) return null;
+      return PlaybackProgress(
+        bookId: row.bookId,
+        chapterId: row.chapterId,
+        position: Duration(milliseconds: row.positionMs),
+        bookPosition: Duration(milliseconds: row.bookPositionMs),
+        updatedAt: row.updatedAt,
+      );
+    } catch (error) {
+      throw DatabaseFailure(
+        'Listening progress could not be read.',
         cause: error,
       );
     }

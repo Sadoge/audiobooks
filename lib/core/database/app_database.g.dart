@@ -1218,12 +1218,9 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
   late final GeneratedColumn<String> chapterId = GeneratedColumn<String>(
     'chapter_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES audiobook_chapter_rows (id) ON DELETE CASCADE',
-    ),
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _positionMsMeta = const VerificationMeta(
     'positionMs',
@@ -1235,6 +1232,18 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bookPositionMsMeta = const VerificationMeta(
+    'bookPositionMs',
+  );
+  @override
+  late final GeneratedColumn<int> bookPositionMs = GeneratedColumn<int>(
+    'book_position_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
@@ -1252,6 +1261,7 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
     bookId,
     chapterId,
     positionMs,
+    bookPositionMs,
     updatedAt,
   ];
   @override
@@ -1279,8 +1289,6 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
         _chapterIdMeta,
         chapterId.isAcceptableOrUnknown(data['chapter_id']!, _chapterIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_chapterIdMeta);
     }
     if (data.containsKey('position_ms')) {
       context.handle(
@@ -1289,6 +1297,15 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
       );
     } else if (isInserting) {
       context.missing(_positionMsMeta);
+    }
+    if (data.containsKey('book_position_ms')) {
+      context.handle(
+        _bookPositionMsMeta,
+        bookPositionMs.isAcceptableOrUnknown(
+          data['book_position_ms']!,
+          _bookPositionMsMeta,
+        ),
+      );
     }
     if (data.containsKey('updated_at')) {
       context.handle(
@@ -1314,10 +1331,14 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
       chapterId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}chapter_id'],
-      )!,
+      ),
       positionMs: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}position_ms'],
+      )!,
+      bookPositionMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}book_position_ms'],
       )!,
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -1335,21 +1356,34 @@ class $PlaybackProgressRowsTable extends PlaybackProgressRows
 class PlaybackProgressRow extends DataClass
     implements Insertable<PlaybackProgressRow> {
   final String bookId;
-  final String chapterId;
+
+  /// Null for books with no chapters. Deliberately not a foreign key: chapters
+  /// are rewritten wholesale whenever a book is re-saved, and losing a
+  /// listener's place to that is worse than holding an orphaned id.
+  final String? chapterId;
+
+  /// Offset inside the chapter, or inside the book when there is no chapter.
   final int positionMs;
+
+  /// Offset on the whole book timeline.
+  final int bookPositionMs;
   final DateTime updatedAt;
   const PlaybackProgressRow({
     required this.bookId,
-    required this.chapterId,
+    this.chapterId,
     required this.positionMs,
+    required this.bookPositionMs,
     required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['book_id'] = Variable<String>(bookId);
-    map['chapter_id'] = Variable<String>(chapterId);
+    if (!nullToAbsent || chapterId != null) {
+      map['chapter_id'] = Variable<String>(chapterId);
+    }
     map['position_ms'] = Variable<int>(positionMs);
+    map['book_position_ms'] = Variable<int>(bookPositionMs);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
@@ -1357,8 +1391,11 @@ class PlaybackProgressRow extends DataClass
   PlaybackProgressRowsCompanion toCompanion(bool nullToAbsent) {
     return PlaybackProgressRowsCompanion(
       bookId: Value(bookId),
-      chapterId: Value(chapterId),
+      chapterId: chapterId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(chapterId),
       positionMs: Value(positionMs),
+      bookPositionMs: Value(bookPositionMs),
       updatedAt: Value(updatedAt),
     );
   }
@@ -1370,8 +1407,9 @@ class PlaybackProgressRow extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return PlaybackProgressRow(
       bookId: serializer.fromJson<String>(json['bookId']),
-      chapterId: serializer.fromJson<String>(json['chapterId']),
+      chapterId: serializer.fromJson<String?>(json['chapterId']),
       positionMs: serializer.fromJson<int>(json['positionMs']),
+      bookPositionMs: serializer.fromJson<int>(json['bookPositionMs']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
@@ -1380,21 +1418,24 @@ class PlaybackProgressRow extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'bookId': serializer.toJson<String>(bookId),
-      'chapterId': serializer.toJson<String>(chapterId),
+      'chapterId': serializer.toJson<String?>(chapterId),
       'positionMs': serializer.toJson<int>(positionMs),
+      'bookPositionMs': serializer.toJson<int>(bookPositionMs),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
   PlaybackProgressRow copyWith({
     String? bookId,
-    String? chapterId,
+    Value<String?> chapterId = const Value.absent(),
     int? positionMs,
+    int? bookPositionMs,
     DateTime? updatedAt,
   }) => PlaybackProgressRow(
     bookId: bookId ?? this.bookId,
-    chapterId: chapterId ?? this.chapterId,
+    chapterId: chapterId.present ? chapterId.value : this.chapterId,
     positionMs: positionMs ?? this.positionMs,
+    bookPositionMs: bookPositionMs ?? this.bookPositionMs,
     updatedAt: updatedAt ?? this.updatedAt,
   );
   PlaybackProgressRow copyWithCompanion(PlaybackProgressRowsCompanion data) {
@@ -1404,6 +1445,9 @@ class PlaybackProgressRow extends DataClass
       positionMs: data.positionMs.present
           ? data.positionMs.value
           : this.positionMs,
+      bookPositionMs: data.bookPositionMs.present
+          ? data.bookPositionMs.value
+          : this.bookPositionMs,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -1414,13 +1458,15 @@ class PlaybackProgressRow extends DataClass
           ..write('bookId: $bookId, ')
           ..write('chapterId: $chapterId, ')
           ..write('positionMs: $positionMs, ')
+          ..write('bookPositionMs: $bookPositionMs, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(bookId, chapterId, positionMs, updatedAt);
+  int get hashCode =>
+      Object.hash(bookId, chapterId, positionMs, bookPositionMs, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1428,37 +1474,41 @@ class PlaybackProgressRow extends DataClass
           other.bookId == this.bookId &&
           other.chapterId == this.chapterId &&
           other.positionMs == this.positionMs &&
+          other.bookPositionMs == this.bookPositionMs &&
           other.updatedAt == this.updatedAt);
 }
 
 class PlaybackProgressRowsCompanion
     extends UpdateCompanion<PlaybackProgressRow> {
   final Value<String> bookId;
-  final Value<String> chapterId;
+  final Value<String?> chapterId;
   final Value<int> positionMs;
+  final Value<int> bookPositionMs;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const PlaybackProgressRowsCompanion({
     this.bookId = const Value.absent(),
     this.chapterId = const Value.absent(),
     this.positionMs = const Value.absent(),
+    this.bookPositionMs = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PlaybackProgressRowsCompanion.insert({
     required String bookId,
-    required String chapterId,
+    this.chapterId = const Value.absent(),
     required int positionMs,
+    this.bookPositionMs = const Value.absent(),
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   }) : bookId = Value(bookId),
-       chapterId = Value(chapterId),
        positionMs = Value(positionMs),
        updatedAt = Value(updatedAt);
   static Insertable<PlaybackProgressRow> custom({
     Expression<String>? bookId,
     Expression<String>? chapterId,
     Expression<int>? positionMs,
+    Expression<int>? bookPositionMs,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
   }) {
@@ -1466,6 +1516,7 @@ class PlaybackProgressRowsCompanion
       if (bookId != null) 'book_id': bookId,
       if (chapterId != null) 'chapter_id': chapterId,
       if (positionMs != null) 'position_ms': positionMs,
+      if (bookPositionMs != null) 'book_position_ms': bookPositionMs,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1473,8 +1524,9 @@ class PlaybackProgressRowsCompanion
 
   PlaybackProgressRowsCompanion copyWith({
     Value<String>? bookId,
-    Value<String>? chapterId,
+    Value<String?>? chapterId,
     Value<int>? positionMs,
+    Value<int>? bookPositionMs,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
   }) {
@@ -1482,6 +1534,7 @@ class PlaybackProgressRowsCompanion
       bookId: bookId ?? this.bookId,
       chapterId: chapterId ?? this.chapterId,
       positionMs: positionMs ?? this.positionMs,
+      bookPositionMs: bookPositionMs ?? this.bookPositionMs,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
     );
@@ -1499,6 +1552,9 @@ class PlaybackProgressRowsCompanion
     if (positionMs.present) {
       map['position_ms'] = Variable<int>(positionMs.value);
     }
+    if (bookPositionMs.present) {
+      map['book_position_ms'] = Variable<int>(bookPositionMs.value);
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
@@ -1514,6 +1570,7 @@ class PlaybackProgressRowsCompanion
           ..write('bookId: $bookId, ')
           ..write('chapterId: $chapterId, ')
           ..write('positionMs: $positionMs, ')
+          ..write('bookPositionMs: $bookPositionMs, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1966,13 +2023,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'audiobook_rows',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('playback_progress_rows', kind: UpdateKind.delete)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'audiobook_chapter_rows',
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('playback_progress_rows', kind: UpdateKind.delete)],
@@ -2708,32 +2758,6 @@ final class $$AudiobookChapterRowsTableReferences
     );
   }
 
-  static MultiTypedResultKey<
-    $PlaybackProgressRowsTable,
-    List<PlaybackProgressRow>
-  >
-  _playbackProgressRowsRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.playbackProgressRows,
-        aliasName:
-            'audiobook_chapter_rows__id__playback_progress_rows__chapter_id',
-      );
-
-  $$PlaybackProgressRowsTableProcessedTableManager
-  get playbackProgressRowsRefs {
-    final manager = $$PlaybackProgressRowsTableTableManager(
-      $_db,
-      $_db.playbackProgressRows,
-    ).filter((f) => f.chapterId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _playbackProgressRowsRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
   static MultiTypedResultKey<$BookmarkRowsTable, List<BookmarkRow>>
   _bookmarkRowsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.bookmarkRows,
@@ -2813,31 +2837,6 @@ class $$AudiobookChapterRowsTableFilterComposer
           ),
     );
     return composer;
-  }
-
-  Expression<bool> playbackProgressRowsRefs(
-    Expression<bool> Function($$PlaybackProgressRowsTableFilterComposer f) f,
-  ) {
-    final $$PlaybackProgressRowsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.playbackProgressRows,
-      getReferencedColumn: (t) => t.chapterId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlaybackProgressRowsTableFilterComposer(
-            $db: $db,
-            $table: $db.playbackProgressRows,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
   }
 
   Expression<bool> bookmarkRowsRefs(
@@ -2985,32 +2984,6 @@ class $$AudiobookChapterRowsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> playbackProgressRowsRefs<T extends Object>(
-    Expression<T> Function($$PlaybackProgressRowsTableAnnotationComposer a) f,
-  ) {
-    final $$PlaybackProgressRowsTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.id,
-          referencedTable: $db.playbackProgressRows,
-          getReferencedColumn: (t) => t.chapterId,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$PlaybackProgressRowsTableAnnotationComposer(
-                $db: $db,
-                $table: $db.playbackProgressRows,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return f(composer);
-  }
-
   Expression<T> bookmarkRowsRefs<T extends Object>(
     Expression<T> Function($$BookmarkRowsTableAnnotationComposer a) f,
   ) {
@@ -3050,11 +3023,7 @@ class $$AudiobookChapterRowsTableTableManager
           $$AudiobookChapterRowsTableUpdateCompanionBuilder,
           (AudiobookChapterRow, $$AudiobookChapterRowsTableReferences),
           AudiobookChapterRow,
-          PrefetchHooks Function({
-            bool bookId,
-            bool playbackProgressRowsRefs,
-            bool bookmarkRowsRefs,
-          })
+          PrefetchHooks Function({bool bookId, bool bookmarkRowsRefs})
         > {
   $$AudiobookChapterRowsTableTableManager(
     _$AppDatabase db,
@@ -3123,100 +3092,69 @@ class $$AudiobookChapterRowsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback:
-              ({
-                bookId = false,
-                playbackProgressRowsRefs = false,
-                bookmarkRowsRefs = false,
-              }) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (playbackProgressRowsRefs) db.playbackProgressRows,
-                    if (bookmarkRowsRefs) db.bookmarkRows,
-                  ],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (bookId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.bookId,
-                                    referencedTable:
-                                        $$AudiobookChapterRowsTableReferences
-                                            ._bookIdTable(db),
-                                    referencedColumn:
-                                        $$AudiobookChapterRowsTableReferences
-                                            ._bookIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
-                        }
+          prefetchHooksCallback: ({bookId = false, bookmarkRowsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (bookmarkRowsRefs) db.bookmarkRows],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (bookId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.bookId,
+                                referencedTable:
+                                    $$AudiobookChapterRowsTableReferences
+                                        ._bookIdTable(db),
+                                referencedColumn:
+                                    $$AudiobookChapterRowsTableReferences
+                                        ._bookIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
 
-                        return state;
-                      },
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (playbackProgressRowsRefs)
-                        await $_getPrefetchedData<
-                          AudiobookChapterRow,
-                          $AudiobookChapterRowsTable,
-                          PlaybackProgressRow
-                        >(
-                          currentTable: table,
-                          referencedTable: $$AudiobookChapterRowsTableReferences
-                              ._playbackProgressRowsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$AudiobookChapterRowsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).playbackProgressRowsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.chapterId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (bookmarkRowsRefs)
-                        await $_getPrefetchedData<
-                          AudiobookChapterRow,
-                          $AudiobookChapterRowsTable,
-                          BookmarkRow
-                        >(
-                          currentTable: table,
-                          referencedTable: $$AudiobookChapterRowsTableReferences
-                              ._bookmarkRowsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$AudiobookChapterRowsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).bookmarkRowsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.chapterId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
+                    return state;
                   },
-                );
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (bookmarkRowsRefs)
+                    await $_getPrefetchedData<
+                      AudiobookChapterRow,
+                      $AudiobookChapterRowsTable,
+                      BookmarkRow
+                    >(
+                      currentTable: table,
+                      referencedTable: $$AudiobookChapterRowsTableReferences
+                          ._bookmarkRowsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$AudiobookChapterRowsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).bookmarkRowsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.chapterId == item.id),
+                      typedResults: items,
+                    ),
+                ];
               },
+            );
+          },
         ),
       );
 }
@@ -3233,25 +3171,23 @@ typedef $$AudiobookChapterRowsTableProcessedTableManager =
       $$AudiobookChapterRowsTableUpdateCompanionBuilder,
       (AudiobookChapterRow, $$AudiobookChapterRowsTableReferences),
       AudiobookChapterRow,
-      PrefetchHooks Function({
-        bool bookId,
-        bool playbackProgressRowsRefs,
-        bool bookmarkRowsRefs,
-      })
+      PrefetchHooks Function({bool bookId, bool bookmarkRowsRefs})
     >;
 typedef $$PlaybackProgressRowsTableCreateCompanionBuilder =
     PlaybackProgressRowsCompanion Function({
       required String bookId,
-      required String chapterId,
+      Value<String?> chapterId,
       required int positionMs,
+      Value<int> bookPositionMs,
       required DateTime updatedAt,
       Value<int> rowid,
     });
 typedef $$PlaybackProgressRowsTableUpdateCompanionBuilder =
     PlaybackProgressRowsCompanion Function({
       Value<String> bookId,
-      Value<String> chapterId,
+      Value<String?> chapterId,
       Value<int> positionMs,
+      Value<int> bookPositionMs,
       Value<DateTime> updatedAt,
       Value<int> rowid,
     });
@@ -3285,25 +3221,6 @@ final class $$PlaybackProgressRowsTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
-
-  static $AudiobookChapterRowsTable _chapterIdTable(_$AppDatabase db) =>
-      db.audiobookChapterRows.createAlias(
-        'playback_progress_rows__chapter_id__audiobook_chapter_rows__id',
-      );
-
-  $$AudiobookChapterRowsTableProcessedTableManager get chapterId {
-    final $_column = $_itemColumn<String>('chapter_id')!;
-
-    final manager = $$AudiobookChapterRowsTableTableManager(
-      $_db,
-      $_db.audiobookChapterRows,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_chapterIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
 }
 
 class $$PlaybackProgressRowsTableFilterComposer
@@ -3315,8 +3232,18 @@ class $$PlaybackProgressRowsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<String> get chapterId => $composableBuilder(
+    column: $table.chapterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get positionMs => $composableBuilder(
     column: $table.positionMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bookPositionMs => $composableBuilder(
+    column: $table.bookPositionMs,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3347,29 +3274,6 @@ class $$PlaybackProgressRowsTableFilterComposer
     );
     return composer;
   }
-
-  $$AudiobookChapterRowsTableFilterComposer get chapterId {
-    final $$AudiobookChapterRowsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.chapterId,
-      referencedTable: $db.audiobookChapterRows,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$AudiobookChapterRowsTableFilterComposer(
-            $db: $db,
-            $table: $db.audiobookChapterRows,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$PlaybackProgressRowsTableOrderingComposer
@@ -3381,8 +3285,18 @@ class $$PlaybackProgressRowsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<String> get chapterId => $composableBuilder(
+    column: $table.chapterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get positionMs => $composableBuilder(
     column: $table.positionMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bookPositionMs => $composableBuilder(
+    column: $table.bookPositionMs,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3413,30 +3327,6 @@ class $$PlaybackProgressRowsTableOrderingComposer
     );
     return composer;
   }
-
-  $$AudiobookChapterRowsTableOrderingComposer get chapterId {
-    final $$AudiobookChapterRowsTableOrderingComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.chapterId,
-          referencedTable: $db.audiobookChapterRows,
-          getReferencedColumn: (t) => t.id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$AudiobookChapterRowsTableOrderingComposer(
-                $db: $db,
-                $table: $db.audiobookChapterRows,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return composer;
-  }
 }
 
 class $$PlaybackProgressRowsTableAnnotationComposer
@@ -3448,8 +3338,16 @@ class $$PlaybackProgressRowsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<String> get chapterId =>
+      $composableBuilder(column: $table.chapterId, builder: (column) => column);
+
   GeneratedColumn<int> get positionMs => $composableBuilder(
     column: $table.positionMs,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bookPositionMs => $composableBuilder(
+    column: $table.bookPositionMs,
     builder: (column) => column,
   );
 
@@ -3478,30 +3376,6 @@ class $$PlaybackProgressRowsTableAnnotationComposer
     );
     return composer;
   }
-
-  $$AudiobookChapterRowsTableAnnotationComposer get chapterId {
-    final $$AudiobookChapterRowsTableAnnotationComposer composer =
-        $composerBuilder(
-          composer: this,
-          getCurrentColumn: (t) => t.chapterId,
-          referencedTable: $db.audiobookChapterRows,
-          getReferencedColumn: (t) => t.id,
-          builder:
-              (
-                joinBuilder, {
-                $addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer,
-              }) => $$AudiobookChapterRowsTableAnnotationComposer(
-                $db: $db,
-                $table: $db.audiobookChapterRows,
-                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                joinBuilder: joinBuilder,
-                $removeJoinBuilderFromRootComposer:
-                    $removeJoinBuilderFromRootComposer,
-              ),
-        );
-    return composer;
-  }
 }
 
 class $$PlaybackProgressRowsTableTableManager
@@ -3517,7 +3391,7 @@ class $$PlaybackProgressRowsTableTableManager
           $$PlaybackProgressRowsTableUpdateCompanionBuilder,
           (PlaybackProgressRow, $$PlaybackProgressRowsTableReferences),
           PlaybackProgressRow,
-          PrefetchHooks Function({bool bookId, bool chapterId})
+          PrefetchHooks Function({bool bookId})
         > {
   $$PlaybackProgressRowsTableTableManager(
     _$AppDatabase db,
@@ -3541,28 +3415,32 @@ class $$PlaybackProgressRowsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> bookId = const Value.absent(),
-                Value<String> chapterId = const Value.absent(),
+                Value<String?> chapterId = const Value.absent(),
                 Value<int> positionMs = const Value.absent(),
+                Value<int> bookPositionMs = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PlaybackProgressRowsCompanion(
                 bookId: bookId,
                 chapterId: chapterId,
                 positionMs: positionMs,
+                bookPositionMs: bookPositionMs,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String bookId,
-                required String chapterId,
+                Value<String?> chapterId = const Value.absent(),
                 required int positionMs,
+                Value<int> bookPositionMs = const Value.absent(),
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
               }) => PlaybackProgressRowsCompanion.insert(
                 bookId: bookId,
                 chapterId: chapterId,
                 positionMs: positionMs,
+                bookPositionMs: bookPositionMs,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
@@ -3574,7 +3452,7 @@ class $$PlaybackProgressRowsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({bookId = false, chapterId = false}) {
+          prefetchHooksCallback: ({bookId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -3609,21 +3487,6 @@ class $$PlaybackProgressRowsTableTableManager
                               )
                               as T;
                     }
-                    if (chapterId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.chapterId,
-                                referencedTable:
-                                    $$PlaybackProgressRowsTableReferences
-                                        ._chapterIdTable(db),
-                                referencedColumn:
-                                    $$PlaybackProgressRowsTableReferences
-                                        ._chapterIdTable(db)
-                                        .id,
-                              )
-                              as T;
-                    }
 
                     return state;
                   },
@@ -3648,7 +3511,7 @@ typedef $$PlaybackProgressRowsTableProcessedTableManager =
       $$PlaybackProgressRowsTableUpdateCompanionBuilder,
       (PlaybackProgressRow, $$PlaybackProgressRowsTableReferences),
       PlaybackProgressRow,
-      PrefetchHooks Function({bool bookId, bool chapterId})
+      PrefetchHooks Function({bool bookId})
     >;
 typedef $$BookmarkRowsTableCreateCompanionBuilder =
     BookmarkRowsCompanion Function({

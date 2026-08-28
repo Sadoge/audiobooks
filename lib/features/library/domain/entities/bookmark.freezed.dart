@@ -212,7 +212,7 @@ return $default(_that.id,_that.bookId,_that.chapterId,_that.position,_that.title
 
 class _Bookmark implements Bookmark {
   const _Bookmark({required this.id, required this.bookId, required this.chapterId, required this.position, required this.title, required this.createdAt});
-
+  
 
 @override final  String id;
 @override final  String bookId;

@@ -16,6 +16,9 @@ abstract interface class AudiobookRepository {
     required bool isFinished,
   });
 
+  /// Where the listener left this book, or null if it was never opened.
+  Future<PlaybackProgress?> findProgress(String bookId);
+
   Stream<List<Bookmark>> watchBookmarks(String bookId);
 
   Future<void> saveBookmark(Bookmark bookmark);

@@ -10,6 +10,9 @@ abstract class ImportState with _$ImportState {
   const factory ImportState({
     @Default(ImportStatus.initial) ImportStatus status,
     @Default(<PickedAudioFile>[]) List<PickedAudioFile> files,
+
+    /// How many files have been copied and read so far, for import progress.
+    @Default(0) int importedFiles,
     String? errorMessage,
   }) = _ImportState;
 }

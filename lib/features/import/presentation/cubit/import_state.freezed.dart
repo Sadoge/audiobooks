@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ImportState {
 
- ImportStatus get status; List<PickedAudioFile> get files; String? get errorMessage;
+ ImportStatus get status; List<PickedAudioFile> get files;/// How many files have been copied and read so far, for import progress.
+ int get importedFiles; String? get errorMessage;
 /// Create a copy of ImportState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $ImportStateCopyWith<ImportState> get copyWith => _$ImportStateCopyWithImpl<Impo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ImportState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.files, files)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ImportState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.files, files)&&(identical(other.importedFiles, importedFiles) || other.importedFiles == importedFiles)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(files),errorMessage);
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(files),importedFiles,errorMessage);
 
 @override
 String toString() {
-  return 'ImportState(status: $status, files: $files, errorMessage: $errorMessage)';
+  return 'ImportState(status: $status, files: $files, importedFiles: $importedFiles, errorMessage: $errorMessage)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $ImportStateCopyWith<$Res>  {
   factory $ImportStateCopyWith(ImportState value, $Res Function(ImportState) _then) = _$ImportStateCopyWithImpl;
 @useResult
 $Res call({
- ImportStatus status, List<PickedAudioFile> files, String? errorMessage
+ ImportStatus status, List<PickedAudioFile> files, int importedFiles, String? errorMessage
 });
 
 
@@ -62,11 +63,12 @@ class _$ImportStateCopyWithImpl<$Res>
 
 /// Create a copy of ImportState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? files = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? files = null,Object? importedFiles = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as ImportStatus,files: null == files ? _self.files : files // ignore: cast_nullable_to_non_nullable
-as List<PickedAudioFile>,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as List<PickedAudioFile>,importedFiles: null == importedFiles ? _self.importedFiles : importedFiles // ignore: cast_nullable_to_non_nullable
+as int,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -152,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ImportStatus status,  List<PickedAudioFile> files,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ImportStatus status,  List<PickedAudioFile> files,  int importedFiles,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ImportState() when $default != null:
-return $default(_that.status,_that.files,_that.errorMessage);case _:
+return $default(_that.status,_that.files,_that.importedFiles,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -173,10 +175,10 @@ return $default(_that.status,_that.files,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ImportStatus status,  List<PickedAudioFile> files,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ImportStatus status,  List<PickedAudioFile> files,  int importedFiles,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _ImportState():
-return $default(_that.status,_that.files,_that.errorMessage);case _:
+return $default(_that.status,_that.files,_that.importedFiles,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +195,10 @@ return $default(_that.status,_that.files,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ImportStatus status,  List<PickedAudioFile> files,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ImportStatus status,  List<PickedAudioFile> files,  int importedFiles,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _ImportState() when $default != null:
-return $default(_that.status,_that.files,_that.errorMessage);case _:
+return $default(_that.status,_that.files,_that.importedFiles,_that.errorMessage);case _:
   return null;
 
 }
@@ -208,8 +210,8 @@ return $default(_that.status,_that.files,_that.errorMessage);case _:
 
 
 class _ImportState implements ImportState {
-  const _ImportState({this.status = ImportStatus.initial, final  List<PickedAudioFile> files = const <PickedAudioFile>[], this.errorMessage}): _files = files;
-
+  const _ImportState({this.status = ImportStatus.initial, final  List<PickedAudioFile> files = const <PickedAudioFile>[], this.importedFiles = 0, this.errorMessage}): _files = files;
+  
 
 @override@JsonKey() final  ImportStatus status;
  final  List<PickedAudioFile> _files;
@@ -219,6 +221,8 @@ class _ImportState implements ImportState {
   return EqualUnmodifiableListView(_files);
 }
 
+/// How many files have been copied and read so far, for import progress.
+@override@JsonKey() final  int importedFiles;
 @override final  String? errorMessage;
 
 /// Create a copy of ImportState
@@ -231,16 +235,16 @@ _$ImportStateCopyWith<_ImportState> get copyWith => __$ImportStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ImportState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._files, _files)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ImportState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._files, _files)&&(identical(other.importedFiles, importedFiles) || other.importedFiles == importedFiles)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_files),errorMessage);
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_files),importedFiles,errorMessage);
 
 @override
 String toString() {
-  return 'ImportState(status: $status, files: $files, errorMessage: $errorMessage)';
+  return 'ImportState(status: $status, files: $files, importedFiles: $importedFiles, errorMessage: $errorMessage)';
 }
 
 
@@ -251,7 +255,7 @@ abstract mixin class _$ImportStateCopyWith<$Res> implements $ImportStateCopyWith
   factory _$ImportStateCopyWith(_ImportState value, $Res Function(_ImportState) _then) = __$ImportStateCopyWithImpl;
 @override @useResult
 $Res call({
- ImportStatus status, List<PickedAudioFile> files, String? errorMessage
+ ImportStatus status, List<PickedAudioFile> files, int importedFiles, String? errorMessage
 });
 
 
@@ -268,11 +272,12 @@ class __$ImportStateCopyWithImpl<$Res>
 
 /// Create a copy of ImportState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? files = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? files = null,Object? importedFiles = null,Object? errorMessage = freezed,}) {
   return _then(_ImportState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as ImportStatus,files: null == files ? _self._files : files // ignore: cast_nullable_to_non_nullable
-as List<PickedAudioFile>,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as List<PickedAudioFile>,importedFiles: null == importedFiles ? _self.importedFiles : importedFiles // ignore: cast_nullable_to_non_nullable
+as int,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlaybackProgress {
 
- String get bookId; String get chapterId; Duration get position; DateTime get updatedAt;
+ String get bookId;/// Null for books that have no chapters at all.
+ String? get chapterId;/// Offset inside [chapterId], or inside the book when it has no chapters.
+ Duration get position;/// Offset on the whole book timeline, used for library progress.
+ Duration get bookPosition; DateTime get updatedAt;
 /// Create a copy of PlaybackProgress
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +28,16 @@ $PlaybackProgressCopyWith<PlaybackProgress> get copyWith => _$PlaybackProgressCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlaybackProgress&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.position, position) || other.position == position)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlaybackProgress&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.position, position) || other.position == position)&&(identical(other.bookPosition, bookPosition) || other.bookPosition == bookPosition)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookId,chapterId,position,updatedAt);
+int get hashCode => Object.hash(runtimeType,bookId,chapterId,position,bookPosition,updatedAt);
 
 @override
 String toString() {
-  return 'PlaybackProgress(bookId: $bookId, chapterId: $chapterId, position: $position, updatedAt: $updatedAt)';
+  return 'PlaybackProgress(bookId: $bookId, chapterId: $chapterId, position: $position, bookPosition: $bookPosition, updatedAt: $updatedAt)';
 }
 
 
@@ -45,7 +48,7 @@ abstract mixin class $PlaybackProgressCopyWith<$Res>  {
   factory $PlaybackProgressCopyWith(PlaybackProgress value, $Res Function(PlaybackProgress) _then) = _$PlaybackProgressCopyWithImpl;
 @useResult
 $Res call({
- String bookId, String chapterId, Duration position, DateTime updatedAt
+ String bookId, String? chapterId, Duration position, Duration bookPosition, DateTime updatedAt
 });
 
 
@@ -62,11 +65,12 @@ class _$PlaybackProgressCopyWithImpl<$Res>
 
 /// Create a copy of PlaybackProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? bookId = null,Object? chapterId = null,Object? position = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? bookId = null,Object? chapterId = freezed,Object? position = null,Object? bookPosition = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 bookId: null == bookId ? _self.bookId : bookId // ignore: cast_nullable_to_non_nullable
-as String,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
-as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as String,chapterId: freezed == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
+as String?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Duration,bookPosition: null == bookPosition ? _self.bookPosition : bookPosition // ignore: cast_nullable_to_non_nullable
 as Duration,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
@@ -153,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String bookId,  String chapterId,  Duration position,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String bookId,  String? chapterId,  Duration position,  Duration bookPosition,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlaybackProgress() when $default != null:
-return $default(_that.bookId,_that.chapterId,_that.position,_that.updatedAt);case _:
+return $default(_that.bookId,_that.chapterId,_that.position,_that.bookPosition,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -174,10 +178,10 @@ return $default(_that.bookId,_that.chapterId,_that.position,_that.updatedAt);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String bookId,  String chapterId,  Duration position,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String bookId,  String? chapterId,  Duration position,  Duration bookPosition,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _PlaybackProgress():
-return $default(_that.bookId,_that.chapterId,_that.position,_that.updatedAt);case _:
+return $default(_that.bookId,_that.chapterId,_that.position,_that.bookPosition,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +198,10 @@ return $default(_that.bookId,_that.chapterId,_that.position,_that.updatedAt);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String bookId,  String chapterId,  Duration position,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String bookId,  String? chapterId,  Duration position,  Duration bookPosition,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _PlaybackProgress() when $default != null:
-return $default(_that.bookId,_that.chapterId,_that.position,_that.updatedAt);case _:
+return $default(_that.bookId,_that.chapterId,_that.position,_that.bookPosition,_that.updatedAt);case _:
   return null;
 
 }
@@ -209,12 +213,16 @@ return $default(_that.bookId,_that.chapterId,_that.position,_that.updatedAt);cas
 
 
 class _PlaybackProgress implements PlaybackProgress {
-  const _PlaybackProgress({required this.bookId, required this.chapterId, required this.position, required this.updatedAt});
-
+  const _PlaybackProgress({required this.bookId, this.chapterId, required this.position, this.bookPosition = Duration.zero, required this.updatedAt});
+  
 
 @override final  String bookId;
-@override final  String chapterId;
+/// Null for books that have no chapters at all.
+@override final  String? chapterId;
+/// Offset inside [chapterId], or inside the book when it has no chapters.
 @override final  Duration position;
+/// Offset on the whole book timeline, used for library progress.
+@override@JsonKey() final  Duration bookPosition;
 @override final  DateTime updatedAt;
 
 /// Create a copy of PlaybackProgress
@@ -227,16 +235,16 @@ _$PlaybackProgressCopyWith<_PlaybackProgress> get copyWith => __$PlaybackProgres
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlaybackProgress&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.position, position) || other.position == position)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlaybackProgress&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.position, position) || other.position == position)&&(identical(other.bookPosition, bookPosition) || other.bookPosition == bookPosition)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookId,chapterId,position,updatedAt);
+int get hashCode => Object.hash(runtimeType,bookId,chapterId,position,bookPosition,updatedAt);
 
 @override
 String toString() {
-  return 'PlaybackProgress(bookId: $bookId, chapterId: $chapterId, position: $position, updatedAt: $updatedAt)';
+  return 'PlaybackProgress(bookId: $bookId, chapterId: $chapterId, position: $position, bookPosition: $bookPosition, updatedAt: $updatedAt)';
 }
 
 
@@ -247,7 +255,7 @@ abstract mixin class _$PlaybackProgressCopyWith<$Res> implements $PlaybackProgre
   factory _$PlaybackProgressCopyWith(_PlaybackProgress value, $Res Function(_PlaybackProgress) _then) = __$PlaybackProgressCopyWithImpl;
 @override @useResult
 $Res call({
- String bookId, String chapterId, Duration position, DateTime updatedAt
+ String bookId, String? chapterId, Duration position, Duration bookPosition, DateTime updatedAt
 });
 
 
@@ -264,11 +272,12 @@ class __$PlaybackProgressCopyWithImpl<$Res>
 
 /// Create a copy of PlaybackProgress
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? bookId = null,Object? chapterId = null,Object? position = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? bookId = null,Object? chapterId = freezed,Object? position = null,Object? bookPosition = null,Object? updatedAt = null,}) {
   return _then(_PlaybackProgress(
 bookId: null == bookId ? _self.bookId : bookId // ignore: cast_nullable_to_non_nullable
-as String,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
-as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as String,chapterId: freezed == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
+as String?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Duration,bookPosition: null == bookPosition ? _self.bookPosition : bookPosition // ignore: cast_nullable_to_non_nullable
 as Duration,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));

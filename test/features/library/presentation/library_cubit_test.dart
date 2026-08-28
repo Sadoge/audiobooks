@@ -58,6 +58,9 @@ class _FakeAudiobookRepository implements AudiobookRepository {
   Future<Audiobook?> findById(String id) async => null;
 
   @override
+  Future<PlaybackProgress?> findProgress(String bookId) async => null;
+
+  @override
   Future<void> remove(String id) async {}
 
   @override
