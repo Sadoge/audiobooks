@@ -57,6 +57,9 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
 - Cover art is read in Dart from ID3 and MP4 tags, or from an image beside the
   audio, and can be replaced by one the listener chooses at any time. A book
   without artwork still imports and plays.
+- Covers are square, as published audiobooks are: artwork that arrives in
+  another shape is centre-cropped and scaled once when it is stored, and
+  artwork that cannot be decoded is drawn cropped to the same square.
 - A book can be removed from the library, taking the media copied for it and
   its listening state with it, and only after the listener confirms.
 

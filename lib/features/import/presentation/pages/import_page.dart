@@ -197,8 +197,8 @@ class _CoverAttachment extends StatelessWidget {
         ClipRRect(
           borderRadius: AppRadii.cover,
           child: SizedBox(
-            width: 48,
-            height: 64,
+            width: 56,
+            height: 56,
             child: attached
                 ? Image.file(File(coverPath!), fit: BoxFit.cover)
                 : ColoredBox(

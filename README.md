@@ -23,7 +23,8 @@ The foundation release includes:
   restored when a book is reopened.
 - Real covers: artwork is read out of MP3 ID3 tags and MP4 `covr` boxes, or
   taken from an image sitting beside the audio, and any book can be given one
-  by hand at import or afterwards.
+  by hand at import or afterwards. Covers are squared and scaled when stored,
+  so the Library, the grid, and the player all read as square artwork.
 - Removing a book from the Library, which deletes the media copied for it.
 - Unit, widget, repository, and golden tests.
 

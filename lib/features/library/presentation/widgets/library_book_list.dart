@@ -35,7 +35,7 @@ class LibraryBookList extends StatelessWidget {
               ? SliverGrid.builder(
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 220,
-                    mainAxisExtent: 300,
+                    mainAxisExtent: 336,
                     crossAxisSpacing: AppSpacing.lg,
                     mainAxisSpacing: AppSpacing.lg,
                   ),
@@ -59,7 +59,7 @@ class LibraryBookList extends StatelessWidget {
                         horizontal: AppSpacing.sm,
                         vertical: AppSpacing.xs,
                       ),
-                      leading: _Cover(book: book, width: 48, height: 64),
+                      leading: _Cover(book: book, width: 56, height: 56),
                       title: Text(
                         book.title,
                         maxLines: 2,
@@ -128,7 +128,16 @@ class _GridBookTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(child: _Cover(book: book, letterSize: 48)),
+                    // The largest square the tile can give the artwork, so
+                    // covers stay square as text scaling grows the rows below.
+                    Expanded(
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: _Cover(book: book, letterSize: 48),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       book.title,
@@ -252,8 +261,12 @@ String _formatDuration(Duration duration) {
   return hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
 }
 
-/// A book's artwork, falling back to its initial when there is none, or when
-/// the stored image has gone missing.
+/// A book's square artwork, falling back to its initial when there is none,
+/// or when the stored image has gone missing.
+///
+/// Covers are squared when they are stored, so the fit here only has to hold
+/// the line for artwork that arrived before that, or that could not be
+/// decoded: it fills the square and centre-crops rather than distorting.
 class _Cover extends StatelessWidget {
   const _Cover({
     required this.book,

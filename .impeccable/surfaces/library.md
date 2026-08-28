@@ -19,9 +19,10 @@
   grid rather than stretching phone list rows.
 - Motion: the listening marker gently settles into place on first appearance;
   disabled entirely when accessible navigation/reduced motion is requested.
-- Book covers: real artwork fills the list thumbnail and the grid tile, with
-  the title initial on a secondary-container plane standing in when a book has
-  none. Per-book actions — add or change a cover, remove from the library —
+- Book covers: real artwork fills the square list thumbnail and the square
+  grid tile, with the title initial on a secondary-container plane standing in
+  when a book has none. Artwork is squared when it is stored, so the grid reads
+  as one even row of covers whatever shape the files carried. Per-book actions — add or change a cover, remove from the library —
   sit behind one quiet overflow control, over the corner of the artwork in the
   grid and after the play affordance in the list. Removal is confirmed in a
   dialog and reported in a snackbar over the library it changed.
@@ -37,5 +38,5 @@
 | Primary action | Full-width accessible filled control | Material filled button |
 | Dark mode | Same topology, deep blue-charcoal surfaces | Theme color roles |
 | macOS library | Flat cover grid with pointer and keyboard affordances | Responsive Flutter slivers |
-| Book cover | Real artwork, or the title initial on a quiet plane | Clipped image with letter fallback |
+| Book cover | Square artwork, or the title initial on a quiet plane | Clipped image with letter fallback |
 | Book actions | One overflow control per book: cover, removal | Material popup menu, confirm dialog |

@@ -4,6 +4,7 @@ import 'package:audiobooks/core/audio/metadata/cover_art.dart';
 import 'package:audiobooks/core/errors/app_failure.dart';
 import 'package:audiobooks/core/files/device_file_gateway.dart';
 import 'package:audiobooks/core/files/picked_audio_file.dart';
+import 'package:audiobooks/core/images/square_cover_encoder.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
@@ -11,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 @LazySingleton(as: DeviceFileGateway)
 class LocalDeviceFileGateway implements DeviceFileGateway {
   static const _supportedExtensions = ['mp3', 'm4a', 'm4b', 'aac'];
+  static const _square = SquareCoverEncoder();
 
   /// The shape of a cover this app has written, which is what makes replacing
   /// one safe: audio a listener imported can never match it.
@@ -96,9 +98,10 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
     required String bookId,
   }) async {
     try {
+      final art = await _square.square(cover) ?? cover;
       final directory = await _bookDirectory(bookId);
-      final destination = _coverDestination(directory, cover.extension);
-      await File(destination).writeAsBytes(cover.bytes, flush: true);
+      final destination = _coverDestination(directory, art.extension);
+      await File(destination).writeAsBytes(art.bytes, flush: true);
       await _removeOtherCovers(directory, keep: destination);
       return destination;
     } catch (_) {
@@ -120,8 +123,19 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
       if (extension == null) return null;
 
       final directory = await _bookDirectory(bookId);
-      final destination = _coverDestination(directory, extension);
-      await source.copy(destination);
+      // An image the picker or a folder handed over is squared like any
+      // other; one this app cannot read is copied across untouched.
+      final original = CoverArt.from(await source.readAsBytes());
+      if (original == null) {
+        final destination = _coverDestination(directory, extension);
+        await source.copy(destination);
+        await _removeOtherCovers(directory, keep: destination);
+        return destination;
+      }
+
+      final art = await _square.square(original) ?? original;
+      final destination = _coverDestination(directory, art.extension);
+      await File(destination).writeAsBytes(art.bytes, flush: true);
       await _removeOtherCovers(directory, keep: destination);
       return destination;
     } catch (_) {

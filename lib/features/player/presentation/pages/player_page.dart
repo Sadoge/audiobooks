@@ -142,8 +142,8 @@ class _BookArtwork extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final coverPath = book.coverPath;
-    final width = desktop ? 320.0 : 240.0;
-    final height = desktop ? 430.0 : 320.0;
+    // Audiobook covers are square, so the plane is too.
+    final side = desktop ? 360.0 : 280.0;
     final coverExists = coverPath != null && File(coverPath).existsSync();
 
     return Semantics(
@@ -153,8 +153,8 @@ class _BookArtwork extends StatelessWidget {
         child: ClipRRect(
           borderRadius: AppRadii.cover,
           child: SizedBox(
-            width: width,
-            height: height,
+            width: side,
+            height: side,
             child: coverExists
                 ? Image.file(File(coverPath), fit: BoxFit.cover)
                 : ColoredBox(
