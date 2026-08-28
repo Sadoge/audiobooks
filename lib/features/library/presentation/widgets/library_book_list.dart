@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audiobooks/app/theme/app_tokens.dart';
+import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/core/audio/chapter_timeline.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,12 @@ class LibraryBookList extends StatelessWidget {
       builder: (context, constraints) {
         final desktop = constraints.crossAxisExtent >= 720;
         return SliverPadding(
+          // A menu of rows runs to both edges of its screen, so the compact
+          // list carries its inset inside each row and lets the rules span.
           padding: EdgeInsets.fromLTRB(
-            desktop ? AppSpacing.xl : AppSpacing.md,
-            AppSpacing.sm,
-            desktop ? AppSpacing.xl : AppSpacing.md,
+            desktop ? AppSpacing.xl : 0,
+            desktop ? AppSpacing.sm : 0,
+            desktop ? AppSpacing.xl : 0,
             AppSpacing.xxl,
           ),
           sliver: desktop
@@ -49,17 +52,25 @@ class LibraryBookList extends StatelessWidget {
                 )
               : SliverList.separated(
                   itemCount: books.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: AppSpacing.sm),
+                  separatorBuilder: (context, index) => const Divider(),
                   itemBuilder: (context, index) {
                     final book = books[index];
                     return ListTile(
                       minTileHeight: 80,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
+                      contentPadding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        AppSpacing.xs,
+                        AppSpacing.sm,
+                        AppSpacing.xs,
                       ),
-                      leading: _Cover(book: book, width: 56, height: 56),
+                      leading: SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: ChromeFrame(
+                          thickness: 2,
+                          child: _Cover(book: book),
+                        ),
+                      ),
                       title: Text(
                         book.title,
                         maxLines: 2,
@@ -80,11 +91,17 @@ class LibraryBookList extends StatelessWidget {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.play_arrow_rounded),
                           _BookMenu(
                             book: book,
                             onChangeCover: () => onChangeCover(book),
                             onRemove: () => onRemove(book),
+                          ),
+                          // Tapping the row opens the book, so it is marked
+                          // the way a menu row was: with the arrow into it.
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 14,
+                            color: Theme.of(context).colorScheme.outline,
                           ),
                         ],
                       ),
@@ -122,7 +139,7 @@ class _GridBookTile extends StatelessWidget {
           child: ExcludeSemantics(
             child: InkWell(
               onTap: onTap,
-              borderRadius: AppRadii.cover,
+              borderRadius: AppRadii.control,
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.xs),
                 child: Column(
@@ -134,7 +151,9 @@ class _GridBookTile extends StatelessWidget {
                       child: Center(
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: _Cover(book: book, letterSize: 48),
+                          child: ChromeFrame(
+                            child: _Cover(book: book, letterSize: 48),
+                          ),
                         ),
                       ),
                     ),
@@ -230,11 +249,12 @@ class _Label extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (progress case final value?) ...[
+            // A bar sunk into its groove rather than floating on the row.
             ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
                 value: value.clamp(0.0, 1.0),
-                minHeight: 3,
+                minHeight: 4,
               ),
             ),
             const SizedBox(height: AppSpacing.xxs),
@@ -243,9 +263,9 @@ class _Label extends StatelessWidget {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.labelMedium?.copyWith(color: scheme.primary),
+            style: AppFonts.readout(
+              Theme.of(context).textTheme.labelMedium,
+            ).copyWith(color: scheme.primary),
           ),
         ],
       ),
@@ -268,16 +288,9 @@ String _formatDuration(Duration duration) {
 /// the line for artwork that arrived before that, or that could not be
 /// decoded: it fills the square and centre-crops rather than distorting.
 class _Cover extends StatelessWidget {
-  const _Cover({
-    required this.book,
-    this.width,
-    this.height,
-    this.letterSize = 22,
-  });
+  const _Cover({required this.book, this.letterSize = 22});
 
   final Audiobook book;
-  final double? width;
-  final double? height;
   final double letterSize;
 
   @override
@@ -289,28 +302,21 @@ class _Cover extends StatelessWidget {
         book.title.isEmpty ? 'A' : book.title.characters.first.toUpperCase(),
         style: TextStyle(
           fontSize: letterSize,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           color: scheme.onSecondaryContainer,
         ),
       ),
     );
 
-    return ClipRRect(
-      borderRadius: AppRadii.cover,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: ColoredBox(
-          color: scheme.secondaryContainer,
-          child: coverPath == null || !File(coverPath).existsSync()
-              ? letter
-              : Image.file(
-                  File(coverPath),
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => letter,
-                ),
-        ),
-      ),
+    return ColoredBox(
+      color: scheme.secondaryContainer,
+      child: coverPath == null || !File(coverPath).existsSync()
+          ? letter
+          : Image.file(
+              File(coverPath),
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => letter,
+            ),
     );
   }
 }

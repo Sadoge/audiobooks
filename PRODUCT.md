@@ -65,11 +65,16 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
 
 ## Brand Commitments
 
-The product is premium, understated, minimal, elegant, calm, and modern. Book
-covers carry most of the visual personality. Interfaces use generous whitespace,
+The product is premium, understated, minimal, elegant, and calm, and it wears
+the dress of a well-made personal player from the early 2000s: a brushed
+housing, a recessed screen, hairline-ruled menu rows, and a wheel. Book covers
+carry most of the visual personality. Interfaces use generous whitespace,
 neutral surfaces, subtle contrast, restrained shape, and purposeful motion.
-Avoid clutter, excessive cards, arbitrary color, decorative gradients, and
-navigation destinations that do not earn their place.
+Gradients are structural — they model a moulded edge or a lit face — and never
+decorative. Avoid clutter, excessive cards, arbitrary color, drop shadows, and
+navigation destinations that do not earn their place. The period is a finish,
+never a behaviour: nothing may be painted where a real platform control could
+be laid over it instead.
 
 ## Evidence on Hand
 

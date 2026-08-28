@@ -1,12 +1,15 @@
-// THESIS: The empty library is an open listening space, not a dashboard of
-// placeholder cards. OWN-WORLD: cool semantic surfaces, slate planes, and one
-// warm brass action/marker. STORY: understand the empty local library, then
-// import device-owned audio. FIRST VIEWPORT: top-aligned native title, quiet doorway
-// geometry, concise message, and one primary action. FORM: quiet listening
-// room, seed 0bcabd73. FINISH: unreviewed and undocumented is unfinished; this
-// build ends with the finish review, the verdict, and DESIGN.md.
+// THESIS: The empty library is a pocket player with nothing loaded on it, not
+// a dashboard of placeholder cards. OWN-WORLD: brushed chrome housing, a
+// recessed screen, and the blue marker of an early-2000s device. STORY:
+// understand the empty local library, then import device-owned audio. FIRST
+// VIEWPORT: centred housing title, the player mark, a concise message, and one
+// primary action. FORM: click-wheel era, seed 0bcabd73. FINISH: unreviewed and
+// undocumented is unfinished; this build ends with the finish review, the
+// verdict, and DESIGN.md.
 
 import 'package:audiobooks/app/router/app_router.dart';
+import 'package:audiobooks/app/theme/app_tokens.dart';
+import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_cubit.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_state.dart';
@@ -23,7 +26,7 @@ class LibraryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: ChromeAppBar(
         title: const Text('Library'),
         actions: [
           IconButton(
@@ -123,14 +126,14 @@ class _LibraryFailure extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 32),
-            const SizedBox(height: 16),
+            const Icon(Icons.error_outline_rounded, size: AppIconSize.large),
+            const SizedBox(height: AppSpacing.md),
             Text(message, textAlign: TextAlign.center),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             FilledButton.tonal(
               onPressed: context.read<LibraryCubit>().retry,
               child: const Text('Try Again'),

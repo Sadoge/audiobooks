@@ -1,4 +1,5 @@
 import 'package:audiobooks/app/theme/app_tokens.dart';
+import 'package:audiobooks/app/theme/retro_chrome.dart';
 import 'package:flutter/material.dart';
 
 class EmptyLibraryView extends StatelessWidget {
@@ -27,7 +28,7 @@ class EmptyLibraryView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const _ListeningDoorway(),
+                const _PocketPlayer(),
                 const SizedBox(height: AppSpacing.xl),
                 Text(
                   'No audiobooks yet',
@@ -56,14 +57,16 @@ class EmptyLibraryView extends StatelessWidget {
   }
 }
 
-class _ListeningDoorway extends StatefulWidget {
-  const _ListeningDoorway();
+/// The empty-state mark: a pocket player with a blank screen, waiting to be
+/// loaded. Its centre key lights up as the screen settles.
+class _PocketPlayer extends StatefulWidget {
+  const _PocketPlayer();
 
   @override
-  State<_ListeningDoorway> createState() => _ListeningDoorwayState();
+  State<_PocketPlayer> createState() => _PocketPlayerState();
 }
 
-class _ListeningDoorwayState extends State<_ListeningDoorway>
+class _PocketPlayerState extends State<_PocketPlayer>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
@@ -94,9 +97,10 @@ class _ListeningDoorwayState extends State<_ListeningDoorway>
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final chrome = RetroChrome.of(context);
     return Semantics(
       image: true,
-      label: 'An open listening space waiting for your audiobooks',
+      label: 'A pocket player waiting for your audiobooks',
       child: ExcludeSemantics(
         child: SizedBox(
           width: 250,
@@ -104,10 +108,9 @@ class _ListeningDoorwayState extends State<_ListeningDoorway>
           child: AnimatedBuilder(
             animation: _animation,
             builder: (context, child) => CustomPaint(
-              painter: _ListeningDoorwayPainter(
+              painter: _PocketPlayerPainter(
                 progress: _animation.value,
-                panelColor: scheme.surfaceContainerHighest,
-                panelEdgeColor: scheme.outlineVariant,
+                chrome: chrome,
                 markerColor: scheme.primary,
               ),
             ),
@@ -118,80 +121,99 @@ class _ListeningDoorwayState extends State<_ListeningDoorway>
   }
 }
 
-class _ListeningDoorwayPainter extends CustomPainter {
-  const _ListeningDoorwayPainter({
+class _PocketPlayerPainter extends CustomPainter {
+  const _PocketPlayerPainter({
     required this.progress,
-    required this.panelColor,
-    required this.panelEdgeColor,
+    required this.chrome,
     required this.markerColor,
   });
 
   final double progress;
-  final Color panelColor;
-  final Color panelEdgeColor;
+  final RetroChrome chrome;
   final Color markerColor;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final panelPaint = Paint()..color = panelColor;
-    final edgePaint = Paint()
-      ..color = panelEdgeColor
+    final edge = Paint()
+      ..color = chrome.chromeEdge
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = AppStroke.hairline;
 
-    final left = Path()
-      ..moveTo(size.width * 0.2, size.height * 0.09)
-      ..quadraticBezierTo(
-        size.width * 0.18,
-        size.height * 0.04,
-        size.width * 0.26,
-        size.height * 0.07,
-      )
-      ..lineTo(size.width * 0.43, size.height * 0.16)
-      ..lineTo(size.width * 0.43, size.height * 0.88)
-      ..lineTo(size.width * 0.26, size.height * 0.95)
-      ..quadraticBezierTo(
-        size.width * 0.2,
-        size.height * 0.97,
-        size.width * 0.2,
-        size.height * 0.91,
-      )
-      ..close();
-
-    final right = Path()
-      ..moveTo(size.width * 0.8, size.height * 0.09)
-      ..quadraticBezierTo(
-        size.width * 0.8,
-        size.height * 0.04,
-        size.width * 0.74,
-        size.height * 0.07,
-      )
-      ..lineTo(size.width * 0.57, size.height * 0.16)
-      ..lineTo(size.width * 0.57, size.height * 0.88)
-      ..lineTo(size.width * 0.74, size.height * 0.95)
-      ..quadraticBezierTo(
-        size.width * 0.8,
-        size.height * 0.97,
-        size.width * 0.8,
-        size.height * 0.91,
-      )
-      ..close();
-
+    // The housing.
+    final body = RRect.fromLTRBR(
+      size.width * 0.184,
+      size.height * 0.029,
+      size.width * 0.816,
+      size.height * 0.971,
+      const Radius.circular(16),
+    );
     canvas
-      ..drawPath(left, panelPaint)
-      ..drawPath(left, edgePaint)
-      ..drawPath(right, panelPaint)
-      ..drawPath(right, edgePaint);
+      ..drawRRect(
+        body,
+        Paint()..shader = chrome.chrome.createShader(body.outerRect),
+      )
+      ..drawRRect(body, edge);
 
-    final markerY = size.height * (0.6 - (0.07 * (1 - progress)));
-    final markerPaint = Paint()
-      ..color = markerColor.withValues(alpha: progress);
-    canvas.drawCircle(Offset(size.width / 2, markerY), 10, markerPaint);
+    // The blank screen, with two dim rules where a menu would be.
+    final screen = RRect.fromLTRBR(
+      size.width * 0.248,
+      size.height * 0.107,
+      size.width * 0.752,
+      size.height * 0.45,
+      const Radius.circular(AppRadii.screenUnit),
+    );
+    canvas
+      ..drawRRect(screen, Paint()..color = chrome.screenFill)
+      ..drawRRect(
+        screen,
+        Paint()
+          ..color = chrome.screenEdge
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = AppStroke.hairline,
+      );
+
+    final rule = Paint()
+      ..color = chrome.screenInkDim.withValues(alpha: 0.4)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    for (var row = 0; row < 2; row++) {
+      final y = size.height * (0.19 + (row * 0.075));
+      canvas.drawLine(
+        Offset(size.width * 0.3, y),
+        Offset(size.width * (row.isEven ? 0.63 : 0.55), y),
+        rule,
+      );
+    }
+
+    // The wheel.
+    final wheelCentre = Offset(size.width / 2, size.height * 0.7);
+    const wheelRadius = 54.0;
+    final wheelBounds = Rect.fromCircle(
+      center: wheelCentre,
+      radius: wheelRadius,
+    );
+    canvas
+      ..drawCircle(
+        wheelCentre,
+        wheelRadius,
+        Paint()..shader = chrome.wheel.createShader(wheelBounds),
+      )
+      ..drawCircle(wheelCentre, wheelRadius, edge);
+
+    // The centre key lights and settles into its well.
+    final settle = 6 * (1 - progress);
+    canvas
+      ..drawCircle(wheelCentre, 21, Paint()..color = chrome.wheelWell)
+      ..drawCircle(
+        wheelCentre.translate(0, -settle),
+        21,
+        Paint()..color = markerColor.withValues(alpha: progress),
+      );
   }
 
   @override
-  bool shouldRepaint(covariant _ListeningDoorwayPainter oldDelegate) =>
+  bool shouldRepaint(covariant _PocketPlayerPainter oldDelegate) =>
       oldDelegate.progress != progress ||
-      oldDelegate.panelColor != panelColor ||
+      oldDelegate.chrome != chrome ||
       oldDelegate.markerColor != markerColor;
 }

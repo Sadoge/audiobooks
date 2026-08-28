@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:audiobooks/app/di/configure_dependencies.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
+import 'package:audiobooks/app/theme/retro_chrome.dart';
+import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/core/audio/audio_playback_snapshot.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook_chapter.dart';
@@ -36,7 +38,7 @@ class PlayerView extends StatelessWidget {
       builder: (context, state) {
         final book = state.book;
         return Scaffold(
-          appBar: AppBar(
+          appBar: ChromeAppBar(
             title: Text(
               book?.title ?? 'Now Playing',
               maxLines: 1,
@@ -96,7 +98,7 @@ class _AdaptivePlayer extends StatelessWidget {
                         child: _ListeningDetails(
                           book: book,
                           playback: playback,
-                          showChapterSkipControls: true,
+                          desktop: true,
                         ),
                       ),
                     ],
@@ -104,11 +106,11 @@ class _AdaptivePlayer extends StatelessWidget {
                 : Column(
                     children: [
                       Center(child: _BookArtwork(book: book, desktop: false)),
-                      const SizedBox(height: AppSpacing.xl),
+                      const SizedBox(height: AppSpacing.lg),
                       _ListeningDetails(
                         book: book,
                         playback: playback,
-                        showChapterSkipControls: true,
+                        desktop: false,
                       ),
                     ],
                   );
@@ -142,47 +144,52 @@ class _BookArtwork extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final coverPath = book.coverPath;
-    // Audiobook covers are square, so the plane is too.
-    final side = desktop ? 360.0 : 280.0;
+    // Audiobook covers are square, so the window onto them is too. The bezel
+    // is drawn inside the plane, so the artwork keeps its measured size. The
+    // compact plane stays small enough that the wheel below it is still on
+    // the screen without scrolling, as it was on the device.
+    final side = desktop ? 360.0 : 216.0;
     final coverExists = coverPath != null && File(coverPath).existsSync();
 
     return Semantics(
       image: true,
       label: 'Cover for ${book.title}',
       child: ExcludeSemantics(
-        child: ClipRRect(
-          borderRadius: AppRadii.cover,
-          child: SizedBox(
-            width: side,
-            height: side,
+        child: SizedBox(
+          width: side,
+          height: side,
+          child: ChromeFrame(
             child: coverExists
                 ? Image.file(File(coverPath), fit: BoxFit.cover)
                 : ColoredBox(
                     color: scheme.secondaryContainer,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Icon(
-                          Icons.headphones_rounded,
-                          size: desktop ? 76 : 64,
-                          color: scheme.onSecondaryContainer.withValues(
-                            alpha: 0.34,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.headphones_rounded,
+                            size: desktop ? 76 : 52,
+                            color: scheme.onSecondaryContainer.withValues(
+                              alpha: 0.34,
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          left: AppSpacing.lg,
-                          right: AppSpacing.lg,
-                          bottom: AppSpacing.lg,
-                          child: Text(
-                            book.title,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(color: scheme.onSecondaryContainer),
+                          const SizedBox(height: AppSpacing.sm),
+                          Flexible(
+                            child: Text(
+                              book.title,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    color: scheme.onSecondaryContainer,
+                                  ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
           ),
@@ -196,143 +203,270 @@ class _ListeningDetails extends StatelessWidget {
   const _ListeningDetails({
     required this.book,
     required this.playback,
-    this.showChapterSkipControls = false,
+    required this.desktop,
   });
 
   final Audiobook book;
   final AudioPlaybackSnapshot playback;
-  final bool showChapterSkipControls;
+  final bool desktop;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PlayerCubit>();
     final chapter = _activeChapter(book, playback);
     final duration = playback.duration > Duration.zero
         ? playback.duration
         : chapter?.duration ?? book.duration;
-    final durationMs = duration.inMilliseconds;
-    final positionMs = playback.position.inMilliseconds.clamp(
-      0,
-      durationMs > 0 ? durationMs : 1,
-    );
     final isPlaying = playback.status == PlaybackStatus.playing;
     // Chapter transport only earns its place on a book that has chapters.
-    final skipChapters = showChapterSkipControls && playback.chapterCount > 1;
+    final skipChapters = playback.chapterCount > 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _ChapterHeading(book: book, chapter: chapter, playback: playback),
-        const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: AppSpacing.md),
         Text(book.title, style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: AppSpacing.xxs),
         Text(book.author, style: Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height: AppSpacing.lg),
-        Semantics(
-          label: 'Playback position',
-          value:
-              '${_formatDuration(playback.position)} of '
-              '${_formatDuration(duration)}',
-          child: Slider(
-            value: positionMs.toDouble(),
-            max: (durationMs > 0 ? durationMs : 1).toDouble(),
-            secondaryTrackValue: playback.bufferedPosition.inMilliseconds
-                .clamp(0, durationMs > 0 ? durationMs : 1)
-                .toDouble(),
-            onChanged: durationMs <= 0
-                ? null
-                : (value) => cubit.seek(Duration(milliseconds: value.round())),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-          child: Row(
-            children: [
-              Text(_formatDuration(playback.position)),
-              // The scrubber measures the chapter, so the book as a whole gets
-              // one line between its ends rather than a second bar.
-              Expanded(
-                child: _BookRemaining(book: book, playback: playback),
-              ),
-              Text('-${_formatDuration(duration - playback.position)}'),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (skipChapters) ...[
-              IconButton(
-                tooltip: 'Previous chapter',
-                onPressed: cubit.previousChapter,
-                icon: const Icon(Icons.skip_previous_rounded),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-            ],
-            IconButton(
-              tooltip: 'Rewind 15 seconds',
-              onPressed: cubit.rewind,
-              icon: const _RewindFifteenIcon(),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            FilledButton(
-              onPressed: cubit.togglePlayback,
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.square(64),
-                padding: EdgeInsets.zero,
-                shape: const CircleBorder(),
-              ),
-              child: Icon(
-                isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                size: 34,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            IconButton(
-              tooltip: 'Forward 30 seconds',
-              onPressed: cubit.forward,
-              icon: const Icon(Icons.forward_30_rounded),
-            ),
-            if (skipChapters) ...[
-              const SizedBox(width: AppSpacing.sm),
-              IconButton(
-                tooltip: 'Next chapter',
-                onPressed: cubit.nextChapter,
-                icon: const Icon(Icons.skip_next_rounded),
-              ),
-            ],
-          ],
+        _Readout(book: book, playback: playback, duration: duration),
+        const SizedBox(height: AppSpacing.md),
+        _Transport(
+          isPlaying: isPlaying,
+          skipChapters: skipChapters,
+          desktop: desktop,
         ),
         const SizedBox(height: AppSpacing.md),
-        Center(
-          child: PopupMenuButton<double>(
-            tooltip: 'Playback speed',
-            initialValue: playback.speed,
-            onSelected: cubit.setSpeed,
-            itemBuilder: (context) => _playbackSpeeds
-                .map(
-                  (speed) =>
-                      PopupMenuItem(value: speed, child: Text('${speed}x')),
-                )
-                .toList(growable: false),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.speed_rounded, size: 20),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text('${playback.speed}x'),
-                ],
+        _SpeedKey(speed: playback.speed),
+      ],
+    );
+  }
+}
+
+/// The recessed display: where you are in the chapter, and how much of the
+/// whole book is still ahead.
+class _Readout extends StatelessWidget {
+  const _Readout({
+    required this.book,
+    required this.playback,
+    required this.duration,
+  });
+
+  final Audiobook book;
+  final AudioPlaybackSnapshot playback;
+  final Duration duration;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<PlayerCubit>();
+    final chrome = RetroChrome.of(context);
+    final durationMs = duration.inMilliseconds;
+    final positionMs = playback.position.inMilliseconds.clamp(
+      0,
+      durationMs > 0 ? durationMs : 1,
+    );
+    final digits = AppFonts.readout(
+      Theme.of(context).textTheme.bodyMedium,
+    ).copyWith(color: chrome.screenInk);
+
+    return ScreenPanel(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.sm,
+        AppSpacing.xs,
+        AppSpacing.sm,
+        AppSpacing.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            label: 'Playback position',
+            value:
+                '${_formatDuration(playback.position)} of '
+                '${_formatDuration(duration)}',
+            child: SliderTheme(
+              data: SliderTheme.of(
+                context,
+              ).copyWith(inactiveTrackColor: chrome.screenEdge),
+              child: Slider(
+                value: positionMs.toDouble(),
+                max: (durationMs > 0 ? durationMs : 1).toDouble(),
+                secondaryTrackValue: playback.bufferedPosition.inMilliseconds
+                    .clamp(0, durationMs > 0 ? durationMs : 1)
+                    .toDouble(),
+                onChanged: durationMs <= 0
+                    ? null
+                    : (value) =>
+                          cubit.seek(Duration(milliseconds: value.round())),
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+            child: Row(
+              children: [
+                Text(_formatDuration(playback.position), style: digits),
+                // The scrubber measures the chapter, so the book as a whole
+                // gets one line between its ends rather than a second bar.
+                Expanded(
+                  child: _BookRemaining(book: book, playback: playback),
+                ),
+                Text(
+                  '-${_formatDuration(duration - playback.position)}',
+                  style: digits,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The wheel. Every key on it is an ordinary button laid over the paint, so
+/// the transport keeps its tooltips, focus order, and touch targets.
+class _Transport extends StatelessWidget {
+  const _Transport({
+    required this.isPlaying,
+    required this.skipChapters,
+    required this.desktop,
+  });
+
+  final bool isPlaying;
+  final bool skipChapters;
+  final bool desktop;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<PlayerCubit>();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final diameter = ClickWheel.diameterFor(
+          constraints.maxWidth,
+          limit: desktop ? ClickWheel.maxDiameter : 228,
+        );
+        return Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: ClickWheel(
+              diameter: diameter,
+              north: skipChapters
+                  ? _WheelKey(
+                      tooltip: 'Previous chapter',
+                      onPressed: cubit.previousChapter,
+                      icon: const Icon(Icons.skip_previous_rounded),
+                    )
+                  : null,
+              south: skipChapters
+                  ? _WheelKey(
+                      tooltip: 'Next chapter',
+                      onPressed: cubit.nextChapter,
+                      icon: const Icon(Icons.skip_next_rounded),
+                    )
+                  : null,
+              west: _WheelKey(
+                tooltip: 'Rewind 15 seconds',
+                onPressed: cubit.rewind,
+                icon: const _RewindFifteenIcon(),
+              ),
+              east: _WheelKey(
+                tooltip: 'Forward 30 seconds',
+                onPressed: cubit.forward,
+                icon: const Icon(Icons.forward_30_rounded),
+              ),
+              centre: FilledButton(
+                onPressed: cubit.togglePlayback,
+                style: FilledButton.styleFrom(
+                  minimumSize: Size.square(diameter * 0.36),
+                  padding: EdgeInsets.zero,
+                  shape: const CircleBorder(),
+                ),
+                child: Icon(
+                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                  size: diameter * 0.155,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// One printed key on the wheel face.
+class _WheelKey extends StatelessWidget {
+  const _WheelKey({
+    required this.tooltip,
+    required this.onPressed,
+    required this.icon,
+  });
+
+  final String tooltip;
+  final VoidCallback onPressed;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      style: IconButton.styleFrom(
+        minimumSize: const Size.square(48),
+        shape: const CircleBorder(),
+        foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+      icon: icon,
+    );
+  }
+}
+
+/// The speed selector, as a small key beside the wheel rather than on it.
+class _SpeedKey extends StatelessWidget {
+  const _SpeedKey({required this.speed});
+
+  final double speed;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Center(
+      child: PopupMenuButton<double>(
+        tooltip: 'Playback speed',
+        initialValue: speed,
+        onSelected: context.read<PlayerCubit>().setSpeed,
+        itemBuilder: (context) => _playbackSpeeds
+            .map(
+              (value) => PopupMenuItem(value: value, child: Text('${value}x')),
+            )
+            .toList(growable: false),
+        child: ChromeKey(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.speed_rounded,
+                  size: AppIconSize.small,
+                  color: scheme.onSurface,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  '${speed}x',
+                  style: AppFonts.readout(
+                    Theme.of(context).textTheme.labelLarge,
+                  ).copyWith(color: scheme.onSurface),
+                ),
+              ],
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -351,6 +485,7 @@ class _ChapterHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final title = chapter?.title ?? 'Audiobook';
     final numbered =
         playback.chapterCount > 1 &&
@@ -367,9 +502,9 @@ class _ChapterHeading extends StatelessWidget {
                 Text(
                   'Chapter ${playback.chapterIndex + 1} of '
                   '${playback.chapterCount}',
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: AppFonts.readout(
+                    Theme.of(context).textTheme.labelMedium,
+                  ).copyWith(color: scheme.primary),
                 ),
               Text(
                 title,
@@ -383,8 +518,9 @@ class _ChapterHeading extends StatelessWidget {
         if (book.chapters.length > 1) ...[
           const SizedBox(width: AppSpacing.sm),
           Icon(
-            Icons.list_rounded,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            Icons.arrow_forward_ios_rounded,
+            size: 14,
+            color: scheme.outline,
           ),
         ],
       ],
@@ -392,19 +528,29 @@ class _ChapterHeading extends StatelessWidget {
 
     if (book.chapters.length < 2) return heading;
 
+    // A menu row: ruled above and below, and arrowed into.
     return Semantics(
       button: true,
       label: 'Chapters. Now playing $title',
       child: ExcludeSemantics(
-        child: InkWell(
-          borderRadius: AppRadii.cover,
-          onTap: () => _openChapters(context, book),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xs,
-              vertical: AppSpacing.xs,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(
+                color: scheme.outlineVariant,
+                width: AppStroke.hairline,
+              ),
             ),
-            child: heading,
+          ),
+          child: InkWell(
+            onTap: () => _openChapters(context, book),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xs,
+                vertical: AppSpacing.sm,
+              ),
+              child: heading,
+            ),
           ),
         ),
       ),
@@ -477,6 +623,7 @@ class _ChapterSheetState extends State<_ChapterSheet> {
               ),
               child: Text(
                 'Chapters',
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -513,28 +660,53 @@ class _ChapterRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      selected: isPlaying,
-      leading: SizedBox(
-        width: 28,
-        child: isPlaying
-            ? Icon(Icons.graphic_eq_rounded, color: scheme.primary, size: 20)
-            : Text(
-                '${chapter.index + 1}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+    final chrome = RetroChrome.of(context);
+    // The row you are on is the blue bar, the way it was on the menus these
+    // controls came from.
+    final ink = isPlaying ? Colors.white : scheme.onSurfaceVariant;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: isPlaying ? chrome.selection : null,
+        border: Border(
+          bottom: BorderSide(
+            color: scheme.outlineVariant,
+            width: AppStroke.hairline,
+          ),
+        ),
       ),
-      title: Text(chapter.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing: chapter.duration > Duration.zero
-          ? Text(
-              _formatDuration(chapter.duration),
-              style: Theme.of(context).textTheme.bodySmall,
-            )
-          : null,
-      onTap: () {
-        context.read<PlayerCubit>().selectChapter(chapter.id);
-        Navigator.of(context).pop();
-      },
+      child: ListTile(
+        selected: isPlaying,
+        selectedColor: Colors.white,
+        leading: SizedBox(
+          width: 28,
+          child: isPlaying
+              ? const Icon(Icons.graphic_eq_rounded, size: AppIconSize.small)
+              : Text(
+                  '${chapter.index + 1}',
+                  style: AppFonts.readout(
+                    Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+        ),
+        title: Text(
+          chapter.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: chapter.duration > Duration.zero
+            ? Text(
+                _formatDuration(chapter.duration),
+                style: AppFonts.readout(
+                  Theme.of(context).textTheme.bodySmall,
+                ).copyWith(color: ink),
+              )
+            : null,
+        onTap: () {
+          context.read<PlayerCubit>().selectChapter(chapter.id);
+          Navigator.of(context).pop();
+        },
+      ),
     );
   }
 }
@@ -559,9 +731,9 @@ class _BookRemaining extends StatelessWidget {
       textAlign: TextAlign.center,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
+      style: AppFonts.readout(
+        Theme.of(context).textTheme.bodySmall,
+      ).copyWith(color: RetroChrome.of(context).screenInkDim),
     );
   }
 }
@@ -589,7 +761,7 @@ class _RewindFifteenIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = IconTheme.of(context).color;
     return SizedBox.square(
-      dimension: 24,
+      dimension: AppIconSize.regular,
       child: Stack(
         alignment: Alignment.center,
         children: [
