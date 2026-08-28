@@ -71,7 +71,11 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i196.LibraryCubit>(
-      () => _i196.LibraryCubit(gh<_i1069.AudiobookRepository>()),
+      () => _i196.LibraryCubit(
+        gh<_i1069.AudiobookRepository>(),
+        gh<_i306.DeviceFileGateway>(),
+        gh<_i491.AudioMetadataService>(),
+      ),
     );
     gh.factory<_i750.ImportCubit>(
       () => _i750.ImportCubit(

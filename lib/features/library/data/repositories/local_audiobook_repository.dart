@@ -112,9 +112,23 @@ class LocalAudiobookRepository implements AudiobookRepository {
   @override
   Future<void> remove(String id) async {
     try {
-      await (_database.delete(
-        _database.audiobookRows,
-      )..where((row) => row.id.equals(id))).go();
+      // Everything belonging to the book is cleared explicitly rather than
+      // left to the declared cascades, which sqlite only applies while
+      // foreign key enforcement is switched on.
+      await _database.transaction(() async {
+        await (_database.delete(
+          _database.bookmarkRows,
+        )..where((row) => row.bookId.equals(id))).go();
+        await (_database.delete(
+          _database.playbackProgressRows,
+        )..where((row) => row.bookId.equals(id))).go();
+        await (_database.delete(
+          _database.audiobookChapterRows,
+        )..where((row) => row.bookId.equals(id))).go();
+        await (_database.delete(
+          _database.audiobookRows,
+        )..where((row) => row.id.equals(id))).go();
+      });
     } catch (error) {
       throw DatabaseFailure(
         'The audiobook could not be removed from the local library.',

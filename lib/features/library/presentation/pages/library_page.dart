@@ -7,6 +7,7 @@
 // build ends with the finish review, the verdict, and DESIGN.md.
 
 import 'package:audiobooks/app/router/app_router.dart';
+import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_cubit.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_state.dart';
 import 'package:audiobooks/features/library/presentation/widgets/empty_library_view.dart';
@@ -32,7 +33,15 @@ class LibraryPage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<LibraryCubit, LibraryState>(
+      body: BlocConsumer<LibraryCubit, LibraryState>(
+        // Cover changes and removals report back once, over the library they
+        // just changed, rather than taking the screen over.
+        listenWhen: (previous, current) =>
+            current.actionMessage != null &&
+            current.actionMessage != previous.actionMessage,
+        listener: (context, state) => ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(state.actionMessage!))),
         builder: (context, state) {
           return RefreshIndicator(
             onRefresh: context.read<LibraryCubit>().retry,
@@ -65,6 +74,8 @@ class LibraryPage extends StatelessWidget {
                     books: state.books,
                     onOpen: (book) =>
                         context.router.push(PlayerRoute(bookId: book.id)),
+                    onChangeCover: context.read<LibraryCubit>().changeCover,
+                    onRemove: (book) => _confirmRemoval(context, book),
                   ),
                 },
               ],
@@ -74,6 +85,33 @@ class LibraryPage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Removal deletes the only copy of a book's audio, so it is always asked
+/// about first and never undone silently.
+Future<void> _confirmRemoval(BuildContext context, Audiobook book) async {
+  final cubit = context.read<LibraryCubit>();
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Remove ${book.title}?'),
+      content: const Text(
+        'The audio copied into this app is deleted from this device, along '
+        'with where you had got to in the book.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Remove'),
+        ),
+      ],
+    ),
+  );
+  if (confirmed ?? false) await cubit.remove(book);
 }
 
 class _LibraryFailure extends StatelessWidget {

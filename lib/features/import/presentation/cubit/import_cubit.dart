@@ -48,6 +48,26 @@ class ImportCubit extends Cubit<ImportState> {
     }
   }
 
+  /// Puts an image of the listener's choosing on the books about to be
+  /// imported, ahead of any artwork the files carry themselves.
+  Future<void> attachCover() async {
+    try {
+      final picked = await _files.pickCoverImage();
+      if (picked == null) return;
+      emit(state.copyWith(coverPath: picked, errorMessage: null));
+    } catch (_) {
+      emit(
+        state.copyWith(
+          errorMessage: 'That image could not be opened. Choose another.',
+        ),
+      );
+    }
+  }
+
+  /// Drops the attached image, leaving the files to supply their own cover.
+  void removeAttachedCover() =>
+      emit(state.copyWith(coverPath: null, errorMessage: null));
+
   /// Imports every selected file as its own book, keeping any chapter markers
   /// the file carries.
   Future<void> importSeparateBooks() => _import((files) async {
@@ -68,6 +88,7 @@ class ImportCubit extends Cubit<ImportState> {
           fileType: _fileTypeFor(file.extension),
           sourcePath: path,
           duration: metadata.duration,
+          coverPath: await _coverFor(id, source: file, storedPath: path),
           chapters: _embeddedChapters(id, path, metadata),
         ),
       );
@@ -116,6 +137,11 @@ class ImportCubit extends Cubit<ImportState> {
         fileType: _fileTypeFor(files.first.extension),
         sourcePath: chapters.first.filePath,
         duration: total,
+        coverPath: await _coverFor(
+          id,
+          source: files.first,
+          storedPath: chapters.first.filePath,
+        ),
         chapters: chapters,
       ),
     );
@@ -151,6 +177,34 @@ class ImportCubit extends Cubit<ImportState> {
         ),
       );
     }
+  }
+
+  /// Finds a cover for a book being imported: the image the listener
+  /// attached, then artwork inside the file, then an image sitting beside it
+  /// in the folder it came from.
+  ///
+  /// A book without a cover is still a book, so nothing here can fail an
+  /// import; each step gives back null instead.
+  Future<String?> _coverFor(
+    String bookId, {
+    required PickedAudioFile source,
+    required String storedPath,
+  }) async {
+    if (state.coverPath case final attached?) {
+      final stored = await _files.persistCoverFile(attached, bookId: bookId);
+      if (stored != null) return stored;
+    }
+
+    final embedded = await _metadata.readCoverArt(storedPath);
+    if (embedded != null) {
+      final stored = await _files.persistCoverBytes(embedded, bookId: bookId);
+      if (stored != null) return stored;
+    }
+
+    final beside = await _files.findCoverBeside(source);
+    return beside == null
+        ? null
+        : _files.persistCoverFile(beside, bookId: bookId);
   }
 
   /// Turns markers inside one file into chapters spanning it end to end.

@@ -14,5 +14,9 @@ abstract class ImportState with _$ImportState {
     /// How many files have been copied and read so far, for import progress.
     @Default(0) int importedFiles,
     String? errorMessage,
+
+    /// An image the listener attached by hand, which stands in for whatever
+    /// artwork the files themselves carry.
+    String? coverPath,
   }) = _ImportState;
 }

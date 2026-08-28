@@ -21,11 +21,17 @@ The foundation release includes:
   speed, keyboard shortcuts, and durable resume position.
 - Resume that remembers the chapter and the minute, shown in the Library and
   restored when a book is reopened.
+- Real covers: artwork is read out of MP3 ID3 tags and MP4 `covr` boxes, or
+  taken from an image sitting beside the audio, and any book can be given one
+  by hand at import or afterwards.
+- Removing a book from the Library, which deletes the media copied for it.
 - Unit, widget, repository, and golden tests.
 
 Selecting several files offers to import them as one book with a chapter per
-file, or as separate books. Metadata editing, book details, sleep timers,
-bookmarks, and system media controls remain planned for later milestones.
+file, or as separate books. Books imported before covers were read pick up
+their artwork the next time the Library opens. Metadata editing, book details,
+sleep timers, bookmarks, and system media controls remain planned for later
+milestones.
 
 ## Development
 

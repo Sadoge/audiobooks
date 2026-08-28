@@ -54,6 +54,11 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
   the Nero and QuickTime layouts, so extraction behaves the same on every
   platform. A file whose markers cannot be read still plays as one chapterless
   book.
+- Cover art is read in Dart from ID3 and MP4 tags, or from an image beside the
+  audio, and can be replaced by one the listener chooses at any time. A book
+  without artwork still imports and plays.
+- A book can be removed from the library, taking the media copied for it and
+  its listening state with it, and only after the listener confirms.
 
 ## Brand Commitments
 

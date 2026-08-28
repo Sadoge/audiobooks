@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audiobooks/app/di/configure_dependencies.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
 import 'package:audiobooks/features/import/presentation/cubit/import_cubit.dart';
@@ -67,6 +69,10 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                               'available for offline playback.',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
+                  if (state.files.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    _CoverAttachment(coverPath: state.coverPath, busy: busy),
+                  ],
                   if (state.errorMessage case final message?) ...[
                     const SizedBox(height: AppSpacing.md),
                     Text(
@@ -165,6 +171,73 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
           ),
         );
       },
+    );
+  }
+}
+
+/// Offers a cover for the books about to be imported.
+///
+/// Artwork usually comes out of the files themselves, so this stays a quiet
+/// row: it explains what will happen and only asks for an image when the
+/// listener wants a different one.
+class _CoverAttachment extends StatelessWidget {
+  const _CoverAttachment({required this.coverPath, required this.busy});
+
+  final String? coverPath;
+  final bool busy;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<ImportCubit>();
+    final scheme = Theme.of(context).colorScheme;
+    final attached = coverPath != null && File(coverPath!).existsSync();
+
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: AppRadii.cover,
+          child: SizedBox(
+            width: 48,
+            height: 64,
+            child: attached
+                ? Image.file(File(coverPath!), fit: BoxFit.cover)
+                : ColoredBox(
+                    color: scheme.surfaceContainerHighest,
+                    child: Icon(
+                      Icons.image_outlined,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Cover', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                attached
+                    ? 'Your image is used instead of any artwork in the files.'
+                    : 'Artwork in the files, or beside them, is used '
+                          'automatically.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+        TextButton(
+          onPressed: busy ? null : cubit.attachCover,
+          child: Text(attached ? 'Change' : 'Add Cover'),
+        ),
+        if (attached)
+          IconButton(
+            tooltip: 'Use the artwork in the files',
+            onPressed: busy ? null : cubit.removeAttachedCover,
+            icon: const Icon(Icons.close_rounded),
+          ),
+      ],
     );
   }
 }

@@ -1,13 +1,23 @@
+import 'dart:io';
+
 import 'package:audiobooks/app/theme/app_tokens.dart';
 import 'package:audiobooks/core/audio/chapter_timeline.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:flutter/material.dart';
 
 class LibraryBookList extends StatelessWidget {
-  const LibraryBookList({required this.books, required this.onOpen, super.key});
+  const LibraryBookList({
+    required this.books,
+    required this.onOpen,
+    required this.onChangeCover,
+    required this.onRemove,
+    super.key,
+  });
 
   final List<Audiobook> books;
   final ValueChanged<Audiobook> onOpen;
+  final ValueChanged<Audiobook> onChangeCover;
+  final ValueChanged<Audiobook> onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +43,8 @@ class LibraryBookList extends StatelessWidget {
                   itemBuilder: (context, index) => _GridBookTile(
                     book: books[index],
                     onTap: () => onOpen(books[index]),
+                    onChangeCover: () => onChangeCover(books[index]),
+                    onRemove: () => onRemove(books[index]),
                   ),
                 )
               : SliverList.separated(
@@ -47,7 +59,7 @@ class LibraryBookList extends StatelessWidget {
                         horizontal: AppSpacing.sm,
                         vertical: AppSpacing.xs,
                       ),
-                      leading: _CoverPlaceholder(title: book.title),
+                      leading: _Cover(book: book, width: 48, height: 64),
                       title: Text(
                         book.title,
                         maxLines: 2,
@@ -65,7 +77,17 @@ class LibraryBookList extends StatelessWidget {
                           _ResumeSummary(book: book),
                         ],
                       ),
-                      trailing: const Icon(Icons.play_arrow_rounded),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.play_arrow_rounded),
+                          _BookMenu(
+                            book: book,
+                            onChangeCover: () => onChangeCover(book),
+                            onRemove: () => onRemove(book),
+                          ),
+                        ],
+                      ),
                       onTap: () => onOpen(book),
                     );
                   },
@@ -77,63 +99,75 @@ class LibraryBookList extends StatelessWidget {
 }
 
 class _GridBookTile extends StatelessWidget {
-  const _GridBookTile({required this.book, required this.onTap});
+  const _GridBookTile({
+    required this.book,
+    required this.onTap,
+    required this.onChangeCover,
+    required this.onRemove,
+  });
 
   final Audiobook book;
   final VoidCallback onTap;
+  final VoidCallback onChangeCover;
+  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Semantics(
-      button: true,
-      label: 'Open ${book.title}, by ${book.author}',
-      child: ExcludeSemantics(
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: AppRadii.cover,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xs),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: scheme.secondaryContainer,
-                      borderRadius: AppRadii.cover,
+    return Stack(
+      children: [
+        Semantics(
+          button: true,
+          label: 'Open ${book.title}, by ${book.author}',
+          child: ExcludeSemantics(
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: AppRadii.cover,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: _Cover(book: book, letterSize: 48)),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      book.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    child: Center(
-                      child: Text(
-                        book.title.isEmpty
-                            ? 'A'
-                            : book.title.characters.first.toUpperCase(),
-                        style: Theme.of(context).textTheme.displaySmall
-                            ?.copyWith(color: scheme.onSecondaryContainer),
-                      ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Text(
+                      book.author,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                  ),
+                    _ResumeSummary(book: book),
+                  ],
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  book.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  book.author,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                _ResumeSummary(book: book),
-              ],
+              ),
             ),
           ),
         ),
-      ),
+        // The menu sits over the corner of the artwork, where it stays
+        // reachable by pointer and screen reader without crowding the title.
+        Positioned(
+          top: AppSpacing.xs,
+          right: AppSpacing.xs,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: scheme.surface.withValues(alpha: 0.72),
+              shape: BoxShape.circle,
+            ),
+            child: _BookMenu(
+              book: book,
+              onChangeCover: onChangeCover,
+              onRemove: onRemove,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -218,28 +252,90 @@ String _formatDuration(Duration duration) {
   return hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
 }
 
-class _CoverPlaceholder extends StatelessWidget {
-  const _CoverPlaceholder({required this.title});
+/// A book's artwork, falling back to its initial when there is none, or when
+/// the stored image has gone missing.
+class _Cover extends StatelessWidget {
+  const _Cover({
+    required this.book,
+    this.width,
+    this.height,
+    this.letterSize = 22,
+  });
 
-  final String title;
+  final Audiobook book;
+  final double? width;
+  final double? height;
+  final double letterSize;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      width: 48,
-      height: 64,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: scheme.secondaryContainer,
-        borderRadius: AppRadii.cover,
-      ),
+    final coverPath = book.coverPath;
+    final letter = Center(
       child: Text(
-        title.isEmpty ? 'A' : title.characters.first.toUpperCase(),
-        style: Theme.of(
-          context,
-        ).textTheme.titleLarge?.copyWith(color: scheme.onSecondaryContainer),
+        book.title.isEmpty ? 'A' : book.title.characters.first.toUpperCase(),
+        style: TextStyle(
+          fontSize: letterSize,
+          fontWeight: FontWeight.w600,
+          color: scheme.onSecondaryContainer,
+        ),
+      ),
+    );
+
+    return ClipRRect(
+      borderRadius: AppRadii.cover,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: ColoredBox(
+          color: scheme.secondaryContainer,
+          child: coverPath == null || !File(coverPath).existsSync()
+              ? letter
+              : Image.file(
+                  File(coverPath),
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => letter,
+                ),
+        ),
       ),
     );
   }
 }
+
+/// The per-book actions that do not belong on the row itself: giving a book a
+/// cover, and taking it back out of the library.
+class _BookMenu extends StatelessWidget {
+  const _BookMenu({
+    required this.book,
+    required this.onChangeCover,
+    required this.onRemove,
+  });
+
+  final Audiobook book;
+  final VoidCallback onChangeCover;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<_BookAction>(
+      tooltip: 'More options for ${book.title}',
+      icon: const Icon(Icons.more_vert_rounded),
+      onSelected: (action) => switch (action) {
+        _BookAction.changeCover => onChangeCover(),
+        _BookAction.remove => onRemove(),
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: _BookAction.changeCover,
+          child: Text(book.coverPath == null ? 'Add Cover' : 'Change Cover'),
+        ),
+        const PopupMenuItem(
+          value: _BookAction.remove,
+          child: Text('Remove from Library'),
+        ),
+      ],
+    );
+  }
+}
+
+enum _BookAction { changeCover, remove }
