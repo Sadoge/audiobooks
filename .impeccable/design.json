@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T09:20:00Z",
+  "generatedAt": "2026-08-29T08:40:00Z",
   "title": "Design System: Audiobooks",
   "extensions": {
     "colorMeta": {
@@ -8,28 +8,28 @@
         "role": "primary",
         "displayName": "Device Seed",
         "tonalRamp": [
-          "oklch(15% 0.1654 264.8)",
-          "oklch(27% 0.1654 264.8)",
-          "oklch(39% 0.1654 264.8)",
-          "oklch(51% 0.1654 264.8)",
-          "oklch(63% 0.1654 264.8)",
-          "oklch(75% 0.1654 264.8)",
-          "oklch(87% 0.1654 264.8)",
-          "oklch(95% 0.1654 264.8)"
+          "oklch(15% 0.1320 61.5)",
+          "oklch(27% 0.1320 61.5)",
+          "oklch(39% 0.1320 61.5)",
+          "oklch(51% 0.1320 61.5)",
+          "oklch(63% 0.1320 61.5)",
+          "oklch(75% 0.1320 61.5)",
+          "oklch(87% 0.1320 61.5)",
+          "oklch(95% 0.1320 61.5)"
         ]
       },
-      "primary-blue-light": {
+      "primary-amber-light": {
         "role": "primary",
-        "displayName": "Menu Blue",
+        "displayName": "Burnt Amber",
         "tonalRamp": [
-          "oklch(15% 0.1761 263.4)",
-          "oklch(27% 0.1761 263.4)",
-          "oklch(39% 0.1761 263.4)",
-          "oklch(51% 0.1761 263.4)",
-          "oklch(63% 0.1761 263.4)",
-          "oklch(75% 0.1761 263.4)",
-          "oklch(87% 0.1761 263.4)",
-          "oklch(95% 0.1761 263.4)"
+          "oklch(15% 0.1304 55.7)",
+          "oklch(27% 0.1304 55.7)",
+          "oklch(39% 0.1304 55.7)",
+          "oklch(51% 0.1304 55.7)",
+          "oklch(63% 0.1304 55.7)",
+          "oklch(75% 0.1304 55.7)",
+          "oklch(87% 0.1304 55.7)",
+          "oklch(95% 0.1304 55.7)"
         ]
       },
       "on-primary-light": {
@@ -46,228 +46,228 @@
           "oklch(95% 0.0000 89.9)"
         ]
       },
-      "primary-blue-dark": {
+      "primary-amber-dark": {
         "role": "primary",
-        "displayName": "Backlit Blue",
+        "displayName": "Lit Amber",
         "tonalRamp": [
-          "oklch(15% 0.1388 264.6)",
-          "oklch(27% 0.1388 264.6)",
-          "oklch(39% 0.1388 264.6)",
-          "oklch(51% 0.1388 264.6)",
-          "oklch(63% 0.1388 264.6)",
-          "oklch(75% 0.1388 264.6)",
-          "oklch(87% 0.1388 264.6)",
-          "oklch(95% 0.1388 264.6)"
+          "oklch(15% 0.1459 73.8)",
+          "oklch(27% 0.1459 73.8)",
+          "oklch(39% 0.1459 73.8)",
+          "oklch(51% 0.1459 73.8)",
+          "oklch(63% 0.1459 73.8)",
+          "oklch(75% 0.1459 73.8)",
+          "oklch(87% 0.1459 73.8)",
+          "oklch(95% 0.1459 73.8)"
         ]
       },
       "on-primary-dark": {
         "role": "primary",
         "displayName": "Primary Contrast Dark",
         "tonalRamp": [
-          "oklch(15% 0.0722 263.7)",
-          "oklch(27% 0.0722 263.7)",
-          "oklch(39% 0.0722 263.7)",
-          "oklch(51% 0.0722 263.7)",
-          "oklch(63% 0.0722 263.7)",
-          "oklch(75% 0.0722 263.7)",
-          "oklch(87% 0.0722 263.7)",
-          "oklch(95% 0.0722 263.7)"
+          "oklch(15% 0.0486 77.5)",
+          "oklch(27% 0.0486 77.5)",
+          "oklch(39% 0.0486 77.5)",
+          "oklch(51% 0.0486 77.5)",
+          "oklch(63% 0.0486 77.5)",
+          "oklch(75% 0.0486 77.5)",
+          "oklch(87% 0.0486 77.5)",
+          "oklch(95% 0.0486 77.5)"
         ]
       },
-      "secondary-graphite-light": {
+      "secondary-clay-light": {
         "role": "secondary",
-        "displayName": "Graphite Light",
+        "displayName": "Clay Light",
         "tonalRamp": [
-          "oklch(15% 0.0275 264.3)",
-          "oklch(27% 0.0275 264.3)",
-          "oklch(39% 0.0275 264.3)",
-          "oklch(51% 0.0275 264.3)",
-          "oklch(63% 0.0275 264.3)",
-          "oklch(75% 0.0275 264.3)",
-          "oklch(87% 0.0275 264.3)",
-          "oklch(95% 0.0275 264.3)"
+          "oklch(15% 0.0409 77.7)",
+          "oklch(27% 0.0409 77.7)",
+          "oklch(39% 0.0409 77.7)",
+          "oklch(51% 0.0409 77.7)",
+          "oklch(63% 0.0409 77.7)",
+          "oklch(75% 0.0409 77.7)",
+          "oklch(87% 0.0409 77.7)",
+          "oklch(95% 0.0409 77.7)"
         ]
       },
-      "secondary-graphite-dark": {
+      "secondary-clay-dark": {
         "role": "secondary",
-        "displayName": "Graphite Dark",
+        "displayName": "Clay Dark",
         "tonalRamp": [
-          "oklch(15% 0.0268 263.3)",
-          "oklch(27% 0.0268 263.3)",
-          "oklch(39% 0.0268 263.3)",
-          "oklch(51% 0.0268 263.3)",
-          "oklch(63% 0.0268 263.3)",
-          "oklch(75% 0.0268 263.3)",
-          "oklch(87% 0.0268 263.3)",
-          "oklch(95% 0.0268 263.3)"
+          "oklch(15% 0.0350 81.9)",
+          "oklch(27% 0.0350 81.9)",
+          "oklch(39% 0.0350 81.9)",
+          "oklch(51% 0.0350 81.9)",
+          "oklch(63% 0.0350 81.9)",
+          "oklch(75% 0.0350 81.9)",
+          "oklch(87% 0.0350 81.9)",
+          "oklch(95% 0.0350 81.9)"
         ]
       },
       "surface-screen-light": {
         "role": "neutral",
         "displayName": "Screen Light",
         "tonalRamp": [
-          "oklch(15% 0.0000 89.9)",
-          "oklch(27% 0.0000 89.9)",
-          "oklch(39% 0.0000 89.9)",
-          "oklch(51% 0.0000 89.9)",
-          "oklch(63% 0.0000 89.9)",
-          "oklch(75% 0.0000 89.9)",
-          "oklch(87% 0.0000 89.9)",
-          "oklch(95% 0.0000 89.9)"
+          "oklch(15% 0.0082 91.5)",
+          "oklch(27% 0.0082 91.5)",
+          "oklch(39% 0.0082 91.5)",
+          "oklch(51% 0.0082 91.5)",
+          "oklch(63% 0.0082 91.5)",
+          "oklch(75% 0.0082 91.5)",
+          "oklch(87% 0.0082 91.5)",
+          "oklch(95% 0.0082 91.5)"
         ]
       },
       "surface-screen-dark": {
         "role": "neutral",
         "displayName": "Screen Dark",
         "tonalRamp": [
-          "oklch(15% 0.0110 260.7)",
-          "oklch(27% 0.0110 260.7)",
-          "oklch(39% 0.0110 260.7)",
-          "oklch(51% 0.0110 260.7)",
-          "oklch(63% 0.0110 260.7)",
-          "oklch(75% 0.0110 260.7)",
-          "oklch(87% 0.0110 260.7)",
-          "oklch(95% 0.0110 260.7)"
+          "oklch(15% 0.0108 80.5)",
+          "oklch(27% 0.0108 80.5)",
+          "oklch(39% 0.0108 80.5)",
+          "oklch(51% 0.0108 80.5)",
+          "oklch(63% 0.0108 80.5)",
+          "oklch(75% 0.0108 80.5)",
+          "oklch(87% 0.0108 80.5)",
+          "oklch(95% 0.0108 80.5)"
         ]
       },
       "on-surface-ink-light": {
         "role": "neutral",
         "displayName": "Listening Ink Light",
         "tonalRamp": [
-          "oklch(15% 0.0110 260.7)",
-          "oklch(27% 0.0110 260.7)",
-          "oklch(39% 0.0110 260.7)",
-          "oklch(51% 0.0110 260.7)",
-          "oklch(63% 0.0110 260.7)",
-          "oklch(75% 0.0110 260.7)",
-          "oklch(87% 0.0110 260.7)",
-          "oklch(95% 0.0110 260.7)"
+          "oklch(15% 0.0137 87.6)",
+          "oklch(27% 0.0137 87.6)",
+          "oklch(39% 0.0137 87.6)",
+          "oklch(51% 0.0137 87.6)",
+          "oklch(63% 0.0137 87.6)",
+          "oklch(75% 0.0137 87.6)",
+          "oklch(87% 0.0137 87.6)",
+          "oklch(95% 0.0137 87.6)"
         ]
       },
       "on-surface-ink-dark": {
         "role": "neutral",
         "displayName": "Listening Ink Dark",
         "tonalRamp": [
-          "oklch(15% 0.0074 260.7)",
-          "oklch(27% 0.0074 260.7)",
-          "oklch(39% 0.0074 260.7)",
-          "oklch(51% 0.0074 260.7)",
-          "oklch(63% 0.0074 260.7)",
-          "oklch(75% 0.0074 260.7)",
-          "oklch(87% 0.0074 260.7)",
-          "oklch(95% 0.0074 260.7)"
+          "oklch(15% 0.0181 89.4)",
+          "oklch(27% 0.0181 89.4)",
+          "oklch(39% 0.0181 89.4)",
+          "oklch(51% 0.0181 89.4)",
+          "oklch(63% 0.0181 89.4)",
+          "oklch(75% 0.0181 89.4)",
+          "oklch(87% 0.0181 89.4)",
+          "oklch(95% 0.0181 89.4)"
         ]
       },
       "surface-low-light": {
         "role": "neutral",
         "displayName": "Low Tonal Layer Light",
         "tonalRamp": [
-          "oklch(15% 0.0054 275.0)",
-          "oklch(27% 0.0054 275.0)",
-          "oklch(39% 0.0054 275.0)",
-          "oklch(51% 0.0054 275.0)",
-          "oklch(63% 0.0054 275.0)",
-          "oklch(75% 0.0054 275.0)",
-          "oklch(87% 0.0054 275.0)",
-          "oklch(95% 0.0054 275.0)"
+          "oklch(15% 0.0152 90.2)",
+          "oklch(27% 0.0152 90.2)",
+          "oklch(39% 0.0152 90.2)",
+          "oklch(51% 0.0152 90.2)",
+          "oklch(63% 0.0152 90.2)",
+          "oklch(75% 0.0152 90.2)",
+          "oklch(87% 0.0152 90.2)",
+          "oklch(95% 0.0152 90.2)"
         ]
       },
       "surface-low-dark": {
         "role": "neutral",
         "displayName": "Low Tonal Layer Dark",
         "tonalRamp": [
-          "oklch(15% 0.0130 258.4)",
-          "oklch(27% 0.0130 258.4)",
-          "oklch(39% 0.0130 258.4)",
-          "oklch(51% 0.0130 258.4)",
-          "oklch(63% 0.0130 258.4)",
-          "oklch(75% 0.0130 258.4)",
-          "oklch(87% 0.0130 258.4)",
-          "oklch(95% 0.0130 258.4)"
+          "oklch(15% 0.0129 78.0)",
+          "oklch(27% 0.0129 78.0)",
+          "oklch(39% 0.0129 78.0)",
+          "oklch(51% 0.0129 78.0)",
+          "oklch(63% 0.0129 78.0)",
+          "oklch(75% 0.0129 78.0)",
+          "oklch(87% 0.0129 78.0)",
+          "oklch(95% 0.0129 78.0)"
         ]
       },
       "surface-highest-light": {
         "role": "neutral",
         "displayName": "Moulding Light",
         "tonalRamp": [
-          "oklch(15% 0.0118 264.5)",
-          "oklch(27% 0.0118 264.5)",
-          "oklch(39% 0.0118 264.5)",
-          "oklch(51% 0.0118 264.5)",
-          "oklch(63% 0.0118 264.5)",
-          "oklch(75% 0.0118 264.5)",
-          "oklch(87% 0.0118 264.5)",
-          "oklch(95% 0.0118 264.5)"
+          "oklch(15% 0.0299 87.6)",
+          "oklch(27% 0.0299 87.6)",
+          "oklch(39% 0.0299 87.6)",
+          "oklch(51% 0.0299 87.6)",
+          "oklch(63% 0.0299 87.6)",
+          "oklch(75% 0.0299 87.6)",
+          "oklch(87% 0.0299 87.6)",
+          "oklch(95% 0.0299 87.6)"
         ]
       },
       "surface-highest-dark": {
         "role": "neutral",
         "displayName": "Moulding Dark",
         "tonalRamp": [
-          "oklch(15% 0.0176 262.2)",
-          "oklch(27% 0.0176 262.2)",
-          "oklch(39% 0.0176 262.2)",
-          "oklch(51% 0.0176 262.2)",
-          "oklch(63% 0.0176 262.2)",
-          "oklch(75% 0.0176 262.2)",
-          "oklch(87% 0.0176 262.2)",
-          "oklch(95% 0.0176 262.2)"
+          "oklch(15% 0.0193 80.4)",
+          "oklch(27% 0.0193 80.4)",
+          "oklch(39% 0.0193 80.4)",
+          "oklch(51% 0.0193 80.4)",
+          "oklch(63% 0.0193 80.4)",
+          "oklch(75% 0.0193 80.4)",
+          "oklch(87% 0.0193 80.4)",
+          "oklch(95% 0.0193 80.4)"
         ]
       },
       "outline-hairline-light": {
         "role": "neutral",
         "displayName": "Hairline Light",
         "tonalRamp": [
-          "oklch(15% 0.0150 264.5)",
-          "oklch(27% 0.0150 264.5)",
-          "oklch(39% 0.0150 264.5)",
-          "oklch(51% 0.0150 264.5)",
-          "oklch(63% 0.0150 264.5)",
-          "oklch(75% 0.0150 264.5)",
-          "oklch(87% 0.0150 264.5)",
-          "oklch(95% 0.0150 264.5)"
+          "oklch(15% 0.0332 87.3)",
+          "oklch(27% 0.0332 87.3)",
+          "oklch(39% 0.0332 87.3)",
+          "oklch(51% 0.0332 87.3)",
+          "oklch(63% 0.0332 87.3)",
+          "oklch(75% 0.0332 87.3)",
+          "oklch(87% 0.0332 87.3)",
+          "oklch(95% 0.0332 87.3)"
         ]
       },
       "outline-hairline-dark": {
         "role": "neutral",
         "displayName": "Hairline Dark",
         "tonalRamp": [
-          "oklch(15% 0.0191 260.7)",
-          "oklch(27% 0.0191 260.7)",
-          "oklch(39% 0.0191 260.7)",
-          "oklch(51% 0.0191 260.7)",
-          "oklch(63% 0.0191 260.7)",
-          "oklch(75% 0.0191 260.7)",
-          "oklch(87% 0.0191 260.7)",
-          "oklch(95% 0.0191 260.7)"
+          "oklch(15% 0.0236 82.9)",
+          "oklch(27% 0.0236 82.9)",
+          "oklch(39% 0.0236 82.9)",
+          "oklch(51% 0.0236 82.9)",
+          "oklch(63% 0.0236 82.9)",
+          "oklch(75% 0.0236 82.9)",
+          "oklch(87% 0.0236 82.9)",
+          "oklch(95% 0.0236 82.9)"
         ]
       },
       "chrome-edge-light": {
         "role": "neutral",
         "displayName": "Chrome Edge Light",
         "tonalRamp": [
-          "oklch(15% 0.0154 264.5)",
-          "oklch(27% 0.0154 264.5)",
-          "oklch(39% 0.0154 264.5)",
-          "oklch(51% 0.0154 264.5)",
-          "oklch(63% 0.0154 264.5)",
-          "oklch(75% 0.0154 264.5)",
-          "oklch(87% 0.0154 264.5)",
-          "oklch(95% 0.0154 264.5)"
+          "oklch(15% 0.0436 85.2)",
+          "oklch(27% 0.0436 85.2)",
+          "oklch(39% 0.0436 85.2)",
+          "oklch(51% 0.0436 85.2)",
+          "oklch(63% 0.0436 85.2)",
+          "oklch(75% 0.0436 85.2)",
+          "oklch(87% 0.0436 85.2)",
+          "oklch(95% 0.0436 85.2)"
         ]
       },
       "chrome-edge-dark": {
         "role": "neutral",
         "displayName": "Chrome Edge Dark",
         "tonalRamp": [
-          "oklch(15% 0.0071 258.4)",
-          "oklch(27% 0.0071 258.4)",
-          "oklch(39% 0.0071 258.4)",
-          "oklch(51% 0.0071 258.4)",
-          "oklch(63% 0.0071 258.4)",
-          "oklch(75% 0.0071 258.4)",
-          "oklch(87% 0.0071 258.4)",
-          "oklch(95% 0.0071 258.4)"
+          "oklch(15% 0.0091 85.2)",
+          "oklch(27% 0.0091 85.2)",
+          "oklch(39% 0.0091 85.2)",
+          "oklch(51% 0.0091 85.2)",
+          "oklch(63% 0.0091 85.2)",
+          "oklch(75% 0.0091 85.2)",
+          "oklch(87% 0.0091 85.2)",
+          "oklch(95% 0.0091 85.2)"
         ]
       },
       "chrome-highlight-light": {
@@ -288,70 +288,98 @@
         "role": "neutral",
         "displayName": "Chrome Highlight Dark",
         "tonalRamp": [
-          "oklch(15% 0.0200 264.4)",
-          "oklch(27% 0.0200 264.4)",
-          "oklch(39% 0.0200 264.4)",
-          "oklch(51% 0.0200 264.4)",
-          "oklch(63% 0.0200 264.4)",
-          "oklch(75% 0.0200 264.4)",
-          "oklch(87% 0.0200 264.4)",
-          "oklch(95% 0.0200 264.4)"
+          "oklch(15% 0.0376 86.3)",
+          "oklch(27% 0.0376 86.3)",
+          "oklch(39% 0.0376 86.3)",
+          "oklch(51% 0.0376 86.3)",
+          "oklch(63% 0.0376 86.3)",
+          "oklch(75% 0.0376 86.3)",
+          "oklch(87% 0.0376 86.3)",
+          "oklch(95% 0.0376 86.3)"
         ]
       },
       "readout-fill-light": {
         "role": "neutral",
         "displayName": "Readout Glass Light",
         "tonalRamp": [
-          "oklch(15% 0.0121 259.8)",
-          "oklch(27% 0.0121 259.8)",
-          "oklch(39% 0.0121 259.8)",
-          "oklch(51% 0.0121 259.8)",
-          "oklch(63% 0.0121 259.8)",
-          "oklch(75% 0.0121 259.8)",
-          "oklch(87% 0.0121 259.8)",
-          "oklch(95% 0.0121 259.8)"
+          "oklch(15% 0.0321 91.0)",
+          "oklch(27% 0.0321 91.0)",
+          "oklch(39% 0.0321 91.0)",
+          "oklch(51% 0.0321 91.0)",
+          "oklch(63% 0.0321 91.0)",
+          "oklch(75% 0.0321 91.0)",
+          "oklch(87% 0.0321 91.0)",
+          "oklch(95% 0.0321 91.0)"
         ]
       },
       "readout-fill-dark": {
         "role": "neutral",
         "displayName": "Readout Glass Dark",
         "tonalRamp": [
-          "oklch(15% 0.0208 258.3)",
-          "oklch(27% 0.0208 258.3)",
-          "oklch(39% 0.0208 258.3)",
-          "oklch(51% 0.0208 258.3)",
-          "oklch(63% 0.0208 258.3)",
-          "oklch(75% 0.0208 258.3)",
-          "oklch(87% 0.0208 258.3)",
-          "oklch(95% 0.0208 258.3)"
+          "oklch(15% 0.0148 87.8)",
+          "oklch(27% 0.0148 87.8)",
+          "oklch(39% 0.0148 87.8)",
+          "oklch(51% 0.0148 87.8)",
+          "oklch(63% 0.0148 87.8)",
+          "oklch(75% 0.0148 87.8)",
+          "oklch(87% 0.0148 87.8)",
+          "oklch(95% 0.0148 87.8)"
         ]
       },
       "readout-ink-light": {
         "role": "neutral",
         "displayName": "Readout Ink Light",
         "tonalRamp": [
-          "oklch(15% 0.0231 259.3)",
-          "oklch(27% 0.0231 259.3)",
-          "oklch(39% 0.0231 259.3)",
-          "oklch(51% 0.0231 259.3)",
-          "oklch(63% 0.0231 259.3)",
-          "oklch(75% 0.0231 259.3)",
-          "oklch(87% 0.0231 259.3)",
-          "oklch(95% 0.0231 259.3)"
+          "oklch(15% 0.0277 85.6)",
+          "oklch(27% 0.0277 85.6)",
+          "oklch(39% 0.0277 85.6)",
+          "oklch(51% 0.0277 85.6)",
+          "oklch(63% 0.0277 85.6)",
+          "oklch(75% 0.0277 85.6)",
+          "oklch(87% 0.0277 85.6)",
+          "oklch(95% 0.0277 85.6)"
         ]
       },
       "readout-ink-dark": {
         "role": "primary",
         "displayName": "Readout Ink Dark",
         "tonalRamp": [
-          "oklch(15% 0.0867 263.6)",
-          "oklch(27% 0.0867 263.6)",
-          "oklch(39% 0.0867 263.6)",
-          "oklch(51% 0.0867 263.6)",
-          "oklch(63% 0.0867 263.6)",
-          "oklch(75% 0.0867 263.6)",
-          "oklch(87% 0.0867 263.6)",
-          "oklch(95% 0.0867 263.6)"
+          "oklch(15% 0.1410 76.6)",
+          "oklch(27% 0.1410 76.6)",
+          "oklch(39% 0.1410 76.6)",
+          "oklch(51% 0.1410 76.6)",
+          "oklch(63% 0.1410 76.6)",
+          "oklch(75% 0.1410 76.6)",
+          "oklch(87% 0.1410 76.6)",
+          "oklch(95% 0.1410 76.6)"
+        ]
+      },
+      "selection-ink-light": {
+        "role": "neutral",
+        "displayName": "Selection Ink Light",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.9)",
+          "oklch(27% 0.0000 89.9)",
+          "oklch(39% 0.0000 89.9)",
+          "oklch(51% 0.0000 89.9)",
+          "oklch(63% 0.0000 89.9)",
+          "oklch(75% 0.0000 89.9)",
+          "oklch(87% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
+        ]
+      },
+      "selection-ink-dark": {
+        "role": "primary",
+        "displayName": "Selection Ink Dark",
+        "tonalRamp": [
+          "oklch(15% 0.0486 77.5)",
+          "oklch(27% 0.0486 77.5)",
+          "oklch(39% 0.0486 77.5)",
+          "oklch(51% 0.0486 77.5)",
+          "oklch(63% 0.0486 77.5)",
+          "oklch(75% 0.0486 77.5)",
+          "oklch(87% 0.0486 77.5)",
+          "oklch(95% 0.0486 77.5)"
         ]
       }
     },
@@ -381,7 +409,7 @@
         "purpose": "Filled-button labels and other prominent controls."
       },
       "readout": {
-        "displayName": "Readout",
+        "displayName": "Readout (Space Mono)",
         "purpose": "Every counter, duration, and measured quantity, so digits sit still as they tick."
       }
     },
@@ -425,7 +453,7 @@
       "refersTo": "filled-button-light",
       "description": "The single primary action on a light surface.",
       "html": "<button class=\"ds-btn-light\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 5h2v14h-2zM5 11h14v2H5z\"/></svg><span>Import Audiobooks</span></button>",
-      "css": ".ds-btn-light { display: inline-flex; min-width: 48px; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: 0; border-radius: 6px; background: #2F5FCB; color: #FFFFFF; font: 700 15px/1 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: 0.3px; transition: filter 160ms; } .ds-btn-light:hover { filter: brightness(1.08); } .ds-btn-light:active { filter: brightness(0.94); } .ds-btn-light:focus-visible { outline: 3px solid rgba(58, 99, 201, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
+      "css": ".ds-btn-light { display: inline-flex; min-width: 48px; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: 0; border-radius: 6px; background: #A8580A; color: #FFFFFF; font: 700 15px/1 SpaceGrotesk, system-ui, -apple-system, sans-serif; letter-spacing: 0.3px; transition: filter 160ms; } .ds-btn-light:hover { filter: brightness(1.08); } .ds-btn-light:active { filter: brightness(0.94); } .ds-btn-light:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
     },
     {
       "name": "Primary Filled Button — Dark",
@@ -433,7 +461,7 @@
       "refersTo": "filled-button-dark",
       "description": "The single primary action on a dark surface.",
       "html": "<button class=\"ds-btn-dark\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 5h2v14h-2zM5 11h14v2H5z\"/></svg><span>Import Audiobooks</span></button>",
-      "css": ".ds-btn-dark { display: inline-flex; min-width: 48px; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: 0; border-radius: 6px; background: #7CA5FF; color: #0B1B3F; font: 700 15px/1 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: 0.3px; transition: filter 160ms; } .ds-btn-dark:hover { filter: brightness(1.08); } .ds-btn-dark:active { filter: brightness(0.94); } .ds-btn-dark:focus-visible { outline: 3px solid rgba(58, 99, 201, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
+      "css": ".ds-btn-dark { display: inline-flex; min-width: 48px; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: 0; border-radius: 6px; background: #F0A93B; color: #2A1A00; font: 700 15px/1 SpaceGrotesk, system-ui, -apple-system, sans-serif; letter-spacing: 0.3px; transition: filter 160ms; } .ds-btn-dark:hover { filter: brightness(1.08); } .ds-btn-dark:active { filter: brightness(0.94); } .ds-btn-dark:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
     },
     {
       "name": "Housing Bar — Light",
@@ -441,7 +469,7 @@
       "refersTo": "app-bar-light",
       "description": "A brushed chrome bar below the top safe area, titled in the centre, with one settings action.",
       "html": "<nav class=\"ds-appbar-light\" aria-label=\"Library\"><span class=\"ds-appbar-spacer\"></span><strong>Library</strong><button aria-label=\"Settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M19.14 12.94a7.46 7.46 0 0 0 .05-.94 7.46 7.46 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.88 3h-3.84l-.36 3.18c-.58.24-1.12.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.03.31-.05.63-.05.94s.02.63.05.94l-2.03 1.58 1.92 3.32 2.39-.96c.5.39 1.04.7 1.62.94l.36 3.18h3.84l.36-3.18c.58-.24 1.12-.55 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM12.96 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z\"/></svg></button></nav>",
-      "css": ".ds-appbar-light { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; background: linear-gradient(#FCFCFD 0%, #E4E7ED 55%, #D1D5DE 100%); border-bottom: 1px solid #A6ABB5; color: #14171C; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-appbar-light .ds-appbar-spacer { width: 48px; } .ds-appbar-light strong { font-size: 19px; font-weight: 700; letter-spacing: 0.1px; } .ds-appbar-light button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-light button svg { width: 24px; height: 24px; fill: currentColor; } .ds-appbar-light button:hover { background: #F1F2F6; } .ds-appbar-light button:focus-visible { outline: 3px solid rgba(58, 99, 201, 0.45); }"
+      "css": ".ds-appbar-light { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; background: linear-gradient(#F8F3E6 0%, #EAE1CB 55%, #D6CBAF 100%); border-bottom: 1px solid #AD9F82; color: #211E17; font-family: SpaceGrotesk, system-ui, -apple-system, sans-serif; } .ds-appbar-light .ds-appbar-spacer { width: 48px; } .ds-appbar-light strong { font-size: 19px; font-weight: 700; letter-spacing: 0.1px; } .ds-appbar-light button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-light button svg { width: 24px; height: 24px; fill: currentColor; } .ds-appbar-light button:hover { background: #F4F0E5; } .ds-appbar-light button:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); }"
     },
     {
       "name": "Housing Bar — Dark",
@@ -449,7 +477,7 @@
       "refersTo": "app-bar-dark",
       "description": "A brushed chrome bar below the top safe area, titled in the centre, with one settings action.",
       "html": "<nav class=\"ds-appbar-dark\" aria-label=\"Library\"><span class=\"ds-appbar-spacer\"></span><strong>Library</strong><button aria-label=\"Settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M19.14 12.94a7.46 7.46 0 0 0 .05-.94 7.46 7.46 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.88 3h-3.84l-.36 3.18c-.58.24-1.12.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.03.31-.05.63-.05.94s.02.63.05.94l-2.03 1.58 1.92 3.32 2.39-.96c.5.39 1.04.7 1.62.94l.36 3.18h3.84l.36-3.18c.58-.24 1.12-.55 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM12.96 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z\"/></svg></button></nav>",
-      "css": ".ds-appbar-dark { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; background: linear-gradient(#434952 0%, #2A2E36 55%, #1B1E24 100%); border-bottom: 1px solid #0D0F12; color: #ECEFF4; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-appbar-dark .ds-appbar-spacer { width: 48px; } .ds-appbar-dark strong { font-size: 19px; font-weight: 700; letter-spacing: 0.1px; } .ds-appbar-dark button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-dark button svg { width: 24px; height: 24px; fill: currentColor; } .ds-appbar-dark button:hover { background: #1B1F25; } .ds-appbar-dark button:focus-visible { outline: 3px solid rgba(58, 99, 201, 0.45); }"
+      "css": ".ds-appbar-dark { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; background: linear-gradient(#4A4232 0%, #2C2720 55%, #1A1712 100%); border-bottom: 1px solid #0E0C08; color: #F3EEE1; font-family: SpaceGrotesk, system-ui, -apple-system, sans-serif; } .ds-appbar-dark .ds-appbar-spacer { width: 48px; } .ds-appbar-dark strong { font-size: 19px; font-weight: 700; letter-spacing: 0.1px; } .ds-appbar-dark button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-dark button svg { width: 24px; height: 24px; fill: currentColor; } .ds-appbar-dark button:hover { background: #1E1A14; } .ds-appbar-dark button:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); }"
     },
     {
       "name": "Pocket Player Mark — Light",
@@ -457,7 +485,7 @@
       "refersTo": "pocket-player-mark",
       "description": "The empty-state mark: a moulded housing with a blank recessed screen and a wheel whose centre key lights.",
       "html": "<div class=\"ds-pocket-light\" role=\"img\" aria-label=\"A pocket player waiting for your audiobooks\"><span class=\"ds-pocket-screen\"></span><span class=\"ds-pocket-wheel\"><span class=\"ds-pocket-key\"></span></span></div>",
-      "css": ".ds-pocket-light { width: 250px; height: 280px; display: flex; flex-direction: column; align-items: center; } .ds-pocket-light::before { content: \"\"; position: absolute; } .ds-pocket-light { background: linear-gradient(#FCFCFD 0%, #E4E7ED 55%, #D1D5DE 100%); border: 1px solid #A6ABB5; border-radius: 16px; width: 158px; padding: 22px 16px; gap: 24px; } .ds-pocket-light .ds-pocket-screen { display: block; width: 100%; height: 96px; background: #DFE4EC; border: 1px solid #C3C8D2; border-radius: 5px; } .ds-pocket-light .ds-pocket-wheel { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: linear-gradient(135deg, #F3F5F8, #DDE1E8 55%, #C9CFD9); border: 1px solid #A6ABB5; } .ds-pocket-light .ds-pocket-key { width: 42px; height: 42px; border-radius: 50%; background: #2F5FCB; }"
+      "css": ".ds-pocket-light { width: 250px; height: 280px; display: flex; flex-direction: column; align-items: center; } .ds-pocket-light::before { content: \"\"; position: absolute; } .ds-pocket-light { background: linear-gradient(#F8F3E6 0%, #EAE1CB 55%, #D6CBAF 100%); border: 1px solid #AD9F82; border-radius: 16px; width: 158px; padding: 22px 16px; gap: 24px; } .ds-pocket-light .ds-pocket-screen { display: block; width: 100%; height: 96px; background: #DCD4BD; border: 1px solid #D0C6AF; border-radius: 5px; } .ds-pocket-light .ds-pocket-wheel { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: linear-gradient(135deg, #F4EDDD, #E3DAC2 55%, #CFC4A8); border: 1px solid #AD9F82; } .ds-pocket-light .ds-pocket-key { width: 42px; height: 42px; border-radius: 50%; background: #A8580A; }"
     },
     {
       "name": "Pocket Player Mark — Dark",
@@ -465,7 +493,7 @@
       "refersTo": "pocket-player-mark",
       "description": "The empty-state mark: a moulded housing with a blank recessed screen and a wheel whose centre key lights.",
       "html": "<div class=\"ds-pocket-dark\" role=\"img\" aria-label=\"A pocket player waiting for your audiobooks\"><span class=\"ds-pocket-screen\"></span><span class=\"ds-pocket-wheel\"><span class=\"ds-pocket-key\"></span></span></div>",
-      "css": ".ds-pocket-dark { width: 250px; height: 280px; display: flex; flex-direction: column; align-items: center; } .ds-pocket-dark::before { content: \"\"; position: absolute; } .ds-pocket-dark { background: linear-gradient(#434952 0%, #2A2E36 55%, #1B1E24 100%); border: 1px solid #0D0F12; border-radius: 16px; width: 158px; padding: 22px 16px; gap: 24px; } .ds-pocket-dark .ds-pocket-screen { display: block; width: 100%; height: 96px; background: #0D131C; border: 1px solid #383E48; border-radius: 5px; } .ds-pocket-dark .ds-pocket-wheel { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: linear-gradient(135deg, #3D424C, #2B2F37 55%, #21252B); border: 1px solid #0D0F12; } .ds-pocket-dark .ds-pocket-key { width: 42px; height: 42px; border-radius: 50%; background: #7CA5FF; }"
+      "css": ".ds-pocket-dark { width: 250px; height: 280px; display: flex; flex-direction: column; align-items: center; } .ds-pocket-dark::before { content: \"\"; position: absolute; } .ds-pocket-dark { background: linear-gradient(#4A4232 0%, #2C2720 55%, #1A1712 100%); border: 1px solid #0E0C08; border-radius: 16px; width: 158px; padding: 22px 16px; gap: 24px; } .ds-pocket-dark .ds-pocket-screen { display: block; width: 100%; height: 96px; background: #120F08; border: 1px solid #423B2E; border-radius: 5px; } .ds-pocket-dark .ds-pocket-wheel { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: linear-gradient(135deg, #443D2D, #302A20 55%, #241F18); border: 1px solid #0E0C08; } .ds-pocket-dark .ds-pocket-key { width: 42px; height: 42px; border-radius: 50%; background: #F0A93B; }"
     },
     {
       "name": "Click Wheel — Dark",
@@ -473,7 +501,7 @@
       "refersTo": "click-wheel",
       "description": "The player transport: a painted moulded face with ordinary buttons laid over it, so every key keeps its tooltip, focus stop, 48px target, and semantics.",
       "html": "<div class=\"ds-wheel\" role=\"group\" aria-label=\"Transport\"><button class=\"ds-wheel-key ds-n\" aria-label=\"Previous chapter\">⏮</button><button class=\"ds-wheel-key ds-w\" aria-label=\"Rewind 15 seconds\">↺</button><button class=\"ds-wheel-centre\" aria-label=\"Play\">▶</button><button class=\"ds-wheel-key ds-e\" aria-label=\"Forward 30 seconds\">↻</button><button class=\"ds-wheel-key ds-s\" aria-label=\"Next chapter\">⏭</button></div>",
-      "css": ".ds-wheel { position: relative; width: 244px; height: 244px; border-radius: 50%; border: 1px solid #14171C; background: linear-gradient(135deg, #3D424C, #2B2F37 55%, #21252B); } .ds-wheel::after { content: \"\"; position: absolute; inset: 71px; border-radius: 50%; background: #1E2229; border: 1px solid #14171C; } .ds-wheel-key { position: absolute; width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #A6AEBC; font-size: 18px; } .ds-wheel-key.ds-n { top: 12px; left: 98px; } .ds-wheel-key.ds-s { bottom: 12px; left: 98px; } .ds-wheel-key.ds-w { left: 12px; top: 98px; } .ds-wheel-key.ds-e { right: 12px; top: 98px; } .ds-wheel-centre { position: absolute; z-index: 1; left: 78px; top: 78px; width: 88px; height: 88px; border: 0; border-radius: 50%; background: #7CA5FF; color: #0B1B3F; font-size: 34px; } .ds-wheel-key:focus-visible, .ds-wheel-centre:focus-visible { outline: 3px solid rgba(124, 165, 255, 0.5); outline-offset: 2px; }"
+      "css": ".ds-wheel { position: relative; width: 244px; height: 244px; border-radius: 50%; border: 1px solid #14110C; background: linear-gradient(135deg, #443D2D, #302A20 55%, #241F18); } .ds-wheel::after { content: \"\"; position: absolute; inset: 71px; border-radius: 50%; background: #211D16; border: 1px solid #14110C; } .ds-wheel-key { position: absolute; width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #B0A695; font-size: 18px; } .ds-wheel-key.ds-n { top: 12px; left: 98px; } .ds-wheel-key.ds-s { bottom: 12px; left: 98px; } .ds-wheel-key.ds-w { left: 12px; top: 98px; } .ds-wheel-key.ds-e { right: 12px; top: 98px; } .ds-wheel-centre { position: absolute; z-index: 1; left: 78px; top: 78px; width: 88px; height: 88px; border: 0; border-radius: 50%; background: #F0A93B; color: #2A1A00; font-size: 34px; } .ds-wheel-key:focus-visible, .ds-wheel-centre:focus-visible { outline: 3px solid rgba(240, 169, 59, 0.5); outline-offset: 2px; }"
     },
     {
       "name": "Readout — Dark",
@@ -481,7 +509,7 @@
       "refersTo": "readout-dark",
       "description": "The recessed pane carrying the scrubber and every measured quantity, set in the monospace readout face.",
       "html": "<div class=\"ds-readout\"><input type=\"range\" min=\"0\" max=\"100\" value=\"42\" aria-label=\"Playback position\"><div class=\"ds-readout-row\"><span>12:41</span><span class=\"ds-readout-dim\">4:46:00 left in book</span><span>-17:19</span></div></div>",
-      "css": ".ds-readout { background: #0D131C; border: 1px solid #333A45; border-radius: 5px; padding: 8px 12px 12px; } .ds-readout input { width: 100%; accent-color: #7CA5FF; } .ds-readout-row { display: flex; justify-content: space-between; gap: 8px; color: #A9C6FF; font: 400 14px/1.35 ui-monospace, Menlo, 'SF Mono', Consolas, 'Roboto Mono', 'Courier New', monospace; letter-spacing: 0.4px; } .ds-readout-dim { color: #6B7F9E; }"
+      "css": ".ds-readout { background: #120F08; border: 1px solid #3D3527; border-radius: 5px; padding: 8px 12px 12px; } .ds-readout input { width: 100%; accent-color: #F0A93B; } .ds-readout-row { display: flex; justify-content: space-between; gap: 8px; color: #FFBE55; font: 400 14px/1.35 SpaceMono, ui-monospace, Menlo, 'Courier New', monospace; } .ds-readout-dim { color: #9C8552; }"
     },
     {
       "name": "Book List Row",
@@ -489,23 +517,23 @@
       "refersTo": "book-list-row",
       "description": "A menu row: a bezelled square cover, title and author, the resume counter in the readout face, and the arrow into it.",
       "html": "<a class=\"ds-row\" href=\"#\"><span class=\"ds-row-cover\">T</span><span class=\"ds-row-text\"><strong>The Wind in the Willows</strong><span class=\"ds-row-author\">Kenneth Grahame</span><span class=\"ds-row-bar\"><i style=\"width:42%\"></i></span><span class=\"ds-row-resume\">Chapter 5 · 16:00</span></span><span class=\"ds-row-arrow\" aria-hidden=\"true\">›</span></a>",
-      "css": ".ds-row { display: flex; align-items: center; gap: 16px; min-height: 80px; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid #C3C8D2; background: #FFFFFF; color: #14171C; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-row-cover { flex: none; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 5px; border: 1px solid #A6ABB5; background: linear-gradient(#FCFCFD 0%, #E4E7ED 55%, #D1D5DE 100%); box-shadow: inset 0 0 0 2px #D7DBE3; color: #2B303A; font-size: 22px; font-weight: 700; } .ds-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; } .ds-row-text strong { font-size: 16px; font-weight: 700; } .ds-row-author { font-size: 14px; color: #545C68; } .ds-row-bar { display: block; height: 4px; border-radius: 2px; background: #C7CCD6; overflow: hidden; } .ds-row-bar i { display: block; height: 100%; background: #2F5FCB; } .ds-row-resume { color: #2F5FCB; font: 700 12px/1.35 ui-monospace, Menlo, 'SF Mono', Consolas, 'Roboto Mono', 'Courier New', monospace; letter-spacing: 0.4px; } .ds-row-arrow { flex: none; color: #7A828E; font-size: 18px; }"
+      "css": ".ds-row { display: flex; align-items: center; gap: 16px; min-height: 80px; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid #D0C6AF; background: #FCFAF4; color: #211E17; font-family: SpaceGrotesk, system-ui, -apple-system, sans-serif; } .ds-row-cover { flex: none; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 5px; border: 1px solid #AD9F82; background: linear-gradient(#F8F3E6 0%, #EAE1CB 55%, #D6CBAF 100%); box-shadow: inset 0 0 0 2px #E4DCC7; color: #3A3226; font-size: 22px; font-weight: 700; } .ds-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; } .ds-row-text strong { font-size: 16px; font-weight: 700; } .ds-row-author { font-size: 14px; color: #63594A; } .ds-row-bar { display: block; height: 4px; border-radius: 2px; background: #CDC3AC; overflow: hidden; } .ds-row-bar i { display: block; height: 100%; background: #A8580A; } .ds-row-resume { color: #A8580A; font: 700 12px/1.35 SpaceMono, ui-monospace, Menlo, 'Courier New', monospace; } .ds-row-arrow { flex: none; color: #8A7F6B; font-size: 18px; }"
     }
   ],
   "narrative": {
     "northStar": "The Click-Wheel Era",
-    "overview": "The interface should feel like a well-made personal player from the early\n2000s: a brushed housing, a screen recessed behind a bezel, printed keys on a\nmoulded wheel, and one blue that marks the row you are on. The product is the\nsame calm, offline listening room it always was; what changed is that the room\nnow has the shape of a device you could hold.\n\nThe visual language uses drawn bevels instead of blur, hairline rules instead\nof cards, monospaced digits for anything that counts, and tight corners\neverywhere. Material 3 roles still structure Android presentation, iOS\nnavigation and transitions retain familiar platform behavior, and macOS\nrestructures content for resizable pointer-and-keyboard windows. The period\nbelongs to the surfaces, the geometry, and the wheel — never to the behavior:\nevery control underneath is a stock platform control with its own tooltip,\nfocus, touch target, and semantics.",
+    "overview": "The interface should feel like a well-made personal player from the early\n2000s: a brushed housing, a screen recessed behind a bezel, printed keys on a\nmoulded wheel, and one amber that marks the row you are on. The product is the\nsame calm, offline listening room it always was; what changed is that the room\nnow has the shape of a device you could hold.\n\nThe visual language uses drawn bevels instead of blur, hairline rules instead\nof cards, monospaced digits for anything that counts, and tight corners\neverywhere. Material 3 roles still structure Android presentation, iOS\nnavigation and transitions retain familiar platform behavior, and macOS\nrestructures content for resizable pointer-and-keyboard windows. The period\nbelongs to the surfaces, the geometry, and the wheel — never to the behavior:\nevery control underneath is a stock platform control with its own tooltip,\nfocus, touch target, and semantics.",
     "keyCharacteristics": [
       "Brushed chrome housing over a plain screen, in coordinated light and dark.",
-      "One blue for the primary action, the marked row, and the bar of progress.",
-      "Platform system type for reading, platform monospace for readouts.",
+      "One amber for the primary action, the marked row, and the bar of progress.",
+      "Space Grotesk for reading, Space Mono for readouts; both bundled.",
       "Bevelled hairline edges; tight 3-6 logical-pixel corners; no drop shadows.",
       "Native navigation, controls, touch targets, and reduced-motion behavior."
     ],
     "rules": [
       {
-        "name": "The One Blue Voice Rule",
-        "text": "Blue belongs to the primary action, the row being played, and the bar of progress; its rarity is what makes it legible."
+        "name": "The One Amber Voice Rule",
+        "text": "Amber belongs to the primary action, the row being played, and the bar of progress; its rarity is what makes it legible."
       },
       {
         "name": "The Bevel, Not Blur Rule",
@@ -526,7 +554,8 @@
     ],
     "dos": [
       "use semantic Material color roles so light and dark appearances remain coordinated.",
-      "reserve blue for the primary action, the marked row, and progress.",
+      "reserve amber for the primary action, the marked row, and progress.",
+      "take the ink on the marked row from the palette rather than assuming white: the lit amber of dark appearance will not carry it.",
       "set every counted quantity in the readout face.",
       "keep content flows native, scrollable, safe-area aware, and resilient to text scaling.",
       "draw period surfaces with bevels and gradients, and leave the control underneath a stock platform control.",

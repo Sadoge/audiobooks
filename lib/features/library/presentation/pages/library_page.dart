@@ -1,6 +1,6 @@
 // THESIS: The empty library is a pocket player with nothing loaded on it, not
 // a dashboard of placeholder cards. OWN-WORLD: brushed chrome housing, a
-// recessed screen, and the blue marker of an early-2000s device. STORY:
+// recessed screen, and the amber marker of an early-2000s device. STORY:
 // understand the empty local library, then import device-owned audio. FIRST
 // VIEWPORT: centred housing title, the player mark, a concise message, and one
 // primary action. FORM: click-wheel era, seed 0bcabd73. FINISH: unreviewed and

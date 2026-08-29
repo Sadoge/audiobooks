@@ -661,9 +661,10 @@ class _ChapterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final chrome = RetroChrome.of(context);
-    // The row you are on is the blue bar, the way it was on the menus these
-    // controls came from.
-    final ink = isPlaying ? Colors.white : scheme.onSurfaceVariant;
+    // The row you are on is the amber bar, the way it was on the menus these
+    // controls came from. Its ink comes from the palette rather than being
+    // white: on the lit amber of dark appearance, white does not carry.
+    final ink = isPlaying ? chrome.selectionInk : scheme.onSurfaceVariant;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -677,7 +678,7 @@ class _ChapterRow extends StatelessWidget {
       ),
       child: ListTile(
         selected: isPlaying,
-        selectedColor: Colors.white,
+        selectedColor: chrome.selectionInk,
         leading: SizedBox(
           width: 28,
           child: isPlaying

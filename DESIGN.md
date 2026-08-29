@@ -2,67 +2,69 @@
 name: Audiobooks
 description: A device-shaped listening room for audiobooks you already own.
 colors:
-  device-seed: "#3A63C9"
-  primary-blue-light: "#2F5FCB"
+  device-seed: "#B4680F"
+  primary-amber-light: "#A8580A"
   on-primary-light: "#FFFFFF"
-  primary-blue-dark: "#7CA5FF"
-  on-primary-dark: "#0B1B3F"
-  secondary-graphite-light: "#5A6272"
-  secondary-graphite-dark: "#9AA3B4"
-  surface-screen-light: "#FFFFFF"
-  surface-screen-dark: "#15181D"
-  on-surface-ink-light: "#14171C"
-  on-surface-ink-dark: "#ECEFF4"
-  surface-low-light: "#F1F2F6"
-  surface-low-dark: "#1B1F25"
-  surface-highest-light: "#D8DCE4"
-  surface-highest-dark: "#2C313A"
-  outline-hairline-light: "#C3C8D2"
-  outline-hairline-dark: "#383E48"
-  chrome-edge-light: "#A6ABB5"
-  chrome-edge-dark: "#0D0F12"
+  primary-amber-dark: "#F0A93B"
+  on-primary-dark: "#2A1A00"
+  secondary-clay-light: "#7A6A52"
+  secondary-clay-dark: "#C0B39C"
+  surface-screen-light: "#FCFAF4"
+  surface-screen-dark: "#17140F"
+  on-surface-ink-light: "#211E17"
+  on-surface-ink-dark: "#F3EEE1"
+  surface-low-light: "#F4F0E5"
+  surface-low-dark: "#1E1A14"
+  surface-highest-light: "#DDD4BF"
+  surface-highest-dark: "#332D23"
+  outline-hairline-light: "#D0C6AF"
+  outline-hairline-dark: "#423B2E"
+  chrome-edge-light: "#AD9F82"
+  chrome-edge-dark: "#0E0C08"
   chrome-highlight-light: "#FFFFFF"
-  chrome-highlight-dark: "#6C727E"
-  readout-fill-light: "#DFE4EC"
-  readout-fill-dark: "#0D131C"
-  readout-ink-light: "#1E2530"
-  readout-ink-dark: "#A9C6FF"
+  chrome-highlight-dark: "#837860"
+  readout-fill-light: "#DCD4BD"
+  readout-fill-dark: "#120F08"
+  readout-ink-light: "#2B2415"
+  readout-ink-dark: "#FFBE55"
+  selection-ink-light: "#FFFFFF"
+  selection-ink-dark: "#2A1A00"
 typography:
   display:
-    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: 'SpaceGrotesk, system-ui, -apple-system, sans-serif'
     fontSize: "34px"
     fontWeight: 700
     letterSpacing: "-0.8px"
   headline:
-    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: 'SpaceGrotesk, system-ui, -apple-system, sans-serif'
     fontSize: "24px"
     fontWeight: 700
     letterSpacing: "-0.3px"
   title:
-    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: 'SpaceGrotesk, system-ui, -apple-system, sans-serif'
     fontSize: "19px"
     fontWeight: 700
     letterSpacing: "0.1px"
   body-large:
-    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: 'SpaceGrotesk, system-ui, -apple-system, sans-serif'
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.4
   body:
-    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: 'SpaceGrotesk, system-ui, -apple-system, sans-serif'
     fontSize: "14px"
     fontWeight: 400
     lineHeight: 1.35
   label:
-    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontFamily: 'SpaceGrotesk, system-ui, -apple-system, sans-serif'
     fontSize: "15px"
     fontWeight: 700
     letterSpacing: "0.3px"
   readout:
-    fontFamily: 'monospace, Menlo, "SF Mono", Consolas, "Roboto Mono", "Courier New"'
+    fontFamily: 'SpaceMono, ui-monospace, Menlo, 'Courier New', monospace'
     fontSize: "14px"
     fontWeight: 400
-    letterSpacing: "0.4px"
+    letterSpacing: "0px"
 rounded:
   cover: "3px"
   screen: "5px"
@@ -77,14 +79,14 @@ spacing:
   xxl: "48px"
 components:
   filled-button-light:
-    backgroundColor: "{colors.primary-blue-light}"
+    backgroundColor: "{colors.primary-amber-light}"
     textColor: "{colors.on-primary-light}"
     typography: "{typography.label}"
     rounded: "{rounded.control}"
     padding: "12px 24px"
     height: "50px"
   filled-button-dark:
-    backgroundColor: "{colors.primary-blue-dark}"
+    backgroundColor: "{colors.primary-amber-dark}"
     textColor: "{colors.on-primary-dark}"
     typography: "{typography.label}"
     rounded: "{rounded.control}"
@@ -134,7 +136,7 @@ components:
     width: "244px"
     height: "244px"
   click-wheel-centre:
-    backgroundColor: "{colors.primary-blue-light}"
+    backgroundColor: "{colors.primary-amber-light}"
     width: "88px"
     height: "88px"
   player-cover-compact:
@@ -155,7 +157,7 @@ components:
 
 The interface should feel like a well-made personal player from the early
 2000s: a brushed housing, a screen recessed behind a bezel, printed keys on a
-moulded wheel, and one blue that marks the row you are on. The product is the
+moulded wheel, and one amber that marks the row you are on. The product is the
 same calm, offline listening room it always was; what changed is that the room
 now has the shape of a device you could hold.
 
@@ -171,36 +173,37 @@ focus, touch target, and semantics.
 **Key Characteristics:**
 
 - Brushed chrome housing over a plain screen, in coordinated light and dark.
-- One blue for the primary action, the marked row, and the bar of progress.
-- Platform system type for reading, platform monospace for readouts.
+- One amber for the primary action, the marked row, and the bar of progress.
+- Space Grotesk for reading, Space Mono for readouts; both bundled.
 - Bevelled hairline edges; tight 3-6 logical-pixel corners; no drop shadows.
 - Native navigation, controls, touch targets, and reduced-motion behavior.
 
 ## Colors
 
-The palette pairs a silver or graphite housing with a plain screen and a
-single period blue.
+The palette pairs a warm cream or graphite housing with a bone screen and a
+single period amber, lifted from the backlight of a display of that decade.
 
 ### Primary
 
-- **Menu Blue — Light** (`primary-blue-light`): Primary actions, the marked
+- **Burnt Amber — Light** (`primary-amber-light`): Primary actions, the marked
   row, and progress on light surfaces.
-- **Backlit Blue — Dark** (`primary-blue-dark`): The same roles in the dark
+- **Lit Amber — Dark** (`primary-amber-dark`): The same roles in the dark
   appearance.
 - **Primary Contrast** (`on-primary-light`, `on-primary-dark`): Text and icons
-  placed directly on their corresponding blue fills.
+  placed directly on their corresponding amber fills. Light amber carries
+  white; lit amber is bright enough that it takes the dark warm ink instead.
 
 ### Secondary
 
-- **Graphite** (`secondary-graphite-light`, `secondary-graphite-dark`): The
-  supporting neutral chroma used by the generated Material scheme.
+- **Clay** (`secondary-clay-light`, `secondary-clay-dark`): The supporting warm
+  neutral chroma used by the generated Material scheme.
 - **Device Seed** (`device-seed`): The fidelity seed from which unoverridden
   Material color roles are generated.
 
 ### Neutral
 
-- **Screen** (`surface-screen-light`, `surface-screen-dark`): The scaffold the
-  content sits on, behind the housing bar.
+- **Screen** (`surface-screen-light`, `surface-screen-dark`): The bone or
+  near-black ground the content sits on, behind the housing bar.
 - **Listening Ink** (`on-surface-ink-light`, `on-surface-ink-dark`):
   High-emphasis content on the corresponding surface.
 - **Low Tonal Layer** (`surface-low-light`, `surface-low-dark`): Quiet
@@ -219,29 +222,35 @@ single period blue.
 - **Readout Glass** (`readout-fill-light`, `readout-fill-dark`): The recessed
   display behind the scrubber and the counters.
 - **Readout Ink** (`readout-ink-light`, `readout-ink-dark`): The digits on it —
-  dark on light, backlit on dark.
+  dark warm ink on light, amber backlight on dark.
+- **Selection Ink** (`selection-ink-light`, `selection-ink-dark`): What reads on
+  the marked row, which is white on the light bar and dark warm ink on the lit
+  one.
 
 ### Named Rules
 
-**The One Blue Voice Rule.** Blue belongs to the primary action, the row being
-played, and the bar of progress; its rarity is what makes it legible.
+**The One Amber Voice Rule.** Amber belongs to the primary action, the row
+being played, and the bar of progress; its rarity is what makes it legible.
 
 **The Bevel, Not Blur Rule.** Depth is a dark hairline and a lit hairline, or a
 two-stop gradient across a moulded face. It is never a drop shadow.
 
 ## Typography
 
-**Display Font:** Platform system UI
+**Display Font:** Space Grotesk (bundled, SIL OFL 1.1)
 
-**Body Font:** Platform system UI
+**Body Font:** Space Grotesk
 
-**Readout Font:** Platform monospace
+**Readout Font:** Space Mono (bundled, SIL OFL 1.1)
 
-**Character:** The native system face keeps the product trustworthy and
-adaptive, set heavier and tighter than a document would be — the way a device
-menu was set. Anything that counts — run times, remaining time, chapter
-numbers, speeds, file sizes — is set in the platform monospace face so digits
-sit still as they tick.
+**Character:** Both faces are bundled rather than borrowed from the platform,
+because the period is carried as much by the lettering as by the housing. Space
+Grotesk is a squarish grotesque that reads as moulded product lettering, set
+heavier and tighter than a document would be. Anything that counts — run times,
+remaining time, chapter numbers, speeds, file sizes — is set in Space Mono so
+digits sit still as they tick. Grotesk is instanced from its upstream variable
+font at 400 and 700, so bold weights are real rather than synthesised, and both
+licences ship beside the files in `assets/fonts/`.
 
 ### Hierarchy
 
@@ -312,7 +321,7 @@ at its centre is the one circular control.
 ### Buttons
 
 - **Shape:** 6-logical-pixel corners with a minimum height of 50 logical pixels.
-- **Primary:** Blue fill with its paired high-contrast foreground, `label`
+- **Primary:** Amber fill with its paired high-contrast foreground, `label`
   typography, 24-logical-pixel horizontal padding, and 12 vertical.
 - **States:** Material handles hover, press, focus, and disabled overlays; busy
   import actions replace the leading icon with a compact progress indicator and
@@ -398,9 +407,9 @@ screen-reader actionable.
 
 ### Chapter Sheet
 
-Chapters are a menu of ruled rows. The chapter playing now is the blue bar —
-a two-stop blue fill with white text and a level glyph — the way the row you
-were on was marked on the devices these controls came from. Every other row
+Chapters are a menu of ruled rows. The chapter playing now is the amber bar —
+a two-stop amber fill carrying the selection ink and a level glyph — the way the
+row you were on was marked on the devices these controls came from. Every other row
 carries its number in the readout face on the left and its length on the right.
 
 ### Player
@@ -417,7 +426,9 @@ chapter heading is a ruled menu row that leads into the chapter sheet.
 
 - **Do** use semantic Material color roles so light and dark appearances remain
   coordinated.
-- **Do** reserve blue for the primary action, the marked row, and progress.
+- **Do** reserve amber for the primary action, the marked row, and progress.
+- **Do** take the ink on the marked row from the palette rather than assuming
+  white: the lit amber of dark appearance will not carry it.
 - **Do** set every counted quantity in the readout face.
 - **Do** keep content flows native, scrollable, safe-area aware, and resilient
   to text scaling.

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 /// The physical qualities of an early-2000s pocket player, kept in one place.
 ///
-/// Everything the interface borrows from a real device — brushed chrome, a
-/// recessed readout, the moulded wheel, and the blue bar that ran down its
-/// menus — is a token here rather than a light/dark check inside a widget.
+/// Everything the interface borrows from a real device — warm moulded plastic,
+/// a recessed amber-backlit display, the wheel, and the bar that marks the row
+/// you are on — is a token here rather than a light/dark check inside a widget.
 @immutable
 class RetroChrome extends ThemeExtension<RetroChrome> {
   const RetroChrome({
@@ -20,9 +20,10 @@ class RetroChrome extends ThemeExtension<RetroChrome> {
     required this.screenInk,
     required this.screenInkDim,
     required this.selection,
+    required this.selectionInk,
   });
 
-  /// Brushed housing: app bars, bezels, and pressable keys.
+  /// Moulded housing: app bars, bezels, and pressable keys.
   final LinearGradient chrome;
 
   /// The dark hairline where a moulded edge turns away from the light.
@@ -47,8 +48,12 @@ class RetroChrome extends ThemeExtension<RetroChrome> {
   final Color screenInk;
   final Color screenInkDim;
 
-  /// The blue bar that marks the row you are on.
+  /// The bar that marks the row you are on, and the ink that reads on it.
+  ///
+  /// The ink is a token because the bar is light enough in dark appearance
+  /// that white would not carry: it takes the dark warm ink instead.
   final LinearGradient selection;
+  final Color selectionInk;
 
   static RetroChrome of(BuildContext context) {
     final theme = Theme.of(context);
@@ -58,74 +63,76 @@ class RetroChrome extends ThemeExtension<RetroChrome> {
   static RetroChrome forBrightness(Brightness brightness) =>
       brightness == Brightness.light ? light : dark;
 
-  /// Silver housing, white screen.
+  /// Warm cream plastic, bone-white screen.
   static const RetroChrome light = RetroChrome(
     chrome: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFFFCFCFD), Color(0xFFE4E7ED), Color(0xFFD1D5DE)],
+      colors: [Color(0xFFF8F3E6), Color(0xFFEAE1CB), Color(0xFFD6CBAF)],
       stops: [0, 0.55, 1],
     ),
-    chromeEdge: Color(0xFFA6ABB5),
+    chromeEdge: Color(0xFFAD9F82),
     chromeHighlight: Color(0xFFFFFFFF),
     wheel: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [Color(0xFFF3F5F8), Color(0xFFDDE1E8), Color(0xFFC9CFD9)],
+      colors: [Color(0xFFF4EDDD), Color(0xFFE3DAC2), Color(0xFFCFC4A8)],
       stops: [0, 0.55, 1],
     ),
-    wheelEdge: Color(0xFFAFB5C0),
-    wheelWell: Color(0xFFC4CAD5),
+    wheelEdge: Color(0xFFB4A88C),
+    wheelWell: Color(0xFFC9BEA2),
     keyFace: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFFFFFFFF), Color(0xFFE6EAEF)],
+      colors: [Color(0xFFFFFDF8), Color(0xFFF0EADB)],
     ),
-    screenFill: Color(0xFFDFE4EC),
-    screenEdge: Color(0xFFAEB5C1),
-    screenInk: Color(0xFF1E2530),
-    screenInkDim: Color(0xFF5C6673),
+    screenFill: Color(0xFFDCD4BD),
+    screenEdge: Color(0xFFB5A98D),
+    screenInk: Color(0xFF2B2415),
+    screenInkDim: Color(0xFF6E6249),
     selection: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFF6E93E4), Color(0xFF3A66CE), Color(0xFF2B51B4)],
+      colors: [Color(0xFFD08A2A), Color(0xFFA8580A), Color(0xFF8C4707)],
       stops: [0, 0.55, 1],
     ),
+    selectionInk: Color(0xFFFFFFFF),
   );
 
-  /// Graphite housing, backlit screen.
+  /// Warm graphite housing, amber backlight.
   static const RetroChrome dark = RetroChrome(
     chrome: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFF434952), Color(0xFF2A2E36), Color(0xFF1B1E24)],
+      colors: [Color(0xFF4A4232), Color(0xFF2C2720), Color(0xFF1A1712)],
       stops: [0, 0.55, 1],
     ),
-    chromeEdge: Color(0xFF0D0F12),
-    chromeHighlight: Color(0xFF6C727E),
+    chromeEdge: Color(0xFF0E0C08),
+    chromeHighlight: Color(0xFF837860),
     wheel: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [Color(0xFF3D424C), Color(0xFF2B2F37), Color(0xFF21252B)],
+      colors: [Color(0xFF443D2D), Color(0xFF302A20), Color(0xFF241F18)],
       stops: [0, 0.55, 1],
     ),
-    wheelEdge: Color(0xFF14171C),
-    wheelWell: Color(0xFF1E2229),
+    wheelEdge: Color(0xFF14110C),
+    wheelWell: Color(0xFF211D16),
     keyFace: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFF3F444E), Color(0xFF2A2E36)],
+      colors: [Color(0xFF463F2F), Color(0xFF2E2920)],
     ),
-    screenFill: Color(0xFF0D131C),
-    screenEdge: Color(0xFF333A45),
-    screenInk: Color(0xFFA9C6FF),
-    screenInkDim: Color(0xFF6B7F9E),
+    screenFill: Color(0xFF120F08),
+    screenEdge: Color(0xFF3D3527),
+    screenInk: Color(0xFFFFBE55),
+    screenInkDim: Color(0xFF9C8552),
     selection: LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFF5C86E8), Color(0xFF2E56BE), Color(0xFF23459C)],
+      colors: [Color(0xFFF0BC61), Color(0xFFC6801C), Color(0xFFA2650F)],
       stops: [0, 0.55, 1],
     ),
+    selectionInk: Color(0xFF2A1A00),
   );
 
   @override
@@ -142,6 +149,7 @@ class RetroChrome extends ThemeExtension<RetroChrome> {
     Color? screenInk,
     Color? screenInkDim,
     LinearGradient? selection,
+    Color? selectionInk,
   }) {
     return RetroChrome(
       chrome: chrome ?? this.chrome,
@@ -156,6 +164,7 @@ class RetroChrome extends ThemeExtension<RetroChrome> {
       screenInk: screenInk ?? this.screenInk,
       screenInkDim: screenInkDim ?? this.screenInkDim,
       selection: selection ?? this.selection,
+      selectionInk: selectionInk ?? this.selectionInk,
     );
   }
 
@@ -175,6 +184,7 @@ class RetroChrome extends ThemeExtension<RetroChrome> {
       screenInk: Color.lerp(screenInk, other.screenInk, t)!,
       screenInkDim: Color.lerp(screenInkDim, other.screenInkDim, t)!,
       selection: LinearGradient.lerp(selection, other.selection, t)!,
+      selectionInk: Color.lerp(selectionInk, other.selectionInk, t)!,
     );
   }
 }

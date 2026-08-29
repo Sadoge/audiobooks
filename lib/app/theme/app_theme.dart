@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
-  static const Color _seed = Color(0xFF3A63C9);
+  static const Color _seed = Color(0xFFB4680F);
 
   static ThemeData light() => _build(Brightness.light);
 
@@ -19,33 +19,33 @@ abstract final class AppTheme {
       dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
     );
     final scheme = base.copyWith(
-      primary: isLight ? const Color(0xFF2F5FCB) : const Color(0xFF7CA5FF),
-      onPrimary: isLight ? Colors.white : const Color(0xFF0B1B3F),
-      secondary: isLight ? const Color(0xFF5A6272) : const Color(0xFF9AA3B4),
+      primary: isLight ? const Color(0xFFA8580A) : const Color(0xFFF0A93B),
+      onPrimary: isLight ? Colors.white : const Color(0xFF2A1A00),
+      secondary: isLight ? const Color(0xFF7A6A52) : const Color(0xFFC0B39C),
       secondaryContainer: isLight
-          ? const Color(0xFFD7DBE3)
-          : const Color(0xFF262B34),
+          ? const Color(0xFFE4DCC7)
+          : const Color(0xFF2C261C),
       onSecondaryContainer: isLight
-          ? const Color(0xFF2B303A)
-          : const Color(0xFFD6DCE6),
-      surface: isLight ? const Color(0xFFFFFFFF) : const Color(0xFF15181D),
-      onSurface: isLight ? const Color(0xFF14171C) : const Color(0xFFECEFF4),
+          ? const Color(0xFF3A3226)
+          : const Color(0xFFE6DECD),
+      surface: isLight ? const Color(0xFFFCFAF4) : const Color(0xFF17140F),
+      onSurface: isLight ? const Color(0xFF211E17) : const Color(0xFFF3EEE1),
       onSurfaceVariant: isLight
-          ? const Color(0xFF545C68)
-          : const Color(0xFFA6AEBC),
+          ? const Color(0xFF63594A)
+          : const Color(0xFFB0A695),
       surfaceContainerLow: isLight
-          ? const Color(0xFFF1F2F6)
-          : const Color(0xFF1B1F25),
+          ? const Color(0xFFF4F0E5)
+          : const Color(0xFF1E1A14),
       surfaceContainerHighest: isLight
-          ? const Color(0xFFD8DCE4)
-          : const Color(0xFF2C313A),
+          ? const Color(0xFFDDD4BF)
+          : const Color(0xFF332D23),
       outlineVariant: isLight
-          ? const Color(0xFFC3C8D2)
-          : const Color(0xFF383E48),
+          ? const Color(0xFFD0C6AF)
+          : const Color(0xFF423B2E),
     );
 
     // The groove a bar of progress is sunk into, in either appearance.
-    final groove = isLight ? const Color(0xFFC7CCD6) : const Color(0xFF2A2F38);
+    final groove = isLight ? const Color(0xFFCDC3AC) : const Color(0xFF322C22);
 
     final textTheme = ThemeData(useMaterial3: true, brightness: brightness)
         .textTheme
@@ -95,12 +95,14 @@ abstract final class AppTheme {
             fontWeight: FontWeight.w700,
             letterSpacing: 0.6,
           ),
-        );
+        )
+        .apply(fontFamily: AppFonts.display);
 
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
       colorScheme: scheme,
+      fontFamily: AppFonts.display,
       scaffoldBackgroundColor: scheme.surface,
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[chrome],
@@ -159,7 +161,7 @@ abstract final class AppTheme {
         activeTrackColor: scheme.primary,
         inactiveTrackColor: groove,
         secondaryActiveTrackColor: scheme.primary.withValues(alpha: 0.3),
-        thumbColor: isLight ? const Color(0xFF1F47A8) : const Color(0xFFB9CFFF),
+        thumbColor: isLight ? const Color(0xFF7E410A) : const Color(0xFFFFD08F),
         overlayColor: scheme.primary.withValues(alpha: 0.12),
         // The classic round knob on a rounded groove, rather than the
         // current gapped Material track.
@@ -181,7 +183,7 @@ abstract final class AppTheme {
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       popupMenuTheme: PopupMenuThemeData(
-        color: isLight ? const Color(0xFFF4F6F9) : const Color(0xFF20242B),
+        color: isLight ? const Color(0xFFF6F1E6) : const Color(0xFF221E17),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadii.control,

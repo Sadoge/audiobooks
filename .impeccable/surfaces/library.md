@@ -12,9 +12,9 @@
 - Component grammar: bevelled chrome housing over flat semantic surfaces, no
   enclosing card; tight 3-6px corners; hairline rules between rows instead of
   gaps; no drop shadows.
-- Type ramp: platform system face mapped to Material display, headline, body,
-  and label roles, set heavier and tighter than running text; resume counters
-  use the monospace readout face. The centred housing title orients, while the
+- Type ramp: Space Grotesk mapped to Material display, headline, body, and
+  label roles, set heavier and tighter than running text; resume counters use
+  the Space Mono readout face. The centred housing title orients, while the
   empty-state headline is the strongest content type on the screen.
 - Responsive rule: composition stays centered and capped on phones, while its
   content width remains readable rather than stretching across tablets. The

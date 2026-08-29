@@ -39,5 +39,5 @@
 | Readout | One recessed pane: slider, chapter elapsed and remaining, book remaining | Material slider on a bevelled panel |
 | Transport | A moulded wheel: -15 west, +30 east, previous and next chapter north and south, play/pause in the centre well | Painted face, Material icon and filled controls |
 | Speed | Compact native menu behind a small chrome key | Material popup menu |
-| Chapters | Ruled rows; the chapter playing is the blue selection bar | Material list tiles |
+| Chapters | Ruled rows; the chapter playing is the amber selection bar, carrying the selection ink | Material list tiles |
 | macOS layout | Two balanced columns with keyboard shortcuts | Responsive Flutter layout |

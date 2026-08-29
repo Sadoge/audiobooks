@@ -45,11 +45,17 @@ abstract final class AppIconSize {
   static const double large = 32;
 }
 
-/// The readout face. Counters, run times, and file sizes are digits on a
-/// display, so they are set in the platform's monospace face and never
-/// reflow as they tick.
+/// The two faces the product is set in.
+///
+/// Both are bundled rather than borrowed from the platform, because the
+/// period is carried as much by the lettering as by the housing.
 abstract final class AppFonts {
-  static const String mono = 'monospace';
+  /// Moulded product lettering: a squarish grotesque for everything read.
+  static const String display = 'SpaceGrotesk';
+
+  /// The readout face. Counters, run times, and file sizes are digits on a
+  /// display, so they are set in a monospace and never reflow as they tick.
+  static const String mono = 'SpaceMono';
 
   static const List<String> monoFallback = <String>[
     'Menlo',
@@ -64,6 +70,6 @@ abstract final class AppFonts {
       (base ?? const TextStyle()).copyWith(
         fontFamily: mono,
         fontFamilyFallback: monoFallback,
-        letterSpacing: 0.4,
+        letterSpacing: 0,
       );
 }

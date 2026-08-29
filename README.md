@@ -1,7 +1,8 @@
 # Audiobooks
 
 An offline-first Flutter audiobook player for audio files you already own,
-dressed as a personal player from the early 2000s.
+dressed as a personal player from the early 2000s: warm cream and graphite
+housings, an amber-backlit readout, and a click wheel.
 
 ## Current milestone
 
@@ -36,6 +37,14 @@ file, or as separate books. Books imported before covers were read pick up
 their artwork the next time the Library opens. Metadata editing, book details,
 sleep timers, bookmarks, and system media controls remain planned for later
 milestones.
+
+## Type
+
+The product is set in Space Grotesk, with Space Mono for every readout. Both
+are bundled under the SIL Open Font License 1.1; the licences ship beside the
+files in `assets/fonts/`. Space Grotesk is instanced from its upstream variable
+font at weights 400 and 700 so bold text is a real weight rather than a
+synthesised one.
 
 ## Development
 
