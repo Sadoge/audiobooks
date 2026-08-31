@@ -1,4 +1,5 @@
 import 'package:audiobooks/app/theme/app_tokens.dart';
+import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/settings/domain/entities/app_theme_preference.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:auto_route/auto_route.dart';
@@ -12,7 +13,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: const ChromeAppBar(title: Text('Settings')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.md,
@@ -21,8 +22,8 @@ class SettingsPage extends StatelessWidget {
           AppSpacing.xxl,
         ),
         children: [
-          Text('Appearance', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: AppSpacing.sm),
+          const _SectionHeading('Appearance'),
+          const SizedBox(height: AppSpacing.md),
           BlocBuilder<ThemeCubit, AppThemePreference>(
             builder: (context, preference) {
               return LayoutBuilder(
@@ -60,8 +61,7 @@ class SettingsPage extends StatelessWidget {
             },
           ),
           const SizedBox(height: AppSpacing.xxl),
-          Text('Playback', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: AppSpacing.xs),
+          const _SectionHeading('Playback'),
           const ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text('Playback defaults'),
@@ -69,6 +69,26 @@ class SettingsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A settings group is titled the way a device panel was: a small heading
+/// with a rule ruled straight underneath it.
+class _SectionHeading extends StatelessWidget {
+  const _SectionHeading(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: AppSpacing.xs),
+        const Divider(),
+      ],
     );
   }
 }

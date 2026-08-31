@@ -1,4 +1,5 @@
 import 'package:audiobooks/app/theme/app_theme.dart';
+import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/library/presentation/widgets/empty_library_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,9 +14,9 @@ void main() {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.dark(),
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Library'),
-            actions: const [
+          appBar: const ChromeAppBar(
+            title: Text('Library'),
+            actions: [
               IconButton(
                 tooltip: 'Settings',
                 onPressed: null,

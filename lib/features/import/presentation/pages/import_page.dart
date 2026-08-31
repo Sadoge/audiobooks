@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:audiobooks/app/di/configure_dependencies.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
+import 'package:audiobooks/app/theme/retro_chrome.dart';
+import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/import/presentation/cubit/import_cubit.dart';
 import 'package:audiobooks/features/import/presentation/cubit/import_state.dart';
 import 'package:auto_route/auto_route.dart';
@@ -37,7 +39,7 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
         // that is the offer that leads.
         final multiple = state.files.length > 1;
         return Scaffold(
-          appBar: AppBar(title: const Text('Import Audiobooks')),
+          appBar: const ChromeAppBar(title: Text('Import Audiobooks')),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -85,8 +87,15 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                   const SizedBox(height: AppSpacing.lg),
                   Expanded(
                     child: state.files.isEmpty
-                        ? const Center(
-                            child: Icon(Icons.audio_file_outlined, size: 64),
+                        ? Center(
+                            child: ScreenPanel(
+                              padding: const EdgeInsets.all(AppSpacing.xl),
+                              child: Icon(
+                                Icons.audio_file_outlined,
+                                size: 64,
+                                color: RetroChrome.of(context).screenInkDim,
+                              ),
+                            ),
                           )
                         : ListView.separated(
                             itemCount: state.files.length,
@@ -99,6 +108,9 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                                 title: Text(file.name),
                                 subtitle: Text(
                                   '${(file.sizeBytes / 1048576).toStringAsFixed(1)} MB',
+                                  style: AppFonts.readout(
+                                    Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ),
                               );
                             },
@@ -107,14 +119,33 @@ class ImportPage extends StatelessWidget implements AutoRouteWrapper {
                   if (state.status == ImportStatus.importing &&
                       state.files.length > 1) ...[
                     const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Reading ${state.importedFiles + 1} of '
-                      '${state.files.length}',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    LinearProgressIndicator(
-                      value: state.importedFiles / state.files.length,
+                    ScreenPanel(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Reading ${state.importedFiles + 1} of '
+                            '${state.files.length}',
+                            style:
+                                AppFonts.readout(
+                                  Theme.of(context).textTheme.bodyMedium,
+                                ).copyWith(
+                                  color: RetroChrome.of(context).screenInk,
+                                ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: LinearProgressIndicator(
+                              value: state.importedFiles / state.files.length,
+                              backgroundColor: RetroChrome.of(
+                                context,
+                              ).screenEdge,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                   const SizedBox(height: AppSpacing.md),
@@ -194,11 +225,11 @@ class _CoverAttachment extends StatelessWidget {
 
     return Row(
       children: [
-        ClipRRect(
-          borderRadius: AppRadii.cover,
-          child: SizedBox(
-            width: 56,
-            height: 56,
+        SizedBox(
+          width: 56,
+          height: 56,
+          child: ChromeFrame(
+            thickness: 2,
             child: attached
                 ? Image.file(File(coverPath!), fit: BoxFit.cover)
                 : ColoredBox(

@@ -1,245 +1,385 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T07:15:00Z",
+  "generatedAt": "2026-08-29T08:40:00Z",
   "title": "Design System: Audiobooks",
   "extensions": {
     "colorMeta": {
-      "slate-seed": {
-        "role": "secondary",
-        "displayName": "Slate Seed",
+      "device-seed": {
+        "role": "primary",
+        "displayName": "Device Seed",
         "tonalRamp": [
-          "oklch(15% 0.0659 272.9)",
-          "oklch(27% 0.0659 272.9)",
-          "oklch(39% 0.0659 272.9)",
-          "oklch(51% 0.0659 272.9)",
-          "oklch(63% 0.0659 272.9)",
-          "oklch(75% 0.0659 272.9)",
-          "oklch(87% 0.0659 272.9)",
-          "oklch(95% 0.0659 272.9)"
+          "oklch(15% 0.1320 61.5)",
+          "oklch(27% 0.1320 61.5)",
+          "oklch(39% 0.1320 61.5)",
+          "oklch(51% 0.1320 61.5)",
+          "oklch(63% 0.1320 61.5)",
+          "oklch(75% 0.1320 61.5)",
+          "oklch(87% 0.1320 61.5)",
+          "oklch(95% 0.1320 61.5)"
         ]
       },
-      "primary-brass-light": {
+      "primary-amber-light": {
         "role": "primary",
-        "displayName": "Deep Listening Brass",
+        "displayName": "Burnt Amber",
         "tonalRamp": [
-          "oklch(15% 0.0875 84.9)",
-          "oklch(27% 0.0875 84.9)",
-          "oklch(39% 0.0875 84.9)",
-          "oklch(51% 0.0875 84.9)",
-          "oklch(63% 0.0875 84.9)",
-          "oklch(75% 0.0875 84.9)",
-          "oklch(87% 0.0875 84.9)",
-          "oklch(95% 0.0875 84.9)"
+          "oklch(15% 0.1304 55.7)",
+          "oklch(27% 0.1304 55.7)",
+          "oklch(39% 0.1304 55.7)",
+          "oklch(51% 0.1304 55.7)",
+          "oklch(63% 0.1304 55.7)",
+          "oklch(75% 0.1304 55.7)",
+          "oklch(87% 0.1304 55.7)",
+          "oklch(95% 0.1304 55.7)"
         ]
       },
       "on-primary-light": {
         "role": "neutral",
         "displayName": "Primary Contrast Light",
         "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(27% 0 0)",
-          "oklch(39% 0 0)",
-          "oklch(51% 0 0)",
-          "oklch(63% 0 0)",
-          "oklch(75% 0 0)",
-          "oklch(87% 0 0)",
-          "oklch(95% 0 0)"
+          "oklch(15% 0.0000 89.9)",
+          "oklch(27% 0.0000 89.9)",
+          "oklch(39% 0.0000 89.9)",
+          "oklch(51% 0.0000 89.9)",
+          "oklch(63% 0.0000 89.9)",
+          "oklch(75% 0.0000 89.9)",
+          "oklch(87% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
         ]
       },
-      "primary-brass-dark": {
+      "primary-amber-dark": {
         "role": "primary",
-        "displayName": "Lit Listening Brass",
+        "displayName": "Lit Amber",
         "tonalRamp": [
-          "oklch(15% 0.1170 87.4)",
-          "oklch(27% 0.1170 87.4)",
-          "oklch(39% 0.1170 87.4)",
-          "oklch(51% 0.1170 87.4)",
-          "oklch(63% 0.1170 87.4)",
-          "oklch(75% 0.1170 87.4)",
-          "oklch(87% 0.1170 87.4)",
-          "oklch(95% 0.1170 87.4)"
+          "oklch(15% 0.1459 73.8)",
+          "oklch(27% 0.1459 73.8)",
+          "oklch(39% 0.1459 73.8)",
+          "oklch(51% 0.1459 73.8)",
+          "oklch(63% 0.1459 73.8)",
+          "oklch(75% 0.1459 73.8)",
+          "oklch(87% 0.1459 73.8)",
+          "oklch(95% 0.1459 73.8)"
         ]
       },
       "on-primary-dark": {
-        "role": "neutral",
+        "role": "primary",
         "displayName": "Primary Contrast Dark",
         "tonalRamp": [
-          "oklch(15% 0.0592 93.5)",
-          "oklch(27% 0.0592 93.5)",
-          "oklch(39% 0.0592 93.5)",
-          "oklch(51% 0.0592 93.5)",
-          "oklch(63% 0.0592 93.5)",
-          "oklch(75% 0.0592 93.5)",
-          "oklch(87% 0.0592 93.5)",
-          "oklch(95% 0.0592 93.5)"
+          "oklch(15% 0.0486 77.5)",
+          "oklch(27% 0.0486 77.5)",
+          "oklch(39% 0.0486 77.5)",
+          "oklch(51% 0.0486 77.5)",
+          "oklch(63% 0.0486 77.5)",
+          "oklch(75% 0.0486 77.5)",
+          "oklch(87% 0.0486 77.5)",
+          "oklch(95% 0.0486 77.5)"
         ]
       },
-      "secondary-slate-light": {
+      "secondary-clay-light": {
         "role": "secondary",
-        "displayName": "Quiet Slate",
+        "displayName": "Clay Light",
         "tonalRamp": [
-          "oklch(15% 0.0635 272.4)",
-          "oklch(27% 0.0635 272.4)",
-          "oklch(39% 0.0635 272.4)",
-          "oklch(51% 0.0635 272.4)",
-          "oklch(63% 0.0635 272.4)",
-          "oklch(75% 0.0635 272.4)",
-          "oklch(87% 0.0635 272.4)",
-          "oklch(95% 0.0635 272.4)"
+          "oklch(15% 0.0409 77.7)",
+          "oklch(27% 0.0409 77.7)",
+          "oklch(39% 0.0409 77.7)",
+          "oklch(51% 0.0409 77.7)",
+          "oklch(63% 0.0409 77.7)",
+          "oklch(75% 0.0409 77.7)",
+          "oklch(87% 0.0409 77.7)",
+          "oklch(95% 0.0409 77.7)"
         ]
       },
-      "secondary-slate-dark": {
+      "secondary-clay-dark": {
         "role": "secondary",
-        "displayName": "Moonlit Slate",
+        "displayName": "Clay Dark",
         "tonalRamp": [
-          "oklch(15% 0.0654 275.3)",
-          "oklch(27% 0.0654 275.3)",
-          "oklch(39% 0.0654 275.3)",
-          "oklch(51% 0.0654 275.3)",
-          "oklch(63% 0.0654 275.3)",
-          "oklch(75% 0.0654 275.3)",
-          "oklch(87% 0.0654 275.3)",
-          "oklch(95% 0.0654 275.3)"
+          "oklch(15% 0.0350 81.9)",
+          "oklch(27% 0.0350 81.9)",
+          "oklch(39% 0.0350 81.9)",
+          "oklch(51% 0.0350 81.9)",
+          "oklch(63% 0.0350 81.9)",
+          "oklch(75% 0.0350 81.9)",
+          "oklch(87% 0.0350 81.9)",
+          "oklch(95% 0.0350 81.9)"
         ]
       },
-      "surface-paper-light": {
+      "surface-screen-light": {
         "role": "neutral",
-        "displayName": "Cool Paper",
+        "displayName": "Screen Light",
         "tonalRamp": [
-          "oklch(15% 0.0041 271.4)",
-          "oklch(27% 0.0041 271.4)",
-          "oklch(39% 0.0041 271.4)",
-          "oklch(51% 0.0041 271.4)",
-          "oklch(63% 0.0041 271.4)",
-          "oklch(75% 0.0041 271.4)",
-          "oklch(87% 0.0041 271.4)",
-          "oklch(95% 0.0041 271.4)"
+          "oklch(15% 0.0082 91.5)",
+          "oklch(27% 0.0082 91.5)",
+          "oklch(39% 0.0082 91.5)",
+          "oklch(51% 0.0082 91.5)",
+          "oklch(63% 0.0082 91.5)",
+          "oklch(75% 0.0082 91.5)",
+          "oklch(87% 0.0082 91.5)",
+          "oklch(95% 0.0082 91.5)"
         ]
       },
-      "surface-room-dark": {
+      "surface-screen-dark": {
         "role": "neutral",
-        "displayName": "Blue-Charcoal Room",
+        "displayName": "Screen Dark",
         "tonalRamp": [
-          "oklch(15% 0.0244 259.3)",
-          "oklch(27% 0.0244 259.3)",
-          "oklch(39% 0.0244 259.3)",
-          "oklch(51% 0.0244 259.3)",
-          "oklch(63% 0.0244 259.3)",
-          "oklch(75% 0.0244 259.3)",
-          "oklch(87% 0.0244 259.3)",
-          "oklch(95% 0.0244 259.3)"
+          "oklch(15% 0.0108 80.5)",
+          "oklch(27% 0.0108 80.5)",
+          "oklch(39% 0.0108 80.5)",
+          "oklch(51% 0.0108 80.5)",
+          "oklch(63% 0.0108 80.5)",
+          "oklch(75% 0.0108 80.5)",
+          "oklch(87% 0.0108 80.5)",
+          "oklch(95% 0.0108 80.5)"
         ]
       },
       "on-surface-ink-light": {
         "role": "neutral",
         "displayName": "Listening Ink Light",
         "tonalRamp": [
-          "oklch(15% 0.0341 263.4)",
-          "oklch(27% 0.0341 263.4)",
-          "oklch(39% 0.0341 263.4)",
-          "oklch(51% 0.0341 263.4)",
-          "oklch(63% 0.0341 263.4)",
-          "oklch(75% 0.0341 263.4)",
-          "oklch(87% 0.0341 263.4)",
-          "oklch(95% 0.0341 263.4)"
+          "oklch(15% 0.0137 87.6)",
+          "oklch(27% 0.0137 87.6)",
+          "oklch(39% 0.0137 87.6)",
+          "oklch(51% 0.0137 87.6)",
+          "oklch(63% 0.0137 87.6)",
+          "oklch(75% 0.0137 87.6)",
+          "oklch(87% 0.0137 87.6)",
+          "oklch(95% 0.0137 87.6)"
         ]
       },
       "on-surface-ink-dark": {
         "role": "neutral",
         "displayName": "Listening Ink Dark",
         "tonalRamp": [
-          "oklch(15% 0.0070 268.5)",
-          "oklch(27% 0.0070 268.5)",
-          "oklch(39% 0.0070 268.5)",
-          "oklch(51% 0.0070 268.5)",
-          "oklch(63% 0.0070 268.5)",
-          "oklch(75% 0.0070 268.5)",
-          "oklch(87% 0.0070 268.5)",
-          "oklch(95% 0.0070 268.5)"
+          "oklch(15% 0.0181 89.4)",
+          "oklch(27% 0.0181 89.4)",
+          "oklch(39% 0.0181 89.4)",
+          "oklch(51% 0.0181 89.4)",
+          "oklch(63% 0.0181 89.4)",
+          "oklch(75% 0.0181 89.4)",
+          "oklch(87% 0.0181 89.4)",
+          "oklch(95% 0.0181 89.4)"
         ]
       },
       "surface-low-light": {
         "role": "neutral",
         "displayName": "Low Tonal Layer Light",
         "tonalRamp": [
-          "oklch(15% 0.0070 268.5)",
-          "oklch(27% 0.0070 268.5)",
-          "oklch(39% 0.0070 268.5)",
-          "oklch(51% 0.0070 268.5)",
-          "oklch(63% 0.0070 268.5)",
-          "oklch(75% 0.0070 268.5)",
-          "oklch(87% 0.0070 268.5)",
-          "oklch(95% 0.0070 268.5)"
+          "oklch(15% 0.0152 90.2)",
+          "oklch(27% 0.0152 90.2)",
+          "oklch(39% 0.0152 90.2)",
+          "oklch(51% 0.0152 90.2)",
+          "oklch(63% 0.0152 90.2)",
+          "oklch(75% 0.0152 90.2)",
+          "oklch(87% 0.0152 90.2)",
+          "oklch(95% 0.0152 90.2)"
         ]
       },
       "surface-low-dark": {
         "role": "neutral",
         "displayName": "Low Tonal Layer Dark",
         "tonalRamp": [
-          "oklch(15% 0.0278 259.9)",
-          "oklch(27% 0.0278 259.9)",
-          "oklch(39% 0.0278 259.9)",
-          "oklch(51% 0.0278 259.9)",
-          "oklch(63% 0.0278 259.9)",
-          "oklch(75% 0.0278 259.9)",
-          "oklch(87% 0.0278 259.9)",
-          "oklch(95% 0.0278 259.9)"
+          "oklch(15% 0.0129 78.0)",
+          "oklch(27% 0.0129 78.0)",
+          "oklch(39% 0.0129 78.0)",
+          "oklch(51% 0.0129 78.0)",
+          "oklch(63% 0.0129 78.0)",
+          "oklch(75% 0.0129 78.0)",
+          "oklch(87% 0.0129 78.0)",
+          "oklch(95% 0.0129 78.0)"
         ]
       },
       "surface-highest-light": {
         "role": "neutral",
-        "displayName": "Doorway Plane Light",
+        "displayName": "Moulding Light",
         "tonalRamp": [
-          "oklch(15% 0.0130 266.7)",
-          "oklch(27% 0.0130 266.7)",
-          "oklch(39% 0.0130 266.7)",
-          "oklch(51% 0.0130 266.7)",
-          "oklch(63% 0.0130 266.7)",
-          "oklch(75% 0.0130 266.7)",
-          "oklch(87% 0.0130 266.7)",
-          "oklch(95% 0.0130 266.7)"
+          "oklch(15% 0.0299 87.6)",
+          "oklch(27% 0.0299 87.6)",
+          "oklch(39% 0.0299 87.6)",
+          "oklch(51% 0.0299 87.6)",
+          "oklch(63% 0.0299 87.6)",
+          "oklch(75% 0.0299 87.6)",
+          "oklch(87% 0.0299 87.6)",
+          "oklch(95% 0.0299 87.6)"
         ]
       },
       "surface-highest-dark": {
         "role": "neutral",
-        "displayName": "Doorway Plane Dark",
+        "displayName": "Moulding Dark",
         "tonalRamp": [
-          "oklch(15% 0.0296 258.4)",
-          "oklch(27% 0.0296 258.4)",
-          "oklch(39% 0.0296 258.4)",
-          "oklch(51% 0.0296 258.4)",
-          "oklch(63% 0.0296 258.4)",
-          "oklch(75% 0.0296 258.4)",
-          "oklch(87% 0.0296 258.4)",
-          "oklch(95% 0.0296 258.4)"
+          "oklch(15% 0.0193 80.4)",
+          "oklch(27% 0.0193 80.4)",
+          "oklch(39% 0.0193 80.4)",
+          "oklch(51% 0.0193 80.4)",
+          "oklch(63% 0.0193 80.4)",
+          "oklch(75% 0.0193 80.4)",
+          "oklch(87% 0.0193 80.4)",
+          "oklch(95% 0.0193 80.4)"
         ]
       },
-      "outline-soft-light": {
+      "outline-hairline-light": {
         "role": "neutral",
-        "displayName": "Soft Outline Light",
+        "displayName": "Hairline Light",
         "tonalRamp": [
-          "oklch(15% 0.0114 269.5)",
-          "oklch(27% 0.0114 269.5)",
-          "oklch(39% 0.0114 269.5)",
-          "oklch(51% 0.0114 269.5)",
-          "oklch(63% 0.0114 269.5)",
-          "oklch(75% 0.0114 269.5)",
-          "oklch(87% 0.0114 269.5)",
-          "oklch(95% 0.0114 269.5)"
+          "oklch(15% 0.0332 87.3)",
+          "oklch(27% 0.0332 87.3)",
+          "oklch(39% 0.0332 87.3)",
+          "oklch(51% 0.0332 87.3)",
+          "oklch(63% 0.0332 87.3)",
+          "oklch(75% 0.0332 87.3)",
+          "oklch(87% 0.0332 87.3)",
+          "oklch(95% 0.0332 87.3)"
         ]
       },
-      "outline-soft-dark": {
+      "outline-hairline-dark": {
         "role": "neutral",
-        "displayName": "Soft Outline Dark",
+        "displayName": "Hairline Dark",
         "tonalRamp": [
-          "oklch(15% 0.0288 258.4)",
-          "oklch(27% 0.0288 258.4)",
-          "oklch(39% 0.0288 258.4)",
-          "oklch(51% 0.0288 258.4)",
-          "oklch(63% 0.0288 258.4)",
-          "oklch(75% 0.0288 258.4)",
-          "oklch(87% 0.0288 258.4)",
-          "oklch(95% 0.0288 258.4)"
+          "oklch(15% 0.0236 82.9)",
+          "oklch(27% 0.0236 82.9)",
+          "oklch(39% 0.0236 82.9)",
+          "oklch(51% 0.0236 82.9)",
+          "oklch(63% 0.0236 82.9)",
+          "oklch(75% 0.0236 82.9)",
+          "oklch(87% 0.0236 82.9)",
+          "oklch(95% 0.0236 82.9)"
+        ]
+      },
+      "chrome-edge-light": {
+        "role": "neutral",
+        "displayName": "Chrome Edge Light",
+        "tonalRamp": [
+          "oklch(15% 0.0436 85.2)",
+          "oklch(27% 0.0436 85.2)",
+          "oklch(39% 0.0436 85.2)",
+          "oklch(51% 0.0436 85.2)",
+          "oklch(63% 0.0436 85.2)",
+          "oklch(75% 0.0436 85.2)",
+          "oklch(87% 0.0436 85.2)",
+          "oklch(95% 0.0436 85.2)"
+        ]
+      },
+      "chrome-edge-dark": {
+        "role": "neutral",
+        "displayName": "Chrome Edge Dark",
+        "tonalRamp": [
+          "oklch(15% 0.0091 85.2)",
+          "oklch(27% 0.0091 85.2)",
+          "oklch(39% 0.0091 85.2)",
+          "oklch(51% 0.0091 85.2)",
+          "oklch(63% 0.0091 85.2)",
+          "oklch(75% 0.0091 85.2)",
+          "oklch(87% 0.0091 85.2)",
+          "oklch(95% 0.0091 85.2)"
+        ]
+      },
+      "chrome-highlight-light": {
+        "role": "neutral",
+        "displayName": "Chrome Highlight Light",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.9)",
+          "oklch(27% 0.0000 89.9)",
+          "oklch(39% 0.0000 89.9)",
+          "oklch(51% 0.0000 89.9)",
+          "oklch(63% 0.0000 89.9)",
+          "oklch(75% 0.0000 89.9)",
+          "oklch(87% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
+        ]
+      },
+      "chrome-highlight-dark": {
+        "role": "neutral",
+        "displayName": "Chrome Highlight Dark",
+        "tonalRamp": [
+          "oklch(15% 0.0376 86.3)",
+          "oklch(27% 0.0376 86.3)",
+          "oklch(39% 0.0376 86.3)",
+          "oklch(51% 0.0376 86.3)",
+          "oklch(63% 0.0376 86.3)",
+          "oklch(75% 0.0376 86.3)",
+          "oklch(87% 0.0376 86.3)",
+          "oklch(95% 0.0376 86.3)"
+        ]
+      },
+      "readout-fill-light": {
+        "role": "neutral",
+        "displayName": "Readout Glass Light",
+        "tonalRamp": [
+          "oklch(15% 0.0321 91.0)",
+          "oklch(27% 0.0321 91.0)",
+          "oklch(39% 0.0321 91.0)",
+          "oklch(51% 0.0321 91.0)",
+          "oklch(63% 0.0321 91.0)",
+          "oklch(75% 0.0321 91.0)",
+          "oklch(87% 0.0321 91.0)",
+          "oklch(95% 0.0321 91.0)"
+        ]
+      },
+      "readout-fill-dark": {
+        "role": "neutral",
+        "displayName": "Readout Glass Dark",
+        "tonalRamp": [
+          "oklch(15% 0.0148 87.8)",
+          "oklch(27% 0.0148 87.8)",
+          "oklch(39% 0.0148 87.8)",
+          "oklch(51% 0.0148 87.8)",
+          "oklch(63% 0.0148 87.8)",
+          "oklch(75% 0.0148 87.8)",
+          "oklch(87% 0.0148 87.8)",
+          "oklch(95% 0.0148 87.8)"
+        ]
+      },
+      "readout-ink-light": {
+        "role": "neutral",
+        "displayName": "Readout Ink Light",
+        "tonalRamp": [
+          "oklch(15% 0.0277 85.6)",
+          "oklch(27% 0.0277 85.6)",
+          "oklch(39% 0.0277 85.6)",
+          "oklch(51% 0.0277 85.6)",
+          "oklch(63% 0.0277 85.6)",
+          "oklch(75% 0.0277 85.6)",
+          "oklch(87% 0.0277 85.6)",
+          "oklch(95% 0.0277 85.6)"
+        ]
+      },
+      "readout-ink-dark": {
+        "role": "primary",
+        "displayName": "Readout Ink Dark",
+        "tonalRamp": [
+          "oklch(15% 0.1410 76.6)",
+          "oklch(27% 0.1410 76.6)",
+          "oklch(39% 0.1410 76.6)",
+          "oklch(51% 0.1410 76.6)",
+          "oklch(63% 0.1410 76.6)",
+          "oklch(75% 0.1410 76.6)",
+          "oklch(87% 0.1410 76.6)",
+          "oklch(95% 0.1410 76.6)"
+        ]
+      },
+      "selection-ink-light": {
+        "role": "neutral",
+        "displayName": "Selection Ink Light",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.9)",
+          "oklch(27% 0.0000 89.9)",
+          "oklch(39% 0.0000 89.9)",
+          "oklch(51% 0.0000 89.9)",
+          "oklch(63% 0.0000 89.9)",
+          "oklch(75% 0.0000 89.9)",
+          "oklch(87% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
+        ]
+      },
+      "selection-ink-dark": {
+        "role": "primary",
+        "displayName": "Selection Ink Dark",
+        "tonalRamp": [
+          "oklch(15% 0.0486 77.5)",
+          "oklch(27% 0.0486 77.5)",
+          "oklch(39% 0.0486 77.5)",
+          "oklch(51% 0.0486 77.5)",
+          "oklch(63% 0.0486 77.5)",
+          "oklch(75% 0.0486 77.5)",
+          "oklch(87% 0.0486 77.5)",
+          "oklch(95% 0.0486 77.5)"
         ]
       }
     },
@@ -250,11 +390,11 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Empty-state titles and task-leading messages."
+        "purpose": "Empty-state titles and the book being played."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "App-bar titles and settings section headings."
+        "purpose": "Housing-bar titles and settings section headings."
       },
       "body-large": {
         "displayName": "Body Large",
@@ -266,7 +406,11 @@
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Filled-button labels and prominent controls."
+        "purpose": "Filled-button labels and other prominent controls."
+      },
+      "readout": {
+        "displayName": "Readout (Space Mono)",
+        "purpose": "Every counter, duration, and measured quantity, so digits sit still as they tick."
       }
     },
     "shadows": [],
@@ -279,12 +423,12 @@
       {
         "name": "standard",
         "value": "280ms",
-        "purpose": "The listening marker's one-time settling motion."
+        "purpose": "The empty-state centre key's one-time settling motion."
       },
       {
         "name": "emphasized",
         "value": "cubic-bezier(0.33, 1, 0.68, 1)",
-        "purpose": "Ease-out emphasis for the listening marker."
+        "purpose": "Ease-out emphasis for that settling motion."
       }
     ],
     "breakpoints": [
@@ -308,106 +452,122 @@
       "kind": "button",
       "refersTo": "filled-button-light",
       "description": "The single primary action on a light surface.",
-      "html": "<button class=\"ds-btn-primary-light\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 5h2v14h-2zM5 11h14v2H5z\"/></svg><span>Import Audiobooks</span></button>",
-      "css": ".ds-btn-primary-light { display: inline-flex; min-width: 48px; min-height: 54px; align-items: center; justify-content: center; gap: 8px; padding: 16px 24px; border: 0; border-radius: 14px; background: #6E530F; color: #FFFFFF; font: 600 16px/1 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; transition: filter 160ms, transform 160ms; } .ds-btn-primary-light:hover { filter: brightness(1.08); } .ds-btn-primary-light:active { transform: scale(0.98); } .ds-btn-primary-light:focus-visible { outline: 3px solid rgba(81, 91, 131, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
+      "html": "<button class=\"ds-btn-light\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 5h2v14h-2zM5 11h14v2H5z\"/></svg><span>Import Audiobooks</span></button>",
+      "css": ".ds-btn-light { display: inline-flex; min-width: 48px; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: 0; border-radius: 6px; background: #A8580A; color: #FFFFFF; font: 700 15px/1 SpaceGrotesk, system-ui, -apple-system, sans-serif; letter-spacing: 0.3px; transition: filter 160ms; } .ds-btn-light:hover { filter: brightness(1.08); } .ds-btn-light:active { filter: brightness(0.94); } .ds-btn-light:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
     },
     {
       "name": "Primary Filled Button — Dark",
       "kind": "button",
       "refersTo": "filled-button-dark",
-      "description": "The same scarce primary action resolved for a dark surface.",
-      "html": "<button class=\"ds-btn-primary-dark\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 5h2v14h-2zM5 11h14v2H5z\"/></svg><span>Import Audiobooks</span></button>",
-      "css": ".ds-btn-primary-dark { display: inline-flex; min-width: 48px; min-height: 54px; align-items: center; justify-content: center; gap: 8px; padding: 16px 24px; border: 0; border-radius: 14px; background: #E9C46A; color: #352A00; font: 600 16px/1 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; transition: filter 160ms, transform 160ms; } .ds-btn-primary-dark:hover { filter: brightness(1.06); } .ds-btn-primary-dark:active { transform: scale(0.98); } .ds-btn-primary-dark:focus-visible { outline: 3px solid rgba(188, 198, 244, 0.5); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
+      "description": "The single primary action on a dark surface.",
+      "html": "<button class=\"ds-btn-dark\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M11 5h2v14h-2zM5 11h14v2H5z\"/></svg><span>Import Audiobooks</span></button>",
+      "css": ".ds-btn-dark { display: inline-flex; min-width: 48px; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border: 0; border-radius: 6px; background: #F0A93B; color: #2A1A00; font: 700 15px/1 SpaceGrotesk, system-ui, -apple-system, sans-serif; letter-spacing: 0.3px; transition: filter 160ms; } .ds-btn-dark:hover { filter: brightness(1.08); } .ds-btn-dark:active { filter: brightness(0.94); } .ds-btn-dark:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); outline-offset: 3px; } .ds-btn-icon { width: 20px; height: 20px; fill: currentColor; }"
     },
     {
-      "name": "App Bar — Light",
+      "name": "Housing Bar — Light",
       "kind": "nav",
       "refersTo": "app-bar-light",
-      "description": "A flat standard app bar below the top safe area with one settings action.",
-      "html": "<nav class=\"ds-appbar-light\" aria-label=\"Library\"><strong>Library</strong><button aria-label=\"Settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M19.14 12.94a7.46 7.46 0 0 0 .05-.94 7.46 7.46 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.88 3h-3.84l-.36 3.18c-.58.24-1.12.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.03.31-.05.63-.05.94s.02.63.05.94l-2.03 1.58 1.92 3.32 2.39-.96c.5.39 1.04.7 1.62.94l.36 3.18h3.84l.36-3.18c.58-.24 1.12-.55 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM12.96 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z\"/></svg></button></nav>",
-      "css": ".ds-appbar-light { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 16px; background: #F8F9FC; color: #101828; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-appbar-light strong { font-size: 22px; font-weight: 600; } .ds-appbar-light button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-light button:hover { background: #F1F3F8; } .ds-appbar-light button:focus-visible { outline: 3px solid rgba(81, 91, 131, 0.45); } .ds-appbar-light svg { width: 24px; height: 24px; fill: currentColor; }"
+      "description": "A brushed chrome bar below the top safe area, titled in the centre, with one settings action.",
+      "html": "<nav class=\"ds-appbar-light\" aria-label=\"Library\"><span class=\"ds-appbar-spacer\"></span><strong>Library</strong><button aria-label=\"Settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M19.14 12.94a7.46 7.46 0 0 0 .05-.94 7.46 7.46 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.88 3h-3.84l-.36 3.18c-.58.24-1.12.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.03.31-.05.63-.05.94s.02.63.05.94l-2.03 1.58 1.92 3.32 2.39-.96c.5.39 1.04.7 1.62.94l.36 3.18h3.84l.36-3.18c.58-.24 1.12-.55 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM12.96 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z\"/></svg></button></nav>",
+      "css": ".ds-appbar-light { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; background: linear-gradient(#F8F3E6 0%, #EAE1CB 55%, #D6CBAF 100%); border-bottom: 1px solid #AD9F82; color: #211E17; font-family: SpaceGrotesk, system-ui, -apple-system, sans-serif; } .ds-appbar-light .ds-appbar-spacer { width: 48px; } .ds-appbar-light strong { font-size: 19px; font-weight: 700; letter-spacing: 0.1px; } .ds-appbar-light button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-light button svg { width: 24px; height: 24px; fill: currentColor; } .ds-appbar-light button:hover { background: #F4F0E5; } .ds-appbar-light button:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); }"
     },
     {
-      "name": "App Bar — Dark",
+      "name": "Housing Bar — Dark",
       "kind": "nav",
       "refersTo": "app-bar-dark",
-      "description": "The flat standard app bar resolved for the blue-charcoal appearance.",
-      "html": "<nav class=\"ds-appbar-dark\" aria-label=\"Library\"><strong>Library</strong><button aria-label=\"Settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M19.14 12.94a7.46 7.46 0 0 0 .05-.94 7.46 7.46 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.88 3h-3.84l-.36 3.18c-.58.24-1.12.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.03.31-.05.63-.05.94s.02.63.05.94l-2.03 1.58 1.92 3.32 2.39-.96c.5.39 1.04.7 1.62.94l.36 3.18h3.84l.36-3.18c.58-.24 1.12-.55 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM12.96 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z\"/></svg></button></nav>",
-      "css": ".ds-appbar-dark { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 16px; background: #111823; color: #F1F3F8; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-appbar-dark strong { font-size: 22px; font-weight: 600; } .ds-appbar-dark button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-dark button:hover { background: #171F2C; } .ds-appbar-dark button:focus-visible { outline: 3px solid rgba(188, 198, 244, 0.5); } .ds-appbar-dark svg { width: 24px; height: 24px; fill: currentColor; }"
+      "description": "A brushed chrome bar below the top safe area, titled in the centre, with one settings action.",
+      "html": "<nav class=\"ds-appbar-dark\" aria-label=\"Library\"><span class=\"ds-appbar-spacer\"></span><strong>Library</strong><button aria-label=\"Settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M19.14 12.94a7.46 7.46 0 0 0 .05-.94 7.46 7.46 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.88 3h-3.84l-.36 3.18c-.58.24-1.12.55-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58c-.03.31-.05.63-.05.94s.02.63.05.94l-2.03 1.58 1.92 3.32 2.39-.96c.5.39 1.04.7 1.62.94l.36 3.18h3.84l.36-3.18c.58-.24 1.12-.55 1.62-.94l2.39.96 1.92-3.32-2.03-1.58ZM12.96 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z\"/></svg></button></nav>",
+      "css": ".ds-appbar-dark { min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; background: linear-gradient(#4A4232 0%, #2C2720 55%, #1A1712 100%); border-bottom: 1px solid #0E0C08; color: #F3EEE1; font-family: SpaceGrotesk, system-ui, -apple-system, sans-serif; } .ds-appbar-dark .ds-appbar-spacer { width: 48px; } .ds-appbar-dark strong { font-size: 19px; font-weight: 700; letter-spacing: 0.1px; } .ds-appbar-dark button { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; } .ds-appbar-dark button svg { width: 24px; height: 24px; fill: currentColor; } .ds-appbar-dark button:hover { background: #1E1A14; } .ds-appbar-dark button:focus-visible { outline: 3px solid rgba(180, 104, 15, 0.45); }"
     },
     {
-      "name": "Listening Doorway — Light",
-      "kind": "custom",
-      "refersTo": "listening-doorway",
-      "description": "The signature empty-state geometry on a light surface.",
-      "html": "<div class=\"ds-doorway-light\" role=\"img\" aria-label=\"An open listening space waiting for your audiobooks\"><span class=\"ds-doorway-panel ds-doorway-left\"></span><i></i><span class=\"ds-doorway-panel ds-doorway-right\"></span></div>",
-      "css": ".ds-doorway-light { width: 250px; height: 280px; display: grid; grid-template-columns: 1fr 36px 1fr; align-items: center; background: #F8F9FC; overflow: hidden; } .ds-doorway-panel { height: 86%; background: #DDE1EA; border: 1px solid #D7DAE2; } .ds-doorway-left { clip-path: polygon(12% 0, 100% 10%, 100% 90%, 12% 100%, 0 96%, 0 4%); } .ds-doorway-right { clip-path: polygon(0 10%, 88% 0, 100% 4%, 100% 96%, 88% 100%, 0 90%); } .ds-doorway-light i { width: 20px; height: 20px; justify-self: center; border-radius: 50%; background: #6E530F; animation: ds-marker-settle 280ms cubic-bezier(0.33, 1, 0.68, 1) both; } @keyframes ds-marker-settle { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } @media (prefers-reduced-motion: reduce) { .ds-doorway-light i { animation: none; } }"
+      "name": "Pocket Player Mark — Light",
+      "kind": "illustration",
+      "refersTo": "pocket-player-mark",
+      "description": "The empty-state mark: a moulded housing with a blank recessed screen and a wheel whose centre key lights.",
+      "html": "<div class=\"ds-pocket-light\" role=\"img\" aria-label=\"A pocket player waiting for your audiobooks\"><span class=\"ds-pocket-screen\"></span><span class=\"ds-pocket-wheel\"><span class=\"ds-pocket-key\"></span></span></div>",
+      "css": ".ds-pocket-light { width: 250px; height: 280px; display: flex; flex-direction: column; align-items: center; } .ds-pocket-light::before { content: \"\"; position: absolute; } .ds-pocket-light { background: linear-gradient(#F8F3E6 0%, #EAE1CB 55%, #D6CBAF 100%); border: 1px solid #AD9F82; border-radius: 16px; width: 158px; padding: 22px 16px; gap: 24px; } .ds-pocket-light .ds-pocket-screen { display: block; width: 100%; height: 96px; background: #DCD4BD; border: 1px solid #D0C6AF; border-radius: 5px; } .ds-pocket-light .ds-pocket-wheel { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: linear-gradient(135deg, #F4EDDD, #E3DAC2 55%, #CFC4A8); border: 1px solid #AD9F82; } .ds-pocket-light .ds-pocket-key { width: 42px; height: 42px; border-radius: 50%; background: #A8580A; }"
     },
     {
-      "name": "Listening Doorway — Dark",
-      "kind": "custom",
-      "refersTo": "listening-doorway",
-      "description": "The same open listening space resolved for dark appearance.",
-      "html": "<div class=\"ds-doorway-dark\" role=\"img\" aria-label=\"An open listening space waiting for your audiobooks\"><span class=\"ds-doorway-panel ds-doorway-left\"></span><i></i><span class=\"ds-doorway-panel ds-doorway-right\"></span></div>",
-      "css": ".ds-doorway-dark { width: 250px; height: 280px; display: grid; grid-template-columns: 1fr 36px 1fr; align-items: center; background: #111823; overflow: hidden; } .ds-doorway-panel { height: 86%; background: #303A49; border: 1px solid #3B4554; } .ds-doorway-left { clip-path: polygon(12% 0, 100% 10%, 100% 90%, 12% 100%, 0 96%, 0 4%); } .ds-doorway-right { clip-path: polygon(0 10%, 88% 0, 100% 4%, 100% 96%, 88% 100%, 0 90%); } .ds-doorway-dark i { width: 20px; height: 20px; justify-self: center; border-radius: 50%; background: #E9C46A; animation: ds-marker-settle 280ms cubic-bezier(0.33, 1, 0.68, 1) both; } @keyframes ds-marker-settle { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } @media (prefers-reduced-motion: reduce) { .ds-doorway-dark i { animation: none; } }"
+      "name": "Pocket Player Mark — Dark",
+      "kind": "illustration",
+      "refersTo": "pocket-player-mark",
+      "description": "The empty-state mark: a moulded housing with a blank recessed screen and a wheel whose centre key lights.",
+      "html": "<div class=\"ds-pocket-dark\" role=\"img\" aria-label=\"A pocket player waiting for your audiobooks\"><span class=\"ds-pocket-screen\"></span><span class=\"ds-pocket-wheel\"><span class=\"ds-pocket-key\"></span></span></div>",
+      "css": ".ds-pocket-dark { width: 250px; height: 280px; display: flex; flex-direction: column; align-items: center; } .ds-pocket-dark::before { content: \"\"; position: absolute; } .ds-pocket-dark { background: linear-gradient(#4A4232 0%, #2C2720 55%, #1A1712 100%); border: 1px solid #0E0C08; border-radius: 16px; width: 158px; padding: 22px 16px; gap: 24px; } .ds-pocket-dark .ds-pocket-screen { display: block; width: 100%; height: 96px; background: #120F08; border: 1px solid #423B2E; border-radius: 5px; } .ds-pocket-dark .ds-pocket-wheel { display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; background: linear-gradient(135deg, #443D2D, #302A20 55%, #241F18); border: 1px solid #0E0C08; } .ds-pocket-dark .ds-pocket-key { width: 42px; height: 42px; border-radius: 50%; background: #F0A93B; }"
     },
     {
-      "name": "Player Transport — Dark",
-      "kind": "custom",
-      "refersTo": "player-play-dark",
-      "description": "The expanded listening controls reserve brass for progress, play, and the active chapter.",
-      "html": "<section class=\"ds-player-dark\" aria-label=\"Playback controls\"><input type=\"range\" min=\"0\" max=\"100\" value=\"44\" aria-label=\"Playback position\"><div class=\"ds-player-time\"><span>18:32</span><span>-23:28</span></div><div class=\"ds-player-controls\"><button aria-label=\"Previous chapter\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 6h2v12H6zm3.5 6 8.5 6V6z\"/></svg></button><button aria-label=\"Rewind 15 seconds\">-15</button><button class=\"ds-player-play\" aria-label=\"Play\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M8 5v14l11-7z\"/></svg></button><button aria-label=\"Forward 30 seconds\">+30</button><button aria-label=\"Next chapter\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M16 6h2v12h-2zM6 18l8.5-6L6 6z\"/></svg></button></div></section>",
-      "css": ".ds-player-dark { width: min(100%, 480px); color: #F1F3F8; font: 400 15px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-player-dark input { width: 100%; accent-color: #E9C46A; } .ds-player-time, .ds-player-controls { display: flex; align-items: center; justify-content: space-between; } .ds-player-time { margin-top: 8px; } .ds-player-controls { justify-content: center; gap: 12px; margin-top: 24px; } .ds-player-controls button { min-width: 48px; min-height: 48px; border: 0; border-radius: 14px; background: transparent; color: #F1F3F8; font: 600 14px/1 system-ui; } .ds-player-controls button:hover { background: #171F2C; } .ds-player-controls button:focus-visible { outline: 3px solid rgba(188, 198, 244, 0.5); } .ds-player-controls .ds-player-play { width: 64px; height: 64px; border-radius: 50%; background: #E9C46A; color: #352A00; } .ds-player-controls svg { width: 22px; height: 22px; fill: currentColor; } .ds-player-play svg { width: 28px; height: 28px; }"
+      "name": "Click Wheel — Dark",
+      "kind": "control",
+      "refersTo": "click-wheel",
+      "description": "The player transport: a painted moulded face with ordinary buttons laid over it, so every key keeps its tooltip, focus stop, 48px target, and semantics.",
+      "html": "<div class=\"ds-wheel\" role=\"group\" aria-label=\"Transport\"><button class=\"ds-wheel-key ds-n\" aria-label=\"Previous chapter\">⏮</button><button class=\"ds-wheel-key ds-w\" aria-label=\"Rewind 15 seconds\">↺</button><button class=\"ds-wheel-centre\" aria-label=\"Play\">▶</button><button class=\"ds-wheel-key ds-e\" aria-label=\"Forward 30 seconds\">↻</button><button class=\"ds-wheel-key ds-s\" aria-label=\"Next chapter\">⏭</button></div>",
+      "css": ".ds-wheel { position: relative; width: 244px; height: 244px; border-radius: 50%; border: 1px solid #14110C; background: linear-gradient(135deg, #443D2D, #302A20 55%, #241F18); } .ds-wheel::after { content: \"\"; position: absolute; inset: 71px; border-radius: 50%; background: #211D16; border: 1px solid #14110C; } .ds-wheel-key { position: absolute; width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #B0A695; font-size: 18px; } .ds-wheel-key.ds-n { top: 12px; left: 98px; } .ds-wheel-key.ds-s { bottom: 12px; left: 98px; } .ds-wheel-key.ds-w { left: 12px; top: 98px; } .ds-wheel-key.ds-e { right: 12px; top: 98px; } .ds-wheel-centre { position: absolute; z-index: 1; left: 78px; top: 78px; width: 88px; height: 88px; border: 0; border-radius: 50%; background: #F0A93B; color: #2A1A00; font-size: 34px; } .ds-wheel-key:focus-visible, .ds-wheel-centre:focus-visible { outline: 3px solid rgba(240, 169, 59, 0.5); outline-offset: 2px; }"
+    },
+    {
+      "name": "Readout — Dark",
+      "kind": "display",
+      "refersTo": "readout-dark",
+      "description": "The recessed pane carrying the scrubber and every measured quantity, set in the monospace readout face.",
+      "html": "<div class=\"ds-readout\"><input type=\"range\" min=\"0\" max=\"100\" value=\"42\" aria-label=\"Playback position\"><div class=\"ds-readout-row\"><span>12:41</span><span class=\"ds-readout-dim\">4:46:00 left in book</span><span>-17:19</span></div></div>",
+      "css": ".ds-readout { background: #120F08; border: 1px solid #3D3527; border-radius: 5px; padding: 8px 12px 12px; } .ds-readout input { width: 100%; accent-color: #F0A93B; } .ds-readout-row { display: flex; justify-content: space-between; gap: 8px; color: #FFBE55; font: 400 14px/1.35 SpaceMono, ui-monospace, Menlo, 'Courier New', monospace; } .ds-readout-dim { color: #9C8552; }"
     },
     {
       "name": "Book List Row",
-      "kind": "custom",
+      "kind": "list",
       "refersTo": "book-list-row",
-      "description": "A flat native library row with cover, title, and author rhythm; the list tile owns its semantics.",
-      "html": "<article class=\"ds-book-row\"><div class=\"ds-book-cover\" aria-hidden=\"true\">A</div><div><strong>Audiobook title</strong><span>Author name</span></div></article>",
-      "css": ".ds-book-row { min-height: 80px; display: flex; align-items: center; gap: 16px; padding: 8px 12px; background: #F8F9FC; color: #101828; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; } .ds-book-row:hover { background: #F1F3F8; } .ds-book-row:focus-within { outline: 3px solid rgba(81, 91, 131, 0.45); outline-offset: 2px; } .ds-book-cover { width: 48px; height: 64px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 12px; background: #DDE1EA; color: #4B557B; font-size: 22px; font-weight: 600; } .ds-book-row strong, .ds-book-row span { display: block; } .ds-book-row strong { max-width: 30ch; font-size: 16px; font-weight: 500; } .ds-book-row span { margin-top: 4px; color: #4B557B; font-size: 15px; }"
+      "description": "A menu row: a bezelled square cover, title and author, the resume counter in the readout face, and the arrow into it.",
+      "html": "<a class=\"ds-row\" href=\"#\"><span class=\"ds-row-cover\">T</span><span class=\"ds-row-text\"><strong>The Wind in the Willows</strong><span class=\"ds-row-author\">Kenneth Grahame</span><span class=\"ds-row-bar\"><i style=\"width:42%\"></i></span><span class=\"ds-row-resume\">Chapter 5 · 16:00</span></span><span class=\"ds-row-arrow\" aria-hidden=\"true\">›</span></a>",
+      "css": ".ds-row { display: flex; align-items: center; gap: 16px; min-height: 80px; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid #D0C6AF; background: #FCFAF4; color: #211E17; font-family: SpaceGrotesk, system-ui, -apple-system, sans-serif; } .ds-row-cover { flex: none; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 5px; border: 1px solid #AD9F82; background: linear-gradient(#F8F3E6 0%, #EAE1CB 55%, #D6CBAF 100%); box-shadow: inset 0 0 0 2px #E4DCC7; color: #3A3226; font-size: 22px; font-weight: 700; } .ds-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; } .ds-row-text strong { font-size: 16px; font-weight: 700; } .ds-row-author { font-size: 14px; color: #63594A; } .ds-row-bar { display: block; height: 4px; border-radius: 2px; background: #CDC3AC; overflow: hidden; } .ds-row-bar i { display: block; height: 100%; background: #A8580A; } .ds-row-resume { color: #A8580A; font: 700 12px/1.35 SpaceMono, ui-monospace, Menlo, 'Courier New', monospace; } .ds-row-arrow { flex: none; color: #8A7F6B; font-size: 18px; }"
     }
   ],
   "narrative": {
-    "northStar": "The Quiet Listening Room",
-    "overview": "The interface should feel like entering a calm room made for listening: cool semantic surfaces create stillness, tall slate planes suggest an open doorway, and one restrained brass marker signals the listening action. The system is premium and understated without becoming precious; book covers and user content are allowed to carry the personality while the surrounding interface recedes.\n\nThe visual language uses flat tonal layering, generous negative space, comfortable reading rhythm, and adaptive native behavior. Material 3 roles structure Android presentation, iOS navigation and transitions retain familiar platform behavior, and macOS restructures content for resizable pointer-and-keyboard windows. Expression belongs in the palette, measured geometry, and the signature listening marker—not in decorative gradients, excessive cards, or custom controls that compete with native expectations.",
+    "northStar": "The Click-Wheel Era",
+    "overview": "The interface should feel like a well-made personal player from the early\n2000s: a brushed housing, a screen recessed behind a bezel, printed keys on a\nmoulded wheel, and one amber that marks the row you are on. The product is the\nsame calm, offline listening room it always was; what changed is that the room\nnow has the shape of a device you could hold.\n\nThe visual language uses drawn bevels instead of blur, hairline rules instead\nof cards, monospaced digits for anything that counts, and tight corners\neverywhere. Material 3 roles still structure Android presentation, iOS\nnavigation and transitions retain familiar platform behavior, and macOS\nrestructures content for resizable pointer-and-keyboard windows. The period\nbelongs to the surfaces, the geometry, and the wheel — never to the behavior:\nevery control underneath is a stock platform control with its own tooltip,\nfocus, touch target, and semantics.",
     "keyCharacteristics": [
-      "Cool semantic surfaces in coordinated light and dark appearances.",
-      "One scarce brass accent for the primary listening marker and action.",
-      "Platform system typography with a calm, compact hierarchy.",
-      "Flat tonal layering, restrained corners, and no decorative shadow vocabulary.",
+      "Brushed chrome housing over a plain screen, in coordinated light and dark.",
+      "One amber for the primary action, the marked row, and the bar of progress.",
+      "Space Grotesk for reading, Space Mono for readouts; both bundled.",
+      "Bevelled hairline edges; tight 3-6 logical-pixel corners; no drop shadows.",
       "Native navigation, controls, touch targets, and reduced-motion behavior."
     ],
     "rules": [
       {
-        "name": "The One Brass Voice Rule",
-        "body": "Brass belongs to the primary listening marker and primary action; its rarity is what makes it legible.",
-        "section": "colors"
+        "name": "The One Amber Voice Rule",
+        "text": "Amber belongs to the primary action, the row being played, and the bar of progress; its rarity is what makes it legible."
+      },
+      {
+        "name": "The Bevel, Not Blur Rule",
+        "text": "Depth is a dark hairline and a lit hairline, or a two-stop gradient across a moulded face. It is never a drop shadow."
       },
       {
         "name": "The Reading Rhythm Rule",
-        "body": "Preserve semantic type roles and text scaling; never shrink or tighten copy merely to force a preferred composition.",
-        "section": "typography"
+        "text": "Preserve semantic type roles and text scaling; never shrink or tighten copy merely to force a preferred composition."
       },
       {
-        "name": "The Flat-by-Default Rule",
-        "body": "Separate layers with tonal roles and spacing; do not add drop shadows to cards, app bars, doorway planes, or controls.",
-        "section": "elevation"
+        "name": "The Digits Sit Still Rule",
+        "text": "A number that changes while you watch it is set in the readout face, so the line beside it never reflows."
+      },
+      {
+        "name": "The Flat-Behind-the-Bevel Rule",
+        "text": "Separate layers with bevels, tonal roles, and spacing; do not add drop shadows to rows, housing bars, readouts, or controls."
       }
     ],
     "dos": [
-      "Do use semantic Material color roles so light and dark appearances remain coordinated.",
-      "Do reserve brass for the primary listening marker, primary action, and necessary interactive emphasis.",
-      "Do keep content flows native, scrollable, safe-area aware, and resilient to text scaling.",
-      "Do use the spacing, radius, type, touch-target, and motion tokens already defined in the Flutter theme.",
-      "Do disable the listening-marker motion when reduced motion or accessible navigation is requested."
+      "use semantic Material color roles so light and dark appearances remain coordinated.",
+      "reserve amber for the primary action, the marked row, and progress.",
+      "take the ink on the marked row from the palette rather than assuming white: the lit amber of dark appearance will not carry it.",
+      "set every counted quantity in the readout face.",
+      "keep content flows native, scrollable, safe-area aware, and resilient to text scaling.",
+      "draw period surfaces with bevels and gradients, and leave the control underneath a stock platform control.",
+      "disable the empty-state motion when reduced motion or accessible navigation is requested."
     ],
     "donts": [
-      "Don't add decorative gradients, glass effects, arbitrary accent colors, or drop shadows.",
-      "Don't wrap empty states, settings groups, or list rows in generic cards.",
-      "Don't replace platform navigation, back behavior, segmented controls, list tiles, or progress indicators with web-shaped imitations.",
-      "Don't fabricate cover art, catalog content, a logo, or a final product name.",
-      "Don't stretch centered reading content across tablet widths or compress it to preserve a fixed phone composition."
+      "add drop shadows, glass effects, or arbitrary accent colors.",
+      "paint a control that a real button could be laid over instead.",
+      "wrap empty states, settings groups, or list rows in generic cards.",
+      "replace platform navigation, back behavior, segmented controls, list tiles, sliders, or progress indicators with web-shaped imitations.",
+      "fabricate cover art, catalog content, a logo, or a final product name, and don't imitate the branding of any device the period recalls.",
+      "stretch centered reading content across tablet widths or compress it to preserve a fixed phone composition."
     ]
   }
 }
