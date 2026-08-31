@@ -32,8 +32,16 @@ import '../../features/player/domain/repositories/player_repository.dart'
 import '../../features/player/presentation/cubit/player_cubit.dart' as _i387;
 import '../../features/settings/data/repositories/shared_preferences_appearance_repository.dart'
     as _i1004;
+import '../../features/settings/data/repositories/shared_preferences_playback_settings_repository.dart'
+    as _i435;
 import '../../features/settings/domain/repositories/appearance_repository.dart'
     as _i475;
+import '../../features/settings/domain/repositories/playback_settings_repository.dart'
+    as _i579;
+import '../../features/settings/presentation/cubit/playback_settings_cubit.dart'
+    as _i333;
+import '../../features/settings/presentation/cubit/storage_summary_cubit.dart'
+    as _i809;
 import '../../features/settings/presentation/cubit/theme_cubit.dart' as _i124;
 import '../router/app_router.dart' as _i81;
 
@@ -55,6 +63,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i491.AudioMetadataService>(
       () => const _i798.LocalAudioMetadataService(),
     );
+    gh.lazySingleton<_i579.PlaybackSettingsRepository>(
+      () => _i435.SharedPreferencesPlaybackSettingsRepository(),
+    );
     gh.lazySingleton<_i815.AudioPlaybackService>(
       () => _i954.JustAudioPlaybackService(),
     );
@@ -64,17 +75,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1069.AudiobookRepository>(
       () => _i409.LocalAudiobookRepository(gh<_i50.AppDatabase>()),
     );
-    gh.lazySingleton<_i1009.PlayerRepository>(
-      () => _i411.LocalPlayerRepository(
-        gh<_i815.AudioPlaybackService>(),
-        gh<_i1069.AudiobookRepository>(),
-      ),
-    );
     gh.factory<_i196.LibraryCubit>(
       () => _i196.LibraryCubit(
         gh<_i1069.AudiobookRepository>(),
         gh<_i306.DeviceFileGateway>(),
         gh<_i491.AudioMetadataService>(),
+      ),
+    );
+    gh.factory<_i809.StorageSummaryCubit>(
+      () => _i809.StorageSummaryCubit(
+        gh<_i1069.AudiobookRepository>(),
+        gh<_i306.DeviceFileGateway>(),
       ),
     );
     gh.factory<_i750.ImportCubit>(
@@ -84,10 +95,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i491.AudioMetadataService>(),
       ),
     );
+    gh.factory<_i333.PlaybackSettingsCubit>(
+      () => _i333.PlaybackSettingsCubit(gh<_i579.PlaybackSettingsRepository>()),
+    );
+    gh.lazySingleton<_i1009.PlayerRepository>(
+      () => _i411.LocalPlayerRepository(
+        gh<_i815.AudioPlaybackService>(),
+        gh<_i1069.AudiobookRepository>(),
+        gh<_i579.PlaybackSettingsRepository>(),
+      ),
+    );
     gh.factory<_i387.PlayerCubit>(
       () => _i387.PlayerCubit(
         gh<_i1009.PlayerRepository>(),
         gh<_i1069.AudiobookRepository>(),
+        gh<_i579.PlaybackSettingsRepository>(),
       ),
     );
     return this;

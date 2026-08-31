@@ -4,25 +4,32 @@ import 'package:audiobooks/core/audio/audio_playback_snapshot.dart';
 import 'package:audiobooks/features/library/domain/repositories/audiobook_repository.dart';
 import 'package:audiobooks/features/player/domain/repositories/player_repository.dart';
 import 'package:audiobooks/features/player/presentation/cubit/player_state.dart';
+import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class PlayerCubit extends Cubit<PlayerViewState> {
-  PlayerCubit(this._player, this._audiobooks) : super(const PlayerViewState());
+  PlayerCubit(this._player, this._audiobooks, this._settings)
+    : super(const PlayerViewState());
 
   final PlayerRepository _player;
   final AudiobookRepository _audiobooks;
+  final PlaybackSettingsRepository _settings;
   StreamSubscription<AudioPlaybackSnapshot>? _subscription;
 
   /// Opens a book. Without [chapterId] it continues from the stored place.
   Future<void> load(String bookId, {String? chapterId}) async {
     emit(const PlayerViewState());
+    // The wheel is labelled with the intervals it will actually step by, so
+    // the defaults are read before anything is drawn.
+    final settings = await _settings.loadPlaybackSettings();
     final book = await _audiobooks.findById(bookId);
     if (book == null) {
       emit(
-        const PlayerViewState(
+        PlayerViewState(
           status: PlayerViewStatus.failure,
+          settings: settings,
           errorMessage: 'This audiobook is no longer in your library.',
         ),
       );
@@ -45,7 +52,7 @@ class PlayerCubit extends Cubit<PlayerViewState> {
           ),
         );
 
-    emit(state.copyWith(book: book));
+    emit(state.copyWith(book: book, settings: settings));
     await _player.open(book, chapterId: chapterId);
   }
 
@@ -56,9 +63,9 @@ class PlayerCubit extends Cubit<PlayerViewState> {
 
   Future<void> seek(Duration position) => _player.seek(position);
 
-  Future<void> rewind() => _player.skipBy(const Duration(seconds: -15));
+  Future<void> rewind() => _player.skipBy(-state.settings.rewindInterval);
 
-  Future<void> forward() => _player.skipBy(const Duration(seconds: 30));
+  Future<void> forward() => _player.skipBy(state.settings.forwardInterval);
 
   Future<void> nextChapter() => _player.nextChapter();
 

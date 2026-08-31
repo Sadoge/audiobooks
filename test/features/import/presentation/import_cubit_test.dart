@@ -317,6 +317,9 @@ class _FakeDeviceFileGateway implements DeviceFileGateway {
 
   @override
   Future<void> deleteBookFiles(String bookId) async {}
+
+  @override
+  Future<int?> storedMediaBytes() async => 0;
 }
 
 class _RecordingAudiobookRepository implements AudiobookRepository {

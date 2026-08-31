@@ -30,6 +30,12 @@ The foundation release includes:
   by hand at import or afterwards. Covers are squared and scaled when stored,
   so the Library, the grid, and the player all read as square artwork.
 - Removing a book from the Library, which deletes the media copied for it.
+- Importing more books at any time: the Library housing bar carries the import
+  key whether the library is empty or full.
+- Settings that reach the player: the speed every book opens at, what the
+  wheel's rewind and forward keys step by, and how far back a resumed book
+  picks up. The panel also reports how much of the device the imported audio
+  takes, and lists the licences the bundled fonts and packages ship under.
 - Unit, widget, repository, and golden tests.
 
 Selecting several files offers to import them as one book with a chapter per

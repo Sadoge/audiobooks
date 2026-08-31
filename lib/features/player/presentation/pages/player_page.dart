@@ -9,6 +9,7 @@ import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook_chapter.dart';
 import 'package:audiobooks/features/player/presentation/cubit/player_cubit.dart';
 import 'package:audiobooks/features/player/presentation/cubit/player_state.dart';
+import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +57,7 @@ class PlayerView extends StatelessWidget {
             PlayerViewStatus.ready => _AdaptivePlayer(
               book: book!,
               playback: state.playback,
+              settings: state.settings,
             ),
           },
         );
@@ -65,10 +67,15 @@ class PlayerView extends StatelessWidget {
 }
 
 class _AdaptivePlayer extends StatelessWidget {
-  const _AdaptivePlayer({required this.book, required this.playback});
+  const _AdaptivePlayer({
+    required this.book,
+    required this.playback,
+    required this.settings,
+  });
 
   final Audiobook book;
   final AudioPlaybackSnapshot playback;
+  final PlaybackSettings settings;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +105,7 @@ class _AdaptivePlayer extends StatelessWidget {
                         child: _ListeningDetails(
                           book: book,
                           playback: playback,
+                          settings: settings,
                           desktop: true,
                         ),
                       ),
@@ -110,6 +118,7 @@ class _AdaptivePlayer extends StatelessWidget {
                       _ListeningDetails(
                         book: book,
                         playback: playback,
+                        settings: settings,
                         desktop: false,
                       ),
                     ],
@@ -203,11 +212,13 @@ class _ListeningDetails extends StatelessWidget {
   const _ListeningDetails({
     required this.book,
     required this.playback,
+    required this.settings,
     required this.desktop,
   });
 
   final Audiobook book;
   final AudioPlaybackSnapshot playback;
+  final PlaybackSettings settings;
   final bool desktop;
 
   @override
@@ -234,6 +245,8 @@ class _ListeningDetails extends StatelessWidget {
         _Transport(
           isPlaying: isPlaying,
           skipChapters: skipChapters,
+          rewindInterval: settings.rewindInterval,
+          forwardInterval: settings.forwardInterval,
           desktop: desktop,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -330,11 +343,15 @@ class _Transport extends StatelessWidget {
   const _Transport({
     required this.isPlaying,
     required this.skipChapters,
+    required this.rewindInterval,
+    required this.forwardInterval,
     required this.desktop,
   });
 
   final bool isPlaying;
   final bool skipChapters;
+  final Duration rewindInterval;
+  final Duration forwardInterval;
   final bool desktop;
 
   @override
@@ -365,15 +382,20 @@ class _Transport extends StatelessWidget {
                       icon: const Icon(Icons.skip_next_rounded),
                     )
                   : null,
+              // The keys say exactly what they do: the labels are drawn from
+              // the same intervals the transport steps by.
               west: _WheelKey(
-                tooltip: 'Rewind 15 seconds',
+                tooltip: 'Rewind ${rewindInterval.inSeconds} seconds',
                 onPressed: cubit.rewind,
-                icon: const _RewindFifteenIcon(),
+                icon: _SkipIcon(seconds: rewindInterval.inSeconds),
               ),
               east: _WheelKey(
-                tooltip: 'Forward 30 seconds',
+                tooltip: 'Forward ${forwardInterval.inSeconds} seconds',
                 onPressed: cubit.forward,
-                icon: const Icon(Icons.forward_30_rounded),
+                icon: _SkipIcon(
+                  seconds: forwardInterval.inSeconds,
+                  forward: true,
+                ),
               ),
               centre: FilledButton(
                 onPressed: cubit.togglePlayback,
@@ -436,9 +458,12 @@ class _SpeedKey extends StatelessWidget {
         tooltip: 'Playback speed',
         initialValue: speed,
         onSelected: context.read<PlayerCubit>().setSpeed,
-        itemBuilder: (context) => _playbackSpeeds
+        itemBuilder: (context) => PlaybackOptions.speeds
             .map(
-              (value) => PopupMenuItem(value: value, child: Text('${value}x')),
+              (value) => PopupMenuItem(
+                value: value,
+                child: Text(PlaybackOptions.speedLabel(value)),
+              ),
             )
             .toList(growable: false),
         child: ChromeKey(
@@ -457,7 +482,7 @@ class _SpeedKey extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '${speed}x',
+                  PlaybackOptions.speedLabel(speed),
                   style: AppFonts.readout(
                     Theme.of(context).textTheme.labelLarge,
                   ).copyWith(color: scheme.onSurface),
@@ -755,8 +780,13 @@ class _PlayerFailure extends StatelessWidget {
   }
 }
 
-class _RewindFifteenIcon extends StatelessWidget {
-  const _RewindFifteenIcon();
+/// A skip key: the arrow it turns, with the seconds it moves by printed
+/// inside it, the way the keys on these devices were printed.
+class _SkipIcon extends StatelessWidget {
+  const _SkipIcon({required this.seconds, this.forward = false});
+
+  final int seconds;
+  final bool forward;
 
   @override
   Widget build(BuildContext context) {
@@ -766,11 +796,11 @@ class _RewindFifteenIcon extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          const Icon(Icons.replay_rounded),
+          Icon(forward ? Icons.refresh_rounded : Icons.replay_rounded),
           Padding(
             padding: const EdgeInsets.only(top: 1),
             child: Text(
-              '15',
+              '$seconds',
               style: TextStyle(
                 color: color,
                 fontSize: 8,
@@ -803,18 +833,3 @@ String _formatDuration(Duration duration) {
   final seconds = safe.inSeconds.remainder(60).toString().padLeft(2, '0');
   return hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
 }
-
-const _playbackSpeeds = <double>[
-  0.5,
-  0.75,
-  0.9,
-  1,
-  1.1,
-  1.2,
-  1.25,
-  1.5,
-  1.75,
-  2,
-  2.5,
-  3,
-];

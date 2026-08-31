@@ -6,11 +6,13 @@ import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/entities/playback_progress.dart';
 import 'package:audiobooks/features/library/domain/repositories/audiobook_repository.dart';
 import 'package:audiobooks/features/player/domain/repositories/player_repository.dart';
+import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
+import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: PlayerRepository)
 class LocalPlayerRepository implements PlayerRepository {
-  LocalPlayerRepository(this._service, this._audiobooks) {
+  LocalPlayerRepository(this._service, this._audiobooks, this._settings) {
     _subscription = _service.snapshots.listen(_handleSnapshot);
   }
 
@@ -18,6 +20,7 @@ class LocalPlayerRepository implements PlayerRepository {
 
   final AudioPlaybackService _service;
   final AudiobookRepository _audiobooks;
+  final PlaybackSettingsRepository _settings;
   // Retains the progress listener for the lifetime of this singleton.
   // ignore: unused_field
   late final StreamSubscription<AudioPlaybackSnapshot> _subscription;
@@ -46,12 +49,15 @@ class LocalPlayerRepository implements PlayerRepository {
     // Nothing is worth writing until this book is actually being listened to.
     _recording = false;
 
+    final settings = await _loadSettings();
+
     if (chapterId != null || position != null) {
-      return _service.load(
+      await _service.load(
         audiobook,
         chapterId: chapterId,
         position: position ?? Duration.zero,
       );
+      return _service.setSpeed(settings.speed);
     }
 
     // A book played to the end resumes at the end, where play does nothing.
@@ -60,17 +66,24 @@ class LocalPlayerRepository implements PlayerRepository {
         ? null
         : await _storedProgress(audiobook.id);
     _lastChapterId = resume?.chapterId;
-    _openedAt = resume?.bookPosition ?? Duration.zero;
-    return _service.load(
+    // Picking a book back up a moment before it was left is the listener's
+    // choice, and it never steps back past the start of what it resumes into.
+    _openedAt = _stepBack(
+      resume?.bookPosition ?? Duration.zero,
+      settings.resumeRewind,
+    );
+    await _service.load(
       audiobook,
       chapterId: resume?.chapterId,
       // Without a chapter the engine reads this as a whole book offset.
       position: resume == null
           ? Duration.zero
-          : resume.chapterId == null
-          ? resume.bookPosition
-          : resume.position,
+          : _stepBack(
+              resume.chapterId == null ? resume.bookPosition : resume.position,
+              settings.resumeRewind,
+            ),
     );
+    return _service.setSpeed(settings.speed);
   }
 
   @override
@@ -103,6 +116,21 @@ class LocalPlayerRepository implements PlayerRepository {
     final book = _activeBook;
     if (book == null || !_recording || _latest.bookId != book.id) return;
     await _write(book.id, _latest);
+  }
+
+  /// The defaults a book opens on. A store that cannot be read leaves the
+  /// player on the ordinary ones rather than refusing to open the book.
+  Future<PlaybackSettings> _loadSettings() async {
+    try {
+      return await _settings.loadPlaybackSettings();
+    } catch (_) {
+      return const PlaybackSettings();
+    }
+  }
+
+  Duration _stepBack(Duration position, Duration by) {
+    final result = position - by;
+    return result.isNegative ? Duration.zero : result;
   }
 
   Future<PlaybackProgress?> _storedProgress(String bookId) async {

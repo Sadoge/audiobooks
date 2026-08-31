@@ -3,7 +3,9 @@
 - Mode: Operate. Scope: the top-level library and its empty state.
 - Audience and job: device-file audiobook listeners need to understand an empty
   local library and begin a native import flow immediately.
-- Primary action: Import Audiobooks. Secondary action: open Settings.
+- Primary action: Import Audiobooks — the one full-width control on the empty
+  state, and an icon key on the housing bar at every other time, so a library
+  that already holds books can still grow. Secondary action: open Settings.
 - Chosen direction: click-wheel era; the library is the menu on a personal
   player from the early 2000s.
 - Memorable moment: a moulded pocket player with a blank recessed screen and a
@@ -40,7 +42,7 @@
 
 | Ingredient | Commitment | Medium |
 | --- | --- | --- |
-| Housing bar | Brushed chrome bar in the top safe area, centred `Library` title, one Settings action | Semantic Flutter widgets |
+| Housing bar | Brushed chrome bar in the top safe area, centred `Library` title, an import action and a Settings action | Semantic Flutter widgets |
 | Empty geometry | A moulded housing, a blank recessed screen, and a wheel | CustomPainter / Flutter shapes |
 | Empty message | Headline plus concise local-only explanation | Semantic Flutter text |
 | Primary action | Full-width accessible filled control | Material filled button |

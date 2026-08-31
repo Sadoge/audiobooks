@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerViewState {
 
- PlayerViewStatus get status; Audiobook? get book; AudioPlaybackSnapshot get playback; String? get errorMessage;
+ PlayerViewStatus get status; Audiobook? get book; AudioPlaybackSnapshot get playback;/// The defaults this sitting started from: what the wheel's skip keys
+/// step by, and the speed the book was opened at.
+ PlaybackSettings get settings; String? get errorMessage;
 /// Create a copy of PlayerViewState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $PlayerViewStateCopyWith<PlayerViewState> get copyWith => _$PlayerViewStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerViewState&&(identical(other.status, status) || other.status == status)&&(identical(other.book, book) || other.book == book)&&(identical(other.playback, playback) || other.playback == playback)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerViewState&&(identical(other.status, status) || other.status == status)&&(identical(other.book, book) || other.book == book)&&(identical(other.playback, playback) || other.playback == playback)&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,book,playback,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,book,playback,settings,errorMessage);
 
 @override
 String toString() {
-  return 'PlayerViewState(status: $status, book: $book, playback: $playback, errorMessage: $errorMessage)';
+  return 'PlayerViewState(status: $status, book: $book, playback: $playback, settings: $settings, errorMessage: $errorMessage)';
 }
 
 
@@ -45,11 +47,11 @@ abstract mixin class $PlayerViewStateCopyWith<$Res>  {
   factory $PlayerViewStateCopyWith(PlayerViewState value, $Res Function(PlayerViewState) _then) = _$PlayerViewStateCopyWithImpl;
 @useResult
 $Res call({
- PlayerViewStatus status, Audiobook? book, AudioPlaybackSnapshot playback, String? errorMessage
+ PlayerViewStatus status, Audiobook? book, AudioPlaybackSnapshot playback, PlaybackSettings settings, String? errorMessage
 });
 
 
-$AudiobookCopyWith<$Res>? get book;$AudioPlaybackSnapshotCopyWith<$Res> get playback;
+$AudiobookCopyWith<$Res>? get book;$AudioPlaybackSnapshotCopyWith<$Res> get playback;$PlaybackSettingsCopyWith<$Res> get settings;
 
 }
 /// @nodoc
@@ -62,12 +64,13 @@ class _$PlayerViewStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerViewState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? book = freezed,Object? playback = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? book = freezed,Object? playback = null,Object? settings = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as PlayerViewStatus,book: freezed == book ? _self.book : book // ignore: cast_nullable_to_non_nullable
 as Audiobook?,playback: null == playback ? _self.playback : playback // ignore: cast_nullable_to_non_nullable
-as AudioPlaybackSnapshot,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as AudioPlaybackSnapshot,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
+as PlaybackSettings,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -91,6 +94,15 @@ $AudioPlaybackSnapshotCopyWith<$Res> get playback {
   
   return $AudioPlaybackSnapshotCopyWith<$Res>(_self.playback, (value) {
     return _then(_self.copyWith(playback: value));
+  });
+}/// Create a copy of PlayerViewState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PlaybackSettingsCopyWith<$Res> get settings {
+  
+  return $PlaybackSettingsCopyWith<$Res>(_self.settings, (value) {
+    return _then(_self.copyWith(settings: value));
   });
 }
 }
@@ -174,10 +186,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlayerViewStatus status,  Audiobook? book,  AudioPlaybackSnapshot playback,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlayerViewStatus status,  Audiobook? book,  AudioPlaybackSnapshot playback,  PlaybackSettings settings,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlayerViewState() when $default != null:
-return $default(_that.status,_that.book,_that.playback,_that.errorMessage);case _:
+return $default(_that.status,_that.book,_that.playback,_that.settings,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -195,10 +207,10 @@ return $default(_that.status,_that.book,_that.playback,_that.errorMessage);case 
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlayerViewStatus status,  Audiobook? book,  AudioPlaybackSnapshot playback,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlayerViewStatus status,  Audiobook? book,  AudioPlaybackSnapshot playback,  PlaybackSettings settings,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _PlayerViewState():
-return $default(_that.status,_that.book,_that.playback,_that.errorMessage);case _:
+return $default(_that.status,_that.book,_that.playback,_that.settings,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,10 +227,10 @@ return $default(_that.status,_that.book,_that.playback,_that.errorMessage);case 
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlayerViewStatus status,  Audiobook? book,  AudioPlaybackSnapshot playback,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlayerViewStatus status,  Audiobook? book,  AudioPlaybackSnapshot playback,  PlaybackSettings settings,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _PlayerViewState() when $default != null:
-return $default(_that.status,_that.book,_that.playback,_that.errorMessage);case _:
+return $default(_that.status,_that.book,_that.playback,_that.settings,_that.errorMessage);case _:
   return null;
 
 }
@@ -230,12 +242,15 @@ return $default(_that.status,_that.book,_that.playback,_that.errorMessage);case 
 
 
 class _PlayerViewState implements PlayerViewState {
-  const _PlayerViewState({this.status = PlayerViewStatus.loading, this.book, this.playback = const AudioPlaybackSnapshot(), this.errorMessage});
+  const _PlayerViewState({this.status = PlayerViewStatus.loading, this.book, this.playback = const AudioPlaybackSnapshot(), this.settings = const PlaybackSettings(), this.errorMessage});
   
 
 @override@JsonKey() final  PlayerViewStatus status;
 @override final  Audiobook? book;
 @override@JsonKey() final  AudioPlaybackSnapshot playback;
+/// The defaults this sitting started from: what the wheel's skip keys
+/// step by, and the speed the book was opened at.
+@override@JsonKey() final  PlaybackSettings settings;
 @override final  String? errorMessage;
 
 /// Create a copy of PlayerViewState
@@ -248,16 +263,16 @@ _$PlayerViewStateCopyWith<_PlayerViewState> get copyWith => __$PlayerViewStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerViewState&&(identical(other.status, status) || other.status == status)&&(identical(other.book, book) || other.book == book)&&(identical(other.playback, playback) || other.playback == playback)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerViewState&&(identical(other.status, status) || other.status == status)&&(identical(other.book, book) || other.book == book)&&(identical(other.playback, playback) || other.playback == playback)&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,book,playback,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,book,playback,settings,errorMessage);
 
 @override
 String toString() {
-  return 'PlayerViewState(status: $status, book: $book, playback: $playback, errorMessage: $errorMessage)';
+  return 'PlayerViewState(status: $status, book: $book, playback: $playback, settings: $settings, errorMessage: $errorMessage)';
 }
 
 
@@ -268,11 +283,11 @@ abstract mixin class _$PlayerViewStateCopyWith<$Res> implements $PlayerViewState
   factory _$PlayerViewStateCopyWith(_PlayerViewState value, $Res Function(_PlayerViewState) _then) = __$PlayerViewStateCopyWithImpl;
 @override @useResult
 $Res call({
- PlayerViewStatus status, Audiobook? book, AudioPlaybackSnapshot playback, String? errorMessage
+ PlayerViewStatus status, Audiobook? book, AudioPlaybackSnapshot playback, PlaybackSettings settings, String? errorMessage
 });
 
 
-@override $AudiobookCopyWith<$Res>? get book;@override $AudioPlaybackSnapshotCopyWith<$Res> get playback;
+@override $AudiobookCopyWith<$Res>? get book;@override $AudioPlaybackSnapshotCopyWith<$Res> get playback;@override $PlaybackSettingsCopyWith<$Res> get settings;
 
 }
 /// @nodoc
@@ -285,12 +300,13 @@ class __$PlayerViewStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerViewState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? book = freezed,Object? playback = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? book = freezed,Object? playback = null,Object? settings = null,Object? errorMessage = freezed,}) {
   return _then(_PlayerViewState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as PlayerViewStatus,book: freezed == book ? _self.book : book // ignore: cast_nullable_to_non_nullable
 as Audiobook?,playback: null == playback ? _self.playback : playback // ignore: cast_nullable_to_non_nullable
-as AudioPlaybackSnapshot,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as AudioPlaybackSnapshot,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
+as PlaybackSettings,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -315,6 +331,15 @@ $AudioPlaybackSnapshotCopyWith<$Res> get playback {
   
   return $AudioPlaybackSnapshotCopyWith<$Res>(_self.playback, (value) {
     return _then(_self.copyWith(playback: value));
+  });
+}/// Create a copy of PlayerViewState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PlaybackSettingsCopyWith<$Res> get settings {
+  
+  return $PlaybackSettingsCopyWith<$Res>(_self.settings, (value) {
+    return _then(_self.copyWith(settings: value));
   });
 }
 }

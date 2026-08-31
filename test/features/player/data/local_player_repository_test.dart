@@ -8,17 +8,21 @@ import 'package:audiobooks/features/library/domain/entities/bookmark.dart';
 import 'package:audiobooks/features/library/domain/entities/playback_progress.dart';
 import 'package:audiobooks/features/library/domain/repositories/audiobook_repository.dart';
 import 'package:audiobooks/features/player/data/repositories/local_player_repository.dart';
+import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
+import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late _FakeAudioPlaybackService service;
   late _FakeAudiobookRepository audiobooks;
+  late _FakePlaybackSettingsRepository settings;
   late LocalPlayerRepository repository;
 
   setUp(() {
     service = _FakeAudioPlaybackService();
     audiobooks = _FakeAudiobookRepository();
-    repository = LocalPlayerRepository(service, audiobooks);
+    settings = _FakePlaybackSettingsRepository();
+    repository = LocalPlayerRepository(service, audiobooks, settings);
   });
 
   tearDown(() => service.dispose());
@@ -87,6 +91,66 @@ void main() {
 
     expect(service.loadedChapterId, 'chapter-1');
     expect(service.loadedPosition, Duration.zero);
+  });
+
+  test('opens every book at the speed chosen in settings', () async {
+    settings.settings = const PlaybackSettings(speed: 1.5);
+
+    await repository.open(_book);
+
+    expect(service.appliedSpeed, 1.5);
+  });
+
+  test('picks a resumed book up shortly before it was left', () async {
+    settings.settings = const PlaybackSettings(
+      resumeRewind: Duration(seconds: 30),
+    );
+    audiobooks.progress = PlaybackProgress(
+      bookId: _book.id,
+      chapterId: 'chapter-2',
+      position: const Duration(minutes: 7, seconds: 30),
+      bookPosition: const Duration(minutes: 37, seconds: 30),
+      updatedAt: DateTime.utc(2026),
+    );
+
+    await repository.open(_book);
+
+    expect(service.loadedChapterId, 'chapter-2');
+    expect(service.loadedPosition, const Duration(minutes: 7));
+  });
+
+  test('never steps back past the start of what it resumes into', () async {
+    settings.settings = const PlaybackSettings(
+      resumeRewind: Duration(seconds: 30),
+    );
+    audiobooks.progress = PlaybackProgress(
+      bookId: _book.id,
+      chapterId: 'chapter-2',
+      position: const Duration(seconds: 4),
+      bookPosition: const Duration(minutes: 30, seconds: 4),
+      updatedAt: DateTime.utc(2026),
+    );
+
+    await repository.open(_book);
+
+    expect(service.loadedPosition, Duration.zero);
+  });
+
+  test('opens on the ordinary defaults when settings cannot be read', () async {
+    settings.failOnRead = true;
+    audiobooks.progress = PlaybackProgress(
+      bookId: _book.id,
+      chapterId: 'chapter-2',
+      position: const Duration(minutes: 7),
+      bookPosition: const Duration(minutes: 37),
+      updatedAt: DateTime.utc(2026),
+    );
+
+    await repository.open(_book);
+
+    expect(service.loadedChapterId, 'chapter-2');
+    expect(service.loadedPosition, const Duration(minutes: 7));
+    expect(service.appliedSpeed, 1.0);
   });
 
   test('records chapter and whole book position while playing', () async {
@@ -380,6 +444,7 @@ class _FakeAudioPlaybackService implements AudioPlaybackService {
 
   String? loadedChapterId;
   Duration? loadedPosition;
+  double? appliedSpeed;
 
   void emit(AudioPlaybackSnapshot snapshot) => _controller.add(snapshot);
 
@@ -420,13 +485,28 @@ class _FakeAudioPlaybackService implements AudioPlaybackService {
   Future<void> skipToPreviousChapter() async {}
 
   @override
-  Future<void> setSpeed(double speed) async {}
+  Future<void> setSpeed(double speed) async => appliedSpeed = speed;
 
   @override
   Future<void> stop() async {}
 
   @override
   Future<void> dispose() => dispose_();
+}
+
+class _FakePlaybackSettingsRepository implements PlaybackSettingsRepository {
+  PlaybackSettings settings = const PlaybackSettings();
+  bool failOnRead = false;
+
+  @override
+  Future<PlaybackSettings> loadPlaybackSettings() async {
+    if (failOnRead) throw StateError('unreadable');
+    return settings;
+  }
+
+  @override
+  Future<void> savePlaybackSettings(PlaybackSettings settings) async =>
+      this.settings = settings;
 }
 
 class _FakeAudiobookRepository implements AudiobookRepository {

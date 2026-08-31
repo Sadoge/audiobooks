@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LibraryState {
 
- LibraryStatus get status; List<Audiobook> get books; String? get errorMessage; String? get actionMessage;
+ LibraryStatus get status; List<Audiobook> get books; String? get errorMessage;/// The outcome of a one-off action on a book, shown once and then dropped.
+ String? get actionMessage;
 /// Create a copy of LibraryState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -221,6 +222,7 @@ class _LibraryState implements LibraryState {
 }
 
 @override final  String? errorMessage;
+/// The outcome of a one-off action on a book, shown once and then dropped.
 @override final  String? actionMessage;
 
 /// Create a copy of LibraryState

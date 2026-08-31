@@ -1,6 +1,6 @@
 import 'package:audiobooks/app/theme/app_theme.dart';
-import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/library/presentation/widgets/empty_library_view.dart';
+import 'package:audiobooks/features/library/presentation/widgets/library_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,16 +14,7 @@ void main() {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.dark(),
         home: Scaffold(
-          appBar: const ChromeAppBar(
-            title: Text('Library'),
-            actions: [
-              IconButton(
-                tooltip: 'Settings',
-                onPressed: null,
-                icon: Icon(Icons.settings_outlined),
-              ),
-            ],
-          ),
+          appBar: LibraryAppBar(onImport: () {}, onSettings: () {}),
           body: CustomScrollView(
             slivers: [
               SliverFillRemaining(
