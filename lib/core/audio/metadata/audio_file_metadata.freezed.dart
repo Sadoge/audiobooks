@@ -274,7 +274,14 @@ as Duration,
 /// @nodoc
 mixin _$AudioFileMetadata {
 
- Duration get duration; String? get title; String? get author; String? get narrator; List<EmbeddedChapter> get chapters;
+ Duration get duration;/// What to call the book this file makes on its own.
+ String? get title;/// What to call this one file inside a book made of several.
+///
+/// Named for the part it plays rather than the tag it came from, because
+/// the tag differs by container and only a parser knows which it is
+/// reading: an MP3 keeps the work's name in its album and the chapter's in
+/// its title, while an M4B has one name for both.
+ String? get trackTitle; String? get author; String? get narrator; List<EmbeddedChapter> get chapters;
 /// Create a copy of AudioFileMetadata
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -285,16 +292,16 @@ $AudioFileMetadataCopyWith<AudioFileMetadata> get copyWith => _$AudioFileMetadat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AudioFileMetadata&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.title, title) || other.title == title)&&(identical(other.author, author) || other.author == author)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&const DeepCollectionEquality().equals(other.chapters, chapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AudioFileMetadata&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.title, title) || other.title == title)&&(identical(other.trackTitle, trackTitle) || other.trackTitle == trackTitle)&&(identical(other.author, author) || other.author == author)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&const DeepCollectionEquality().equals(other.chapters, chapters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,duration,title,author,narrator,const DeepCollectionEquality().hash(chapters));
+int get hashCode => Object.hash(runtimeType,duration,title,trackTitle,author,narrator,const DeepCollectionEquality().hash(chapters));
 
 @override
 String toString() {
-  return 'AudioFileMetadata(duration: $duration, title: $title, author: $author, narrator: $narrator, chapters: $chapters)';
+  return 'AudioFileMetadata(duration: $duration, title: $title, trackTitle: $trackTitle, author: $author, narrator: $narrator, chapters: $chapters)';
 }
 
 
@@ -305,7 +312,7 @@ abstract mixin class $AudioFileMetadataCopyWith<$Res>  {
   factory $AudioFileMetadataCopyWith(AudioFileMetadata value, $Res Function(AudioFileMetadata) _then) = _$AudioFileMetadataCopyWithImpl;
 @useResult
 $Res call({
- Duration duration, String? title, String? author, String? narrator, List<EmbeddedChapter> chapters
+ Duration duration, String? title, String? trackTitle, String? author, String? narrator, List<EmbeddedChapter> chapters
 });
 
 
@@ -322,10 +329,11 @@ class _$AudioFileMetadataCopyWithImpl<$Res>
 
 /// Create a copy of AudioFileMetadata
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? duration = null,Object? title = freezed,Object? author = freezed,Object? narrator = freezed,Object? chapters = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? duration = null,Object? title = freezed,Object? trackTitle = freezed,Object? author = freezed,Object? narrator = freezed,Object? chapters = null,}) {
   return _then(_self.copyWith(
 duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as Duration,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String?,trackTitle: freezed == trackTitle ? _self.trackTitle : trackTitle // ignore: cast_nullable_to_non_nullable
 as String?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,narrator: freezed == narrator ? _self.narrator : narrator // ignore: cast_nullable_to_non_nullable
 as String?,chapters: null == chapters ? _self.chapters : chapters // ignore: cast_nullable_to_non_nullable
@@ -414,10 +422,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Duration duration,  String? title,  String? author,  String? narrator,  List<EmbeddedChapter> chapters)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Duration duration,  String? title,  String? trackTitle,  String? author,  String? narrator,  List<EmbeddedChapter> chapters)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AudioFileMetadata() when $default != null:
-return $default(_that.duration,_that.title,_that.author,_that.narrator,_that.chapters);case _:
+return $default(_that.duration,_that.title,_that.trackTitle,_that.author,_that.narrator,_that.chapters);case _:
   return orElse();
 
 }
@@ -435,10 +443,10 @@ return $default(_that.duration,_that.title,_that.author,_that.narrator,_that.cha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Duration duration,  String? title,  String? author,  String? narrator,  List<EmbeddedChapter> chapters)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Duration duration,  String? title,  String? trackTitle,  String? author,  String? narrator,  List<EmbeddedChapter> chapters)  $default,) {final _that = this;
 switch (_that) {
 case _AudioFileMetadata():
-return $default(_that.duration,_that.title,_that.author,_that.narrator,_that.chapters);case _:
+return $default(_that.duration,_that.title,_that.trackTitle,_that.author,_that.narrator,_that.chapters);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -455,10 +463,10 @@ return $default(_that.duration,_that.title,_that.author,_that.narrator,_that.cha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Duration duration,  String? title,  String? author,  String? narrator,  List<EmbeddedChapter> chapters)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Duration duration,  String? title,  String? trackTitle,  String? author,  String? narrator,  List<EmbeddedChapter> chapters)?  $default,) {final _that = this;
 switch (_that) {
 case _AudioFileMetadata() when $default != null:
-return $default(_that.duration,_that.title,_that.author,_that.narrator,_that.chapters);case _:
+return $default(_that.duration,_that.title,_that.trackTitle,_that.author,_that.narrator,_that.chapters);case _:
   return null;
 
 }
@@ -470,11 +478,19 @@ return $default(_that.duration,_that.title,_that.author,_that.narrator,_that.cha
 
 
 class _AudioFileMetadata implements AudioFileMetadata {
-  const _AudioFileMetadata({this.duration = Duration.zero, this.title, this.author, this.narrator, final  List<EmbeddedChapter> chapters = const <EmbeddedChapter>[]}): _chapters = chapters;
+  const _AudioFileMetadata({this.duration = Duration.zero, this.title, this.trackTitle, this.author, this.narrator, final  List<EmbeddedChapter> chapters = const <EmbeddedChapter>[]}): _chapters = chapters;
   
 
 @override@JsonKey() final  Duration duration;
+/// What to call the book this file makes on its own.
 @override final  String? title;
+/// What to call this one file inside a book made of several.
+///
+/// Named for the part it plays rather than the tag it came from, because
+/// the tag differs by container and only a parser knows which it is
+/// reading: an MP3 keeps the work's name in its album and the chapter's in
+/// its title, while an M4B has one name for both.
+@override final  String? trackTitle;
 @override final  String? author;
 @override final  String? narrator;
  final  List<EmbeddedChapter> _chapters;
@@ -495,16 +511,16 @@ _$AudioFileMetadataCopyWith<_AudioFileMetadata> get copyWith => __$AudioFileMeta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AudioFileMetadata&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.title, title) || other.title == title)&&(identical(other.author, author) || other.author == author)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&const DeepCollectionEquality().equals(other._chapters, _chapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AudioFileMetadata&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.title, title) || other.title == title)&&(identical(other.trackTitle, trackTitle) || other.trackTitle == trackTitle)&&(identical(other.author, author) || other.author == author)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&const DeepCollectionEquality().equals(other._chapters, _chapters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,duration,title,author,narrator,const DeepCollectionEquality().hash(_chapters));
+int get hashCode => Object.hash(runtimeType,duration,title,trackTitle,author,narrator,const DeepCollectionEquality().hash(_chapters));
 
 @override
 String toString() {
-  return 'AudioFileMetadata(duration: $duration, title: $title, author: $author, narrator: $narrator, chapters: $chapters)';
+  return 'AudioFileMetadata(duration: $duration, title: $title, trackTitle: $trackTitle, author: $author, narrator: $narrator, chapters: $chapters)';
 }
 
 
@@ -515,7 +531,7 @@ abstract mixin class _$AudioFileMetadataCopyWith<$Res> implements $AudioFileMeta
   factory _$AudioFileMetadataCopyWith(_AudioFileMetadata value, $Res Function(_AudioFileMetadata) _then) = __$AudioFileMetadataCopyWithImpl;
 @override @useResult
 $Res call({
- Duration duration, String? title, String? author, String? narrator, List<EmbeddedChapter> chapters
+ Duration duration, String? title, String? trackTitle, String? author, String? narrator, List<EmbeddedChapter> chapters
 });
 
 
@@ -532,10 +548,11 @@ class __$AudioFileMetadataCopyWithImpl<$Res>
 
 /// Create a copy of AudioFileMetadata
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? duration = null,Object? title = freezed,Object? author = freezed,Object? narrator = freezed,Object? chapters = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? duration = null,Object? title = freezed,Object? trackTitle = freezed,Object? author = freezed,Object? narrator = freezed,Object? chapters = null,}) {
   return _then(_AudioFileMetadata(
 duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as Duration,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String?,trackTitle: freezed == trackTitle ? _self.trackTitle : trackTitle // ignore: cast_nullable_to_non_nullable
 as String?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,narrator: freezed == narrator ? _self.narrator : narrator // ignore: cast_nullable_to_non_nullable
 as String?,chapters: null == chapters ? _self._chapters : chapters // ignore: cast_nullable_to_non_nullable

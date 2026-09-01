@@ -37,6 +37,8 @@ class Mp4MetadataParser {
     return AudioFileMetadata(
       duration: duration,
       title: tags[_Tag.title],
+      // An MP4 names the work and the file alike, so one tag answers both.
+      trackTitle: tags[_Tag.title],
       author: tags[_Tag.author],
       narrator: tags[_Tag.narrator],
       chapters: sanitiseChapters(chapters, duration),

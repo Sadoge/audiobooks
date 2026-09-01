@@ -102,6 +102,7 @@ class ImportCubit extends Cubit<ImportState> {
     final now = DateTime.now();
     final id = '${now.microsecondsSinceEpoch}';
     final chapters = <AudiobookChapter>[];
+    final titles = <String>{};
     var total = Duration.zero;
     String? author;
     String? narrator;
@@ -113,12 +114,13 @@ class ImportCubit extends Cubit<ImportState> {
       author ??= metadata.author;
       narrator ??= metadata.narrator;
       total += metadata.duration;
+      if (metadata.title case final tagged?) titles.add(tagged);
 
       chapters.add(
         AudiobookChapter(
           id: _chapterId(id, index),
           bookId: id,
-          title: metadata.title ?? _titleFrom(file),
+          title: metadata.trackTitle ?? _titleFrom(file),
           index: index,
           filePath: path,
           duration: metadata.duration,
@@ -130,7 +132,7 @@ class ImportCubit extends Cubit<ImportState> {
     await _repository.save(
       Audiobook(
         id: id,
-        title: _sharedTitleFor(files),
+        title: titles.length == 1 ? titles.single : _sharedTitleFor(files),
         author: author ?? 'Unknown Author',
         narrator: narrator,
         dateAdded: now,
@@ -245,8 +247,11 @@ class ImportCubit extends Cubit<ImportState> {
   /// Chapter ids stay stable across re-imports so stored progress survives.
   String _chapterId(String bookId, int index) => '$bookId::chapter::$index';
 
-  /// Names a grouped book after whatever its files agree on, which for a
+  /// Names a grouped book after whatever its filenames agree on, which for a
   /// numbered set of tracks is the book title itself.
+  ///
+  /// This is the fallback for a set of files whose tags name no single work
+  /// between them.
   String _sharedTitleFor(List<PickedAudioFile> files) {
     final first = _titleFrom(files.first);
     if (files.length == 1) return first;
