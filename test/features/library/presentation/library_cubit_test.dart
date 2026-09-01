@@ -23,7 +23,10 @@ void main() {
     repository = _FakeAudiobookRepository();
     files = _FakeDeviceFileGateway();
   });
-  tearDown(() => repository.dispose());
+  // The fake's stream is never listened to by the tests that do not start
+  // the cubit, and closing an unlistened controller never completes, so the
+  // close is not waited on here.
+  tearDown(() => unawaited(repository.dispose()));
 
   LibraryCubit build({CoverArt? coverArt}) =>
       LibraryCubit(repository, files, _FakeAudioMetadataService(coverArt));
@@ -181,6 +184,9 @@ class _FakeDeviceFileGateway implements DeviceFileGateway {
 
   @override
   Future<void> deleteBookFiles(String bookId) async => deletedBooks.add(bookId);
+
+  @override
+  Future<int?> storedMediaBytes() async => 0;
 }
 
 class _FakeAudiobookRepository implements AudiobookRepository {

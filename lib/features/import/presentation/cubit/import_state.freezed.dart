@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 mixin _$ImportState {
 
  ImportStatus get status; List<PickedAudioFile> get files;/// How many files have been copied and read so far, for import progress.
- int get importedFiles; String? get errorMessage; String? get coverPath;
+ int get importedFiles; String? get errorMessage;/// An image the listener attached by hand, which stands in for whatever
+/// artwork the files themselves carry.
+ String? get coverPath;
 /// Create a copy of ImportState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -225,6 +227,8 @@ class _ImportState implements ImportState {
 /// How many files have been copied and read so far, for import progress.
 @override@JsonKey() final  int importedFiles;
 @override final  String? errorMessage;
+/// An image the listener attached by hand, which stands in for whatever
+/// artwork the files themselves carry.
 @override final  String? coverPath;
 
 /// Create a copy of ImportState

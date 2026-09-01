@@ -346,7 +346,10 @@ at its centre is the one circular control.
 
 The top-level Library uses a brushed housing bar inside the top safe area:
 a two-stop chrome gradient, a chrome-edge hairline along the bottom, a centered
-`title`-style label, and one 48-logical-pixel Settings icon action. Import and
+`title`-style label, and two 48-logical-pixel icon actions — import, then
+Settings. Importing is how the library grows, so its key stays on the housing
+whatever is loaded: the empty state offers it as the one full-width action as
+well, and a library with books in it still reaches it from the bar. Import and
 Settings use the same bar and the platform navigation stack. Android predictive
 back and Cupertino transitions remain intact; the app does not introduce custom
 global navigation.
@@ -380,13 +383,15 @@ with a rounded groove and a round knob.
 ### Click Wheel
 
 The player's transport is a 244-logical-pixel moulded wheel, shrinking to no
-less than 200 on narrow windows. Rewind 15 sits at west and forward 30 at east;
-previous and next chapter appear at north and south only on a book that has
-chapters; play and pause is the circular key in the centre well. The face is
-painted, but every key on it is an ordinary button laid over the paint, so
-tooltips, focus order, 48-logical-pixel touch targets, and screen-reader
-semantics stay the platform's. Rewind and forward labels must exactly match
-their 15- and 30-second behavior.
+less than 200 on narrow windows. Rewind sits at west and forward at east, at
+the intervals Settings holds and 15 and 30 seconds by default; previous and
+next chapter appear at north and south only on a book that has chapters; play
+and pause is the circular key in the centre well. The face is painted, but
+every key on it is an ordinary button laid over the paint, so tooltips, focus
+order, 48-logical-pixel touch targets, and screen-reader semantics stay the
+platform's. The skip keys are printed with the interval they actually step by:
+each draws its turning arrow with its own number of seconds inside it, taken
+from the same setting the transport uses, and its tooltip says that figure.
 
 ### Appearance Choice
 
@@ -395,6 +400,27 @@ at comfortable widths, squared to the control radius with a chrome edge. It
 becomes a semantic stacked list with checkmark selection at narrow widths or
 elevated text scale, preserving legibility and touch targets. Section headings
 are ruled underneath.
+
+### Settings Panel
+
+Settings is a device panel: four groups — Appearance, Playback, Library, and
+About — each titled in `title` type with a rule straight underneath, and no
+cards anywhere. Below the heading, each group is a stack of rows separated by
+hairlines, every row at least 56 logical pixels tall.
+
+A row states what it is in `body-large`, explains itself in `body` at
+`onSurfaceVariant`, and carries where it stands on the right: a speed, a number
+of seconds, a size on disk, each on a small pane of recessed readout glass in
+the readout face, the way a figure was shown on the device. Amber is not spent
+on them — it stays with the primary action, the marked row, and progress.
+Anything measured follows the Digits Sit Still Rule, and the interval that does
+nothing reads `Off` rather than a zero. A row whose value is one of a short list
+is a stock popup menu with that readout and a chevron beside it; the open menu
+sets its options in the readout face too and checks the one in force. Rows that
+only report — what the library takes on this device, what stays on the device —
+carry no chevron, and the one row that leads somewhere, Licences, is arrowed
+into like any other menu row. The panel is one scrolling flow, so growing text
+lengthens it rather than crowding it.
 
 ### Desktop Book Grid
 

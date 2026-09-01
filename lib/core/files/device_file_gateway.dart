@@ -32,5 +32,10 @@ abstract interface class DeviceFileGateway {
   /// Deletes everything copied for a book that is leaving the library.
   Future<void> deleteBookFiles(String bookId);
 
+  /// How much of the device the copied audio and artwork take, or null when
+  /// the store cannot be measured. Reporting a size is never worth an error,
+  /// so trouble is answered with null rather than thrown.
+  Future<int?> storedMediaBytes();
+
   Future<bool> canRead(String durablePathOrUri);
 }

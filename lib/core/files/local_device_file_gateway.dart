@@ -188,6 +188,26 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
   }
 
   @override
+  Future<int?> storedMediaBytes() async {
+    try {
+      final documents = await getApplicationDocumentsDirectory();
+      final media = Directory(_mediaPath(documents.path));
+      if (!await media.exists()) return 0;
+
+      var total = 0;
+      await for (final entity in media.list(
+        recursive: true,
+        followLinks: false,
+      )) {
+        if (entity is File) total += await entity.length();
+      }
+      return total;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
   Future<bool> canRead(String durablePathOrUri) =>
       File(durablePathOrUri).exists();
 
@@ -198,9 +218,11 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
     ).create(recursive: true);
   }
 
+  String _mediaPath(String documentsPath) =>
+      '$documentsPath${Platform.pathSeparator}media';
+
   String _bookPath(String documentsPath, String bookId) =>
-      '$documentsPath${Platform.pathSeparator}media'
-      '${Platform.pathSeparator}$bookId';
+      '${_mediaPath(documentsPath)}${Platform.pathSeparator}$bookId';
 
   /// Every cover gets a fresh name so that replacing one is visible
   /// immediately: Flutter caches decoded images by path.

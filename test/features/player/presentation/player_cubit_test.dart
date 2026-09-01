@@ -5,6 +5,8 @@ import 'package:audiobooks/features/library/domain/repositories/audiobook_reposi
 import 'package:audiobooks/features/player/domain/repositories/player_repository.dart';
 import 'package:audiobooks/features/player/presentation/cubit/player_cubit.dart';
 import 'package:audiobooks/features/player/presentation/cubit/player_state.dart';
+import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
+import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -12,9 +14,13 @@ class _MockPlayerRepository extends Mock implements PlayerRepository {}
 
 class _MockAudiobookRepository extends Mock implements AudiobookRepository {}
 
+class _MockPlaybackSettingsRepository extends Mock
+    implements PlaybackSettingsRepository {}
+
 void main() {
   late _MockPlayerRepository player;
   late _MockAudiobookRepository audiobooks;
+  late _MockPlaybackSettingsRepository settings;
 
   const chapter = AudiobookChapter(
     id: 'chapter-1',
@@ -40,9 +46,15 @@ void main() {
     duration: Duration(minutes: 42),
   );
 
+  setUpAll(() => registerFallbackValue(Duration.zero));
+
   setUp(() {
     player = _MockPlayerRepository();
     audiobooks = _MockAudiobookRepository();
+    settings = _MockPlaybackSettingsRepository();
+    when(
+      () => settings.loadPlaybackSettings(),
+    ).thenAnswer((_) async => const PlaybackSettings());
     when(() => audiobooks.findById(book.id)).thenAnswer((_) async => book);
     when(() => player.playback).thenAnswer((_) => Stream.value(playback));
     when(
@@ -58,7 +70,7 @@ void main() {
   });
 
   test('loads a local audiobook and exposes playback state', () async {
-    final cubit = PlayerCubit(player, audiobooks);
+    final cubit = PlayerCubit(player, audiobooks, settings);
     addTearDown(cubit.close);
 
     await cubit.load(book.id);
@@ -71,7 +83,7 @@ void main() {
   });
 
   test('opening without a chapter leaves the stored place to decide', () async {
-    final cubit = PlayerCubit(player, audiobooks);
+    final cubit = PlayerCubit(player, audiobooks, settings);
     addTearDown(cubit.close);
 
     await cubit.load(book.id);
@@ -80,7 +92,7 @@ void main() {
   });
 
   test('selecting a chapter seeks instead of reopening the book', () async {
-    final cubit = PlayerCubit(player, audiobooks);
+    final cubit = PlayerCubit(player, audiobooks, settings);
     addTearDown(cubit.close);
     await cubit.load(book.id);
     await Future<void>.delayed(Duration.zero);
@@ -100,7 +112,7 @@ void main() {
   });
 
   test('stores the current place when the player is closed', () async {
-    final cubit = PlayerCubit(player, audiobooks);
+    final cubit = PlayerCubit(player, audiobooks, settings);
     await cubit.load(book.id);
     await Future<void>.delayed(Duration.zero);
 
@@ -109,8 +121,29 @@ void main() {
     verify(() => player.saveProgress()).called(1);
   });
 
+  test('skips by the intervals chosen in settings', () async {
+    when(() => settings.loadPlaybackSettings()).thenAnswer(
+      (_) async => const PlaybackSettings(
+        rewindInterval: Duration(seconds: 30),
+        forwardInterval: Duration(seconds: 60),
+      ),
+    );
+    when(() => player.skipBy(any())).thenAnswer((_) async {});
+    final cubit = PlayerCubit(player, audiobooks, settings);
+    addTearDown(cubit.close);
+    await cubit.load(book.id);
+    await Future<void>.delayed(Duration.zero);
+
+    await cubit.rewind();
+    await cubit.forward();
+
+    expect(cubit.state.settings.rewindInterval, const Duration(seconds: 30));
+    verify(() => player.skipBy(const Duration(seconds: -30))).called(1);
+    verify(() => player.skipBy(const Duration(seconds: 60))).called(1);
+  });
+
   test('starts playback when the loaded audiobook is paused', () async {
-    final cubit = PlayerCubit(player, audiobooks);
+    final cubit = PlayerCubit(player, audiobooks, settings);
     addTearDown(cubit.close);
     await cubit.load(book.id);
     await Future<void>.delayed(Duration.zero);

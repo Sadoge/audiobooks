@@ -9,11 +9,11 @@
 
 import 'package:audiobooks/app/router/app_router.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
-import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_cubit.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_state.dart';
 import 'package:audiobooks/features/library/presentation/widgets/empty_library_view.dart';
+import 'package:audiobooks/features/library/presentation/widgets/library_app_bar.dart';
 import 'package:audiobooks/features/library/presentation/widgets/library_book_list.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -26,15 +26,9 @@ class LibraryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChromeAppBar(
-        title: const Text('Library'),
-        actions: [
-          IconButton(
-            tooltip: 'Settings',
-            onPressed: () => context.router.push(const SettingsRoute()),
-            icon: const Icon(Icons.settings_outlined),
-          ),
-        ],
+      appBar: LibraryAppBar(
+        onImport: () => context.router.push(const ImportRoute()),
+        onSettings: () => context.router.push(const SettingsRoute()),
       ),
       body: BlocConsumer<LibraryCubit, LibraryState>(
         // Cover changes and removals report back once, over the library they

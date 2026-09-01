@@ -101,7 +101,7 @@ class SettingsRoute extends PageRouteInfo<void> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const SettingsPage();
+      return WrappedRoute(child: const SettingsPage());
     },
   );
 }
