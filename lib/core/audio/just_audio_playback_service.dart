@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audio_session/audio_session.dart';
 import 'package:audiobooks/core/audio/audio_playback_service.dart';
 import 'package:audiobooks/core/audio/audio_playback_snapshot.dart';
 import 'package:audiobooks/core/audio/chapter_timeline.dart';
@@ -8,6 +7,13 @@ import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:injectable/injectable.dart';
 import 'package:just_audio/just_audio.dart';
 
+/// The audio engine itself.
+///
+/// It makes sound and reports what it is doing, and knows nothing about the
+/// lock screen or the notification: those are put on top of it by
+/// `AudiobookAudioHandler`, which is what the rest of the app resolves an
+/// [AudioPlaybackService] to.
+@Named(JustAudioPlaybackService.engine)
 @LazySingleton(as: AudioPlaybackService)
 class JustAudioPlaybackService implements AudioPlaybackService {
   JustAudioPlaybackService() {
@@ -23,6 +29,10 @@ class JustAudioPlaybackService implements AudioPlaybackService {
       ),
     ]);
   }
+
+  /// The name this engine is registered under, so that the handler wrapping
+  /// it can ask for the engine rather than for itself.
+  static const String engine = 'audioEngine';
 
   final AudioPlayer _player = AudioPlayer();
   final StreamController<AudioPlaybackSnapshot> _snapshots =
@@ -44,9 +54,6 @@ class JustAudioPlaybackService implements AudioPlaybackService {
     _book = audiobook;
     _timeline = ChapterTimeline.of(audiobook);
     _emitSnapshot(statusOverride: PlaybackStatus.loading);
-
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.speech());
 
     final sources = _audioSourcesFor(audiobook);
     if (sources.isEmpty) {

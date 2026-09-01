@@ -1,5 +1,10 @@
 package com.example.audiobooks
 
-import io.flutter.embedding.android.FlutterActivity
+import com.ryanheise.audioservice.AudioServiceActivity
 
-class MainActivity : FlutterActivity()
+/**
+ * Hosts Flutter inside audio_service's activity, which is what lets a
+ * notification or a lock-screen control reach a running player rather than
+ * starting a second one.
+ */
+class MainActivity : AudioServiceActivity()

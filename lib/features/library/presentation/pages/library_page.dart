@@ -15,6 +15,7 @@ import 'package:audiobooks/features/library/presentation/cubit/library_state.dar
 import 'package:audiobooks/features/library/presentation/widgets/empty_library_view.dart';
 import 'package:audiobooks/features/library/presentation/widgets/library_app_bar.dart';
 import 'package:audiobooks/features/library/presentation/widgets/library_book_list.dart';
+import 'package:audiobooks/features/player/presentation/widgets/now_playing_bar.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,11 @@ class LibraryPage extends StatelessWidget {
       appBar: LibraryAppBar(
         onImport: () => context.router.push(const ImportRoute()),
         onSettings: () => context.router.push(const SettingsRoute()),
+      ),
+      // The strip sits under the library rather than over it, so a book near
+      // the bottom of a long list is never hidden behind what is playing.
+      bottomNavigationBar: NowPlayingBar(
+        onOpen: (bookId) => context.router.push(PlayerRoute(bookId: bookId)),
       ),
       body: BlocConsumer<LibraryCubit, LibraryState>(
         // Cover changes and removals report back once, over the library they

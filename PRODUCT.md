@@ -62,6 +62,17 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
   artwork that cannot be decoded is drawn cropped to the same square.
 - A book can be removed from the library, taking the media copied for it and
   its listening state with it, and only after the listener confirms.
+- Playback belongs to the device, not to a screen. A book keeps playing with
+  the app in the background and the phone locked, and the same transport is
+  offered wherever the platform offers one: the lock screen, the notification
+  shade, a headset button, a car head unit, a watch. A chapter is the media
+  item the system shows, so system and in-app time agree.
+- The device may take the audio away at any moment. A call or another player
+  pauses the book and returns it where it was; a headphone jack pulled or a
+  Bluetooth device out of range pauses it and never resumes, so a book is
+  never played aloud to a room that did not ask for it.
+- Wherever a listener is in the app, they can tell what is playing and stop it
+  without going back to the player.
 
 ## Brand Commitments
 

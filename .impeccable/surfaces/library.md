@@ -36,6 +36,14 @@
   overflow control, over the corner of the artwork in the
   grid and after the play affordance in the list. Removal is confirmed in a
   dialog and reported in a snackbar over the library it changed.
+- Now Playing bar: playback outlives the player page, so the Library carries a
+  strip along the bottom of the housing whenever a book is loaded — the cover
+  behind the same bezel at 40px, the title, the chapter (or the author on a
+  book with none), and one play or pause key. It sits under the list rather
+  than over it, so nothing at the bottom of a long library is hidden behind it,
+  and it takes no room at all when nothing is playing. Tapping the strip
+  returns to that book's player; the key works the transport without leaving
+  the Library.
 - Unresolved: final product name.
 
 ## Ingredient inventory
@@ -50,3 +58,4 @@
 | macOS library | Flat cover grid with pointer and keyboard affordances | Responsive Flutter slivers |
 | Book cover | Square artwork behind a chrome bezel, or the title initial on a quiet plane | Clipped image with letter fallback |
 | Book actions | One overflow control per book: cover, removal | Material popup menu, confirm dialog |
+| Now Playing bar | Bottom strip: 40px bezelled cover, title, chapter, one play/pause key, tap to return | Semantic Flutter widgets over chrome tokens |

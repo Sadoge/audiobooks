@@ -36,13 +36,24 @@ The foundation release includes:
   wheel's rewind and forward keys step by, and how far back a resumed book
   picks up. The panel also reports how much of the device the imported audio
   takes, and lists the licences the bundled fonts and packages ship under.
+- Background playback and system media controls. A book carries on with the app
+  in the background and the phone locked, and appears on the lock screen and in
+  the notification shade with its cover, its title, the chapter, and a
+  transport: play and pause, rewind and forward by the intervals chosen in
+  Settings, and previous and next chapter. Headset and Bluetooth buttons work
+  the same transport — one press plays or pauses, two move on a chapter — and
+  the chapter list is offered to a car head unit or a watch.
+- Audio the device can take back. A call or another player pauses the book and
+  hands it back where it was; unplugged headphones or a Bluetooth device out of
+  range pause it and never resume, so the phone's own speaker never takes over.
+- A Now Playing bar under the Library: the cover, the book, the chapter, one
+  play or pause key, and a tap back into the player.
 - Unit, widget, repository, and golden tests.
 
 Selecting several files offers to import them as one book with a chapter per
 file, or as separate books. Books imported before covers were read pick up
 their artwork the next time the Library opens. Metadata editing, book details,
-sleep timers, bookmarks, and system media controls remain planned for later
-milestones.
+sleep timers, and bookmarks remain planned for later milestones.
 
 ## Type
 
@@ -63,7 +74,9 @@ fvm flutter test
 fvm flutter run
 ```
 
-The iOS target requires iOS 14 or newer.
+The iOS target requires iOS 14 or newer, and declares the `audio` background
+mode. On Android the media session runs as a `mediaPlayback` foreground
+service, which is what keeps a book playing with the screen off.
 
 The macOS app uses a sandboxed native file picker and adapts from a compact
 single-column layout to desktop Library grids and a two-column listening view.
