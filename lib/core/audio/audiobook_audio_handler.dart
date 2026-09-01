@@ -6,6 +6,7 @@ import 'package:audiobooks/core/audio/audio_playback_service.dart';
 import 'package:audiobooks/core/audio/audio_playback_snapshot.dart';
 import 'package:audiobooks/core/audio/just_audio_playback_service.dart';
 import 'package:audiobooks/core/audio/listening_session.dart';
+import 'package:audiobooks/core/audio/playback_notification_permission.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook_chapter.dart';
 import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
@@ -36,6 +37,7 @@ class AudiobookAudioHandler extends BaseAudioHandler
     @Named(JustAudioPlaybackService.engine) this._engine,
     this._settings,
     this._session,
+    this._notifications,
   ) {
     _playback = _engine.snapshots.listen(_publish);
     _interruptions = _session.interruptions.listen(_handleInterruption);
@@ -44,6 +46,7 @@ class AudiobookAudioHandler extends BaseAudioHandler
   final AudioPlaybackService _engine;
   final PlaybackSettingsRepository _settings;
   final ListeningSession _session;
+  final PlaybackNotificationPermission _notifications;
 
   late final StreamSubscription<AudioPlaybackSnapshot> _playback;
   late final StreamSubscription<ListeningInterruption> _interruptions;
@@ -83,6 +86,10 @@ class AudiobookAudioHandler extends BaseAudioHandler
     // carry the same names and lengths as the book before it.
     _published = null;
     await _session.configure();
+    // Asked as the book opens, which is when the notification it governs
+    // becomes worth having, and never waited on: a listener reading the
+    // system's sheet should not be holding up their own book.
+    unawaited(_notifications.ensureGranted());
     queue.add(_queueFor(audiobook));
     await _engine.load(audiobook, chapterId: chapterId, position: position);
   }

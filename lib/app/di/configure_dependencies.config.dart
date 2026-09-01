@@ -18,6 +18,7 @@ import '../../core/audio/just_audio_playback_service.dart' as _i954;
 import '../../core/audio/listening_session.dart' as _i343;
 import '../../core/audio/metadata/audio_metadata_service.dart' as _i491;
 import '../../core/audio/metadata/local_audio_metadata_service.dart' as _i798;
+import '../../core/audio/playback_notification_permission.dart' as _i749;
 import '../../core/database/app_database.dart' as _i50;
 import '../../core/files/device_file_gateway.dart' as _i306;
 import '../../core/files/local_device_file_gateway.dart' as _i804;
@@ -69,6 +70,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i124.ThemeCubit>(
       () => _i124.ThemeCubit(gh<_i475.AppearanceRepository>()),
     );
+    gh.lazySingleton<_i749.PlaybackNotificationPermission>(
+      () => _i749.DevicePlaybackNotificationPermission(),
+    );
     gh.lazySingleton<_i491.AudioMetadataService>(
       () => const _i798.LocalAudioMetadataService(),
     );
@@ -79,18 +83,19 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i954.JustAudioPlaybackService(),
       instanceName: 'audioEngine',
     );
-    gh.lazySingleton<_i306.DeviceFileGateway>(
-      () => _i804.LocalDeviceFileGateway(),
-    );
-    gh.lazySingleton<_i1069.AudiobookRepository>(
-      () => _i409.LocalAudiobookRepository(gh<_i50.AppDatabase>()),
-    );
     gh.lazySingleton<_i119.AudiobookAudioHandler>(
       () => _i119.AudiobookAudioHandler(
         gh<_i815.AudioPlaybackService>(instanceName: 'audioEngine'),
         gh<_i579.PlaybackSettingsRepository>(),
         gh<_i343.ListeningSession>(),
+        gh<_i749.PlaybackNotificationPermission>(),
       ),
+    );
+    gh.lazySingleton<_i306.DeviceFileGateway>(
+      () => _i804.LocalDeviceFileGateway(),
+    );
+    gh.lazySingleton<_i1069.AudiobookRepository>(
+      () => _i409.LocalAudiobookRepository(gh<_i50.AppDatabase>()),
     );
     gh.factory<_i196.LibraryCubit>(
       () => _i196.LibraryCubit(

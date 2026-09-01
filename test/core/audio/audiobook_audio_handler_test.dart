@@ -5,6 +5,7 @@ import 'package:audiobooks/core/audio/audio_playback_service.dart';
 import 'package:audiobooks/core/audio/audio_playback_snapshot.dart';
 import 'package:audiobooks/core/audio/audiobook_audio_handler.dart';
 import 'package:audiobooks/core/audio/listening_session.dart';
+import 'package:audiobooks/core/audio/playback_notification_permission.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook_chapter.dart';
 import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
@@ -15,6 +16,17 @@ import 'package:mocktail/mocktail.dart';
 class _MockEngine extends Mock implements AudioPlaybackService {}
 
 class _MockSettings extends Mock implements PlaybackSettingsRepository {}
+
+/// The system's permission sheet, which a listener has already answered yes to.
+class _FakePermission implements PlaybackNotificationPermission {
+  int asked = 0;
+
+  @override
+  Future<bool> ensureGranted() async {
+    asked++;
+    return true;
+  }
+}
 
 class _FakeSession implements ListeningSession {
   final _events = StreamController<ListeningInterruption>.broadcast();
@@ -68,6 +80,7 @@ void main() {
   late _MockEngine engine;
   late _MockSettings settings;
   late _FakeSession session;
+  late _FakePermission permission;
   late StreamController<AudioPlaybackSnapshot> snapshots;
   late AudiobookAudioHandler handler;
 
@@ -85,6 +98,7 @@ void main() {
     engine = _MockEngine();
     settings = _MockSettings();
     session = _FakeSession();
+    permission = _FakePermission();
     snapshots = StreamController<AudioPlaybackSnapshot>.broadcast();
 
     when(() => engine.snapshots).thenAnswer((_) => snapshots.stream);
@@ -109,7 +123,7 @@ void main() {
       () => settings.loadPlaybackSettings(),
     ).thenAnswer((_) async => settled);
 
-    handler = AudiobookAudioHandler(engine, settings, session);
+    handler = AudiobookAudioHandler(engine, settings, session, permission);
   });
 
   tearDown(() async {
@@ -129,6 +143,9 @@ void main() {
       await handler.load(book);
 
       expect(session.configured, 1);
+      // The notification the lock screen is made of needs asking for on
+      // Android 13 and later, and a book opening is when it starts to matter.
+      expect(permission.asked, 1);
       verify(
         () => engine.load(book, chapterId: null, position: Duration.zero),
       ).called(1);

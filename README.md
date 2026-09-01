@@ -79,7 +79,16 @@ fvm flutter run
 
 The iOS target requires iOS 14 or newer, and declares the `audio` background
 mode. On Android the media session runs as a `mediaPlayback` foreground
-service, which is what keeps a book playing with the screen off.
+service, which is what keeps a book playing with the screen off. From Android
+13 that service's notification — and so the lock-screen controls, which are the
+same notification — appears only once the listener has granted
+`POST_NOTIFICATIONS`, which the app asks for the first time a book is opened.
+Denying it leaves the book playing with no controls outside the app; it can be
+granted afterwards in the system's notification settings for the app.
+
+Changes to the Android manifest or to `MainActivity` need a full rebuild:
+`flutter run` again rather than a hot restart. Whether the media session came
+up at all is reported at startup under the `[audiobooks] media session:` tag.
 
 The macOS app uses a sandboxed native file picker and adapts from a compact
 single-column layout to desktop Library grids and a two-column listening view.

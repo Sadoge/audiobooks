@@ -17,7 +17,10 @@ Future<void> startMediaSession(
   AudiobookAudioHandler handler,
   PlaybackSettingsRepository settings,
 ) async {
-  if (!_hasMediaSession) return;
+  if (!_hasMediaSession) {
+    if (kDebugMode) debugPrint('$_log unsupported on this platform');
+    return;
+  }
 
   // iOS labels its skip keys with the number of seconds they step by, so the
   // session is told the intervals the listener actually chose. They are fixed
@@ -46,9 +49,13 @@ Future<void> startMediaSession(
         rewindInterval: intervals.rewindInterval,
       ),
     );
+    if (kDebugMode) debugPrint('$_log started');
   } catch (error, stackTrace) {
     // Losing the lock screen is worth reporting, but never worth refusing to
-    // open the app over: the player itself still works.
+    // open the app over: the player itself still works. It is said out loud
+    // because the symptom otherwise — a book that plays but appears nowhere —
+    // looks exactly like the platform simply not being wired up.
+    if (kDebugMode) debugPrint('$_log FAILED: $error');
     FlutterError.reportError(
       FlutterErrorDetails(
         exception: error,
@@ -59,6 +66,10 @@ Future<void> startMediaSession(
     );
   }
 }
+
+/// One recognisable tag, so that whether the session came up at all can be
+/// read off the device log rather than guessed at from behaviour.
+const String _log = '[audiobooks] media session:';
 
 /// Where `audio_service` has a platform to talk to. Linux and Windows are
 /// built by the Flutter tooling but are not targets of this app.
