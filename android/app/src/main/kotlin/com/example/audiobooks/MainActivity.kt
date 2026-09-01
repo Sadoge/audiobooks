@@ -1,8 +1,10 @@
 package com.example.audiobooks
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -27,20 +29,35 @@ class MainActivity : AudioServiceActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "ensureGranted" -> ensureNotificationPermission(result)
+                    "isGranted" -> result.success(notificationsAllowed())
+                    "openSettings" -> openNotificationSettings(result)
                     else -> result.notImplemented()
                 }
             }
     }
 
-    private fun ensureNotificationPermission(result: MethodChannel.Result) {
+    /** Whether the playback notification may be shown, asking nothing. */
+    private fun notificationsAllowed(): Boolean =
         // Before Android 13 the permission came with the install.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            result.success(true)
-            return
-        }
-        if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
-        ) {
+
+    /** The one way back for a listener who has already said no. */
+    private fun openNotificationSettings(result: MethodChannel.Result) {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            startActivity(intent)
+            result.success(null)
+        } catch (error: Exception) {
+            result.error("no-settings", error.message, null)
+        }
+    }
+
+    private fun ensureNotificationPermission(result: MethodChannel.Result) {
+        if (notificationsAllowed()) {
             result.success(true)
             return
         }

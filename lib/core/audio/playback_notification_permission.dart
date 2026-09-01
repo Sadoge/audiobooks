@@ -11,6 +11,14 @@ abstract interface class PlaybackNotificationPermission {
   /// Asks, if the platform needs asking. Answers whether the player may show
   /// itself, and never throws: a listener who says no still gets their book.
   Future<bool> ensureGranted();
+
+  /// Whether the player may show itself, without asking for anything. Null
+  /// where the platform has no such notion to report on.
+  Future<bool?> isGranted();
+
+  /// Opens the system's own notification settings for this app, which is the
+  /// only way back once a listener has said no.
+  Future<void> openSettings();
 }
 
 @LazySingleton(as: PlaybackNotificationPermission)
@@ -23,6 +31,27 @@ class DevicePlaybackNotificationPermission
   );
 
   bool? _answer;
+
+  @override
+  Future<bool?> isGranted() async {
+    try {
+      return await _channel.invokeMethod<bool>('isGranted');
+    } on MissingPluginException {
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> openSettings() async {
+    try {
+      await _channel.invokeMethod<void>('openSettings');
+    } catch (_) {
+      // Nothing to open, or nothing that would take it. The listener can still
+      // reach the same place through the system's own settings.
+    }
+  }
 
   @override
   Future<bool> ensureGranted() async {

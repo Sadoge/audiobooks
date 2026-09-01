@@ -16,6 +16,7 @@ import '../../core/audio/audio_playback_service.dart' as _i815;
 import '../../core/audio/audiobook_audio_handler.dart' as _i119;
 import '../../core/audio/just_audio_playback_service.dart' as _i954;
 import '../../core/audio/listening_session.dart' as _i343;
+import '../../core/audio/media_session_status.dart' as _i86;
 import '../../core/audio/metadata/audio_metadata_service.dart' as _i491;
 import '../../core/audio/metadata/local_audio_metadata_service.dart' as _i798;
 import '../../core/audio/playback_notification_permission.dart' as _i749;
@@ -43,6 +44,8 @@ import '../../features/settings/domain/repositories/appearance_repository.dart'
     as _i475;
 import '../../features/settings/domain/repositories/playback_settings_repository.dart'
     as _i579;
+import '../../features/settings/presentation/cubit/lock_screen_cubit.dart'
+    as _i1058;
 import '../../features/settings/presentation/cubit/playback_settings_cubit.dart'
     as _i333;
 import '../../features/settings/presentation/cubit/storage_summary_cubit.dart'
@@ -60,6 +63,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final audioModule = _$AudioModule();
     gh.lazySingleton<_i81.AppRouter>(() => _i81.AppRouter());
+    gh.lazySingleton<_i86.MediaSessionStatus>(() => _i86.MediaSessionStatus());
     gh.lazySingleton<_i50.AppDatabase>(() => _i50.AppDatabase());
     gh.lazySingleton<_i475.AppearanceRepository>(
       () => _i1004.SharedPreferencesAppearanceRepository(),
@@ -102,6 +106,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1069.AudiobookRepository>(),
         gh<_i306.DeviceFileGateway>(),
         gh<_i491.AudioMetadataService>(),
+      ),
+    );
+    gh.factory<_i1058.LockScreenCubit>(
+      () => _i1058.LockScreenCubit(
+        gh<_i86.MediaSessionStatus>(),
+        gh<_i749.PlaybackNotificationPermission>(),
       ),
     );
     gh.factory<_i809.StorageSummaryCubit>(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audiobooks/core/audio/audiobook_audio_handler.dart';
+import 'package:audiobooks/core/audio/media_session_status.dart';
 import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
 import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:flutter/foundation.dart';
@@ -16,8 +17,10 @@ import 'package:flutter/foundation.dart';
 Future<void> startMediaSession(
   AudiobookAudioHandler handler,
   PlaybackSettingsRepository settings,
+  MediaSessionStatus status,
 ) async {
   if (!_hasMediaSession) {
+    status.record(MediaSessionOutcome.unsupported);
     if (kDebugMode) debugPrint('$_log unsupported on this platform');
     return;
   }
@@ -49,12 +52,14 @@ Future<void> startMediaSession(
         rewindInterval: intervals.rewindInterval,
       ),
     );
+    status.record(MediaSessionOutcome.started);
     if (kDebugMode) debugPrint('$_log started');
   } catch (error, stackTrace) {
     // Losing the lock screen is worth reporting, but never worth refusing to
     // open the app over: the player itself still works. It is said out loud
     // because the symptom otherwise — a book that plays but appears nowhere —
     // looks exactly like the platform simply not being wired up.
+    status.record(MediaSessionOutcome.failed, error: '$error');
     if (kDebugMode) debugPrint('$_log FAILED: $error');
     FlutterError.reportError(
       FlutterErrorDetails(

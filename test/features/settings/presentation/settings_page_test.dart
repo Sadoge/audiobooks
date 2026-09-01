@@ -1,4 +1,6 @@
 import 'package:audiobooks/app/theme/app_theme.dart';
+import 'package:audiobooks/core/audio/media_session_status.dart';
+import 'package:audiobooks/core/audio/playback_notification_permission.dart';
 import 'package:audiobooks/core/files/device_file_gateway.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/repositories/audiobook_repository.dart';
@@ -6,6 +8,7 @@ import 'package:audiobooks/features/settings/domain/entities/app_theme_preferenc
 import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
 import 'package:audiobooks/features/settings/domain/repositories/appearance_repository.dart';
 import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
+import 'package:audiobooks/features/settings/presentation/cubit/lock_screen_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/playback_settings_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/storage_summary_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/theme_cubit.dart';
@@ -18,6 +21,18 @@ import 'package:mocktail/mocktail.dart';
 class _MockAudiobookRepository extends Mock implements AudiobookRepository {}
 
 class _MockDeviceFileGateway extends Mock implements DeviceFileGateway {}
+
+/// A device that took the player and shows it, which is the ordinary case.
+class _FakePermission implements PlaybackNotificationPermission {
+  @override
+  Future<bool> ensureGranted() async => true;
+
+  @override
+  Future<bool?> isGranted() async => true;
+
+  @override
+  Future<void> openSettings() async {}
+}
 
 void main() {
   late _FakePlaybackSettingsRepository playback;
@@ -66,6 +81,12 @@ void main() {
             ),
             BlocProvider(
               create: (_) => StorageSummaryCubit(audiobooks, files)..measure(),
+            ),
+            BlocProvider(
+              create: (_) => LockScreenCubit(
+                MediaSessionStatus()..record(MediaSessionOutcome.started),
+                _FakePermission(),
+              )..check(),
             ),
           ],
           child: const SettingsPage(),

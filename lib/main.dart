@@ -3,6 +3,8 @@ import 'package:audiobooks/app/di/configure_dependencies.dart';
 import 'package:audiobooks/app/router/app_router.dart';
 import 'package:audiobooks/core/audio/audiobook_audio_handler.dart';
 import 'package:audiobooks/core/audio/media_session.dart';
+import 'package:audiobooks/core/audio/media_session_status.dart';
+import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +21,11 @@ Future<void> main() async {
   await configureDependencies();
   // The system's transport is claimed before anything is drawn, so that a book
   // reopened from the notification finds a session already waiting for it.
-  await startMediaSession(getIt<AudiobookAudioHandler>(), getIt());
+  await startMediaSession(
+    getIt<AudiobookAudioHandler>(),
+    getIt<PlaybackSettingsRepository>(),
+    getIt<MediaSessionStatus>(),
+  );
   runApp(AudiobooksApp(router: getIt<AppRouter>()));
 }
 

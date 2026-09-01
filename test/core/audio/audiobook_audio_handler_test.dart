@@ -26,6 +26,12 @@ class _FakePermission implements PlaybackNotificationPermission {
     asked++;
     return true;
   }
+
+  @override
+  Future<bool?> isGranted() async => true;
+
+  @override
+  Future<void> openSettings() async {}
 }
 
 class _FakeSession implements ListeningSession {

@@ -88,7 +88,12 @@ granted afterwards in the system's notification settings for the app.
 
 Changes to the Android manifest or to `MainActivity` need a full rebuild:
 `flutter run` again rather than a hot restart. Whether the media session came
-up at all is reported at startup under the `[audiobooks] media session:` tag.
+up at all is reported at startup under the `[audiobooks] media session:` tag,
+and Settings › Playback › Lock screen controls says the same thing on the
+device: `On` when the system has the player, `Blocked` when the notification
+permission was declined (with a button through to the system settings that can
+give it back), and `Off` with the reason when the session could not be
+started.
 
 The macOS app uses a sandboxed native file picker and adapts from a compact
 single-column layout to desktop Library grids and a two-column listening view.
