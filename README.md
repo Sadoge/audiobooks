@@ -17,14 +17,17 @@ The foundation release includes:
 - A Drift database for books, chapters, progress, and bookmarks.
 - Feature-first architecture with Cubit, repositories, dependency injection,
   and typed routing.
-- Chapters from either audiobook layout: markers embedded in a single M4B, and
-  ordered files imported together as one book.
+- Chapters from either audiobook layout: markers embedded in a single M4B or
+  MP3, and ordered files imported together as one book.
 - A functional adaptive player with chapter navigation, whole-book progress,
   speed, keyboard shortcuts, and durable resume position. The wheel is a
   painted face with ordinary buttons laid over it, so every control keeps its
   tooltip, focus stop, touch target, and screen-reader semantics.
 - Resume that remembers the chapter and the minute, shown in the Library and
   restored when a book is reopened.
+- Books that arrive under their own name: the title, author, and narrator are
+  read out of ID3 and MP4 tags, so an imported file is filed as the work it is
+  rather than as its filename.
 - Real covers: artwork is read out of MP3 ID3 tags and MP4 `covr` boxes, or
   taken from an image sitting beside the audio, and any book can be given one
   by hand at import or afterwards. Covers are squared and scaled when stored,
