@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audiobooks/app/format/playback_duration.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
 import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/core/audio/chapter_timeline.dart';
@@ -223,8 +224,8 @@ class _ResumeSummary extends StatelessWidget {
 
     return _Label(
       text: chapter == null
-          ? 'Resume at ${_formatDuration(elapsed)}'
-          : 'Chapter ${index + 1} · ${_formatDuration(elapsed)}',
+          ? 'Resume at ${formatPlaybackDuration(elapsed)}'
+          : 'Chapter ${index + 1} · ${formatPlaybackDuration(elapsed)}',
       progress: timeline.bookDuration > Duration.zero
           ? book.currentPosition.inMilliseconds /
                 timeline.bookDuration.inMilliseconds
@@ -271,14 +272,6 @@ class _Label extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatDuration(Duration duration) {
-  final safe = duration.isNegative ? Duration.zero : duration;
-  final hours = safe.inHours;
-  final minutes = safe.inMinutes.remainder(60).toString().padLeft(2, '0');
-  final seconds = safe.inSeconds.remainder(60).toString().padLeft(2, '0');
-  return hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
 }
 
 /// A book's square artwork, falling back to its initial when there is none,

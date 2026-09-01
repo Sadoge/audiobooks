@@ -39,11 +39,23 @@
 - Now Playing bar: playback outlives the player page, so the Library carries a
   strip along the bottom of the housing whenever a book is loaded — the cover
   behind the same bezel at 40px, the title, the chapter (or the author on a
-  book with none), and one play or pause key. It sits under the list rather
+  book with none), the transport, and a counter. It sits under the list rather
   than over it, so nothing at the bottom of a long library is hidden behind it,
   and it takes no room at all when nothing is playing. Tapping the strip
-  returns to that book's player; the key works the transport without leaving
+  returns to that book's player; the keys work the transport without leaving
   the Library.
+- Now Playing transport: a lit play or pause key with a quiet chapter key
+  either side of it, so the primary action stays the loudest thing on the
+  strip. The chapter keys appear only on a book divided into chapters, the same
+  rule the player's wheel goes by. Everything else — scrubbing, the skip
+  intervals, speed, the chapter list — stays on the player, which is one tap
+  away.
+- Now Playing counter: a second line running the full width of the strip —
+  elapsed on the left, a 2px position line between, and time remaining on the
+  right, all in the Space Mono readout face. It measures the chapter, as the
+  player's own scrubber does, so the two never disagree. Until something knows
+  how long the chapter runs, the line sits empty and the remaining time is
+  withheld rather than guessed.
 - Unresolved: final product name.
 
 ## Ingredient inventory
@@ -58,4 +70,6 @@
 | macOS library | Flat cover grid with pointer and keyboard affordances | Responsive Flutter slivers |
 | Book cover | Square artwork behind a chrome bezel, or the title initial on a quiet plane | Clipped image with letter fallback |
 | Book actions | One overflow control per book: cover, removal | Material popup menu, confirm dialog |
-| Now Playing bar | Bottom strip: 40px bezelled cover, title, chapter, one play/pause key, tap to return | Semantic Flutter widgets over chrome tokens |
+| Now Playing bar | Bottom strip: 40px bezelled cover, title, chapter, tap to return | Semantic Flutter widgets over chrome tokens |
+| Now Playing transport | Lit play/pause key, quiet previous/next chapter keys either side on a chaptered book | Material icon buttons |
+| Now Playing counter | Full-width readout: elapsed, 2px position line, time remaining, in the mono face | Mono text and a determinate progress line |

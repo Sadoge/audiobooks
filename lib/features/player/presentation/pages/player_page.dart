@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audiobooks/app/di/configure_dependencies.dart';
+import 'package:audiobooks/app/format/playback_duration.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
 import 'package:audiobooks/app/theme/retro_chrome.dart';
 import 'package:audiobooks/app/widgets/retro_widgets.dart';
@@ -295,8 +296,8 @@ class _Readout extends StatelessWidget {
           Semantics(
             label: 'Playback position',
             value:
-                '${_formatDuration(playback.position)} of '
-                '${_formatDuration(duration)}',
+                '${formatPlaybackDuration(playback.position)} of '
+                '${formatPlaybackDuration(duration)}',
             child: SliderTheme(
               data: SliderTheme.of(
                 context,
@@ -318,14 +319,14 @@ class _Readout extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             child: Row(
               children: [
-                Text(_formatDuration(playback.position), style: digits),
+                Text(formatPlaybackDuration(playback.position), style: digits),
                 // The scrubber measures the chapter, so the book as a whole
                 // gets one line between its ends rather than a second bar.
                 Expanded(
                   child: _BookRemaining(book: book, playback: playback),
                 ),
                 Text(
-                  '-${_formatDuration(duration - playback.position)}',
+                  '-${formatPlaybackDuration(duration - playback.position)}',
                   style: digits,
                 ),
               ],
@@ -722,7 +723,7 @@ class _ChapterRow extends StatelessWidget {
         ),
         trailing: chapter.duration > Duration.zero
             ? Text(
-                _formatDuration(chapter.duration),
+                formatPlaybackDuration(chapter.duration),
                 style: AppFonts.readout(
                   Theme.of(context).textTheme.bodySmall,
                 ).copyWith(color: ink),
@@ -753,7 +754,7 @@ class _BookRemaining extends StatelessWidget {
     }
 
     return Text(
-      '${_formatDuration(total - playback.bookPosition)} left in book',
+      '${formatPlaybackDuration(total - playback.bookPosition)} left in book',
       textAlign: TextAlign.center,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -826,10 +827,3 @@ AudiobookChapter? _activeChapter(
       : book.chapters.first;
 }
 
-String _formatDuration(Duration duration) {
-  final safe = duration.isNegative ? Duration.zero : duration;
-  final hours = safe.inHours;
-  final minutes = safe.inMinutes.remainder(60).toString().padLeft(2, '0');
-  final seconds = safe.inSeconds.remainder(60).toString().padLeft(2, '0');
-  return hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
-}

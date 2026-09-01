@@ -54,6 +54,8 @@ void main() {
     states = StreamController<NowPlayingState>.broadcast();
     opened.clear();
     when(() => cubit.togglePlayback()).thenAnswer((_) async {});
+    when(() => cubit.nextChapter()).thenAnswer((_) async {});
+    when(() => cubit.previousChapter()).thenAnswer((_) async {});
   });
 
   tearDown(() => states.close());
@@ -192,6 +194,134 @@ void main() {
     expect(opened, ['book-1']);
   });
 
+  testWidgets('steps a chapter either way on a book that has chapters', (
+    tester,
+  ) async {
+    await pumpBar(
+      tester,
+      NowPlayingState(
+        book: _book,
+        playback: const AudioPlaybackSnapshot(
+          status: PlaybackStatus.playing,
+          bookId: 'book-1',
+          chapterIndex: 0,
+          chapterCount: 2,
+        ),
+      ),
+    );
+
+    await tester.tap(find.byTooltip('Next chapter'));
+    await tester.pump();
+    await tester.tap(find.byTooltip('Previous chapter'));
+    await tester.pump();
+
+    verify(() => cubit.nextChapter()).called(1);
+    verify(() => cubit.previousChapter()).called(1);
+    // Stepping a chapter is not a way out of the Library.
+    expect(opened, isEmpty);
+  });
+
+  testWidgets('offers no chapter keys on a book without chapters', (
+    tester,
+  ) async {
+    await pumpBar(
+      tester,
+      NowPlayingState(
+        book: _book.copyWith(chapters: const []),
+        playback: const AudioPlaybackSnapshot(
+          status: PlaybackStatus.playing,
+          bookId: 'book-1',
+        ),
+      ),
+    );
+
+    expect(find.byTooltip('Next chapter'), findsNothing);
+    expect(find.byTooltip('Previous chapter'), findsNothing);
+    expect(find.byTooltip('Pause'), findsOneWidget);
+  });
+
+  testWidgets('counts the chapter out, elapsed and remaining', (tester) async {
+    await pumpBar(
+      tester,
+      NowPlayingState(
+        book: _book,
+        playback: const AudioPlaybackSnapshot(
+          status: PlaybackStatus.playing,
+          bookId: 'book-1',
+          chapterIndex: 0,
+          chapterCount: 2,
+          position: Duration(minutes: 12, seconds: 34),
+          duration: Duration(minutes: 42),
+        ),
+      ),
+    );
+
+    expect(find.text('12:34'), findsOneWidget);
+    expect(find.text('-29:26'), findsOneWidget);
+    expect(
+      tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      ).value,
+      closeTo(12.5666 / 42, 0.001),
+    );
+  });
+
+  testWidgets('the counter follows playback along', (tester) async {
+    await pumpBar(
+      tester,
+      NowPlayingState(
+        book: _book,
+        playback: const AudioPlaybackSnapshot(
+          status: PlaybackStatus.playing,
+          bookId: 'book-1',
+          position: Duration(minutes: 12, seconds: 34),
+          duration: Duration(minutes: 42),
+        ),
+      ),
+    );
+    expect(find.text('12:34'), findsOneWidget);
+
+    await update(
+      tester,
+      NowPlayingState(
+        book: _book,
+        playback: const AudioPlaybackSnapshot(
+          status: PlaybackStatus.playing,
+          bookId: 'book-1',
+          position: Duration(minutes: 12, seconds: 35),
+          duration: Duration(minutes: 42),
+        ),
+      ),
+    );
+    expect(find.text('12:35'), findsOneWidget);
+    expect(find.text('12:34'), findsNothing);
+  });
+
+  testWidgets('counts up without a remaining time until a length is known', (
+    tester,
+  ) async {
+    await pumpBar(
+      tester,
+      NowPlayingState(
+        book: _book.copyWith(chapters: const [], duration: Duration.zero),
+        playback: const AudioPlaybackSnapshot(
+          status: PlaybackStatus.loading,
+          bookId: 'book-1',
+          position: Duration(seconds: 3),
+        ),
+      ),
+    );
+
+    expect(find.text('00:03'), findsOneWidget);
+    expect(find.textContaining('-'), findsNothing);
+    expect(
+      tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      ).value,
+      0,
+    );
+  });
+
   testWidgets('a listener can hear what is playing and reach it', (
     tester,
   ) async {
@@ -213,5 +343,6 @@ void main() {
       findsOneWidget,
     );
     expect(find.byTooltip('Pause'), findsOneWidget);
+    expect(find.bySemanticsLabel('Chapter position'), findsOneWidget);
   });
 }

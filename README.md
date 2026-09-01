@@ -46,8 +46,11 @@ The foundation release includes:
 - Audio the device can take back. A call or another player pauses the book and
   hands it back where it was; unplugged headphones or a Bluetooth device out of
   range pause it and never resume, so the phone's own speaker never takes over.
-- A Now Playing bar under the Library: the cover, the book, the chapter, one
-  play or pause key, and a tap back into the player.
+- A Now Playing bar under the Library: the cover, the book, the chapter, play
+  and pause with a chapter key either side of it, a counter running elapsed and
+  remaining against a position line, and a tap back into the player. The
+  chapter keys appear only on a book that has chapters, and the counter
+  measures the chapter, as the player's own scrubber does.
 - Unit, widget, repository, and golden tests.
 
 Selecting several files offers to import them as one book with a chapter per

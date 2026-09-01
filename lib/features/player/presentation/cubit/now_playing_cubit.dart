@@ -31,6 +31,12 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
   Future<void> togglePlayback() =>
       state.isPlaying ? _player.pause() : _player.play();
 
+  Future<void> nextChapter() => _player.nextChapter();
+
+  /// Restarts the chapter first, then steps back a chapter, the way the
+  /// player's own wheel key and every physical transport control does.
+  Future<void> previousChapter() => _player.previousChapter();
+
   void _onPlayback(AudioPlaybackSnapshot playback) {
     if (isClosed) return;
     emit(state.copyWith(playback: playback));

@@ -57,6 +57,8 @@ void main() {
     when(() => player.playback).thenAnswer((_) => playback.stream);
     when(() => player.play()).thenAnswer((_) async {});
     when(() => player.pause()).thenAnswer((_) async {});
+    when(() => player.nextChapter()).thenAnswer((_) async {});
+    when(() => player.previousChapter()).thenAnswer((_) async {});
     when(() => audiobooks.findById('book-1')).thenAnswer((_) async => _book());
   });
 
@@ -201,6 +203,124 @@ void main() {
     );
 
     expect(cubit.state.book!.id, 'book-2');
+  });
+
+  test('offers chapter keys only on a book divided into any', () async {
+    when(
+      () => audiobooks.findById('book-2'),
+    ).thenAnswer((_) async => _book(id: 'book-2', chapters: const []));
+    final cubit = build();
+    addTearDown(cubit.close);
+
+    await emit(
+      cubit,
+      const AudioPlaybackSnapshot(
+        status: PlaybackStatus.playing,
+        bookId: 'book-1',
+      ),
+    );
+    expect(cubit.state.hasChapters, isTrue);
+
+    await emit(
+      cubit,
+      const AudioPlaybackSnapshot(
+        status: PlaybackStatus.playing,
+        bookId: 'book-2',
+      ),
+    );
+    expect(cubit.state.hasChapters, isFalse);
+  });
+
+  test('the chapter keys reach the transport', () async {
+    final cubit = build();
+    addTearDown(cubit.close);
+
+    await cubit.nextChapter();
+    await cubit.previousChapter();
+
+    verify(() => player.nextChapter()).called(1);
+    verify(() => player.previousChapter()).called(1);
+  });
+
+  group('the counter', () {
+    test('measures the chapter, elapsed and remaining', () async {
+      final cubit = build();
+      addTearDown(cubit.close);
+
+      await emit(
+        cubit,
+        const AudioPlaybackSnapshot(
+          status: PlaybackStatus.playing,
+          bookId: 'book-1',
+          chapterIndex: 0,
+          chapterCount: 2,
+          position: Duration(minutes: 12),
+          duration: Duration(minutes: 42),
+        ),
+      );
+
+      expect(cubit.state.position, const Duration(minutes: 12));
+      expect(cubit.state.chapterDuration, const Duration(minutes: 42));
+      expect(cubit.state.chapterRemaining, const Duration(minutes: 30));
+      expect(cubit.state.chapterProgress, closeTo(12 / 42, 0.001));
+    });
+
+    test('falls back to the length the library recorded', () async {
+      final cubit = build();
+      addTearDown(cubit.close);
+
+      await emit(
+        cubit,
+        const AudioPlaybackSnapshot(
+          status: PlaybackStatus.loading,
+          bookId: 'book-1',
+          chapterIndex: 1,
+          chapterCount: 2,
+        ),
+      );
+
+      expect(cubit.state.chapterDuration, const Duration(minutes: 35));
+    });
+
+    test('knows nothing until some length is', () async {
+      when(() => audiobooks.findById('book-1')).thenAnswer(
+        (_) async => _book(chapters: const []),
+      );
+      final cubit = build();
+      addTearDown(cubit.close);
+
+      await emit(
+        cubit,
+        const AudioPlaybackSnapshot(
+          status: PlaybackStatus.loading,
+          bookId: 'book-1',
+          position: Duration(seconds: 3),
+        ),
+      );
+
+      expect(cubit.state.chapterProgress, isNull);
+      expect(cubit.state.chapterRemaining, isNull);
+    });
+
+    test('never runs past the end of the chapter', () async {
+      final cubit = build();
+      addTearDown(cubit.close);
+
+      await emit(
+        cubit,
+        const AudioPlaybackSnapshot(
+          status: PlaybackStatus.completed,
+          bookId: 'book-1',
+          chapterIndex: 0,
+          chapterCount: 2,
+          position: Duration(minutes: 43),
+          duration: Duration(minutes: 42),
+        ),
+      );
+
+      expect(cubit.state.chapterProgress, 1.0);
+      expect(cubit.state.chapterRemaining, Duration.zero);
+    });
   });
 
   test('the key plays what is paused and pauses what is playing', () async {
