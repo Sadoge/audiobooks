@@ -5,6 +5,8 @@ import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/settings/domain/entities/app_theme_preference.dart';
 import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/playback_settings_cubit.dart';
+import 'package:audiobooks/features/settings/presentation/cubit/lock_screen_cubit.dart';
+import 'package:audiobooks/features/settings/presentation/cubit/lock_screen_state.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/storage_summary_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/storage_summary_state.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/theme_cubit.dart';
@@ -21,6 +23,7 @@ class SettingsPage extends StatelessWidget implements AutoRouteWrapper {
     providers: [
       BlocProvider(create: (_) => getIt<PlaybackSettingsCubit>()..load()),
       BlocProvider(create: (_) => getIt<StorageSummaryCubit>()..measure()),
+      BlocProvider(create: (_) => getIt<LockScreenCubit>()..check()),
     ],
     child: this,
   );
@@ -43,6 +46,7 @@ class SettingsPage extends StatelessWidget implements AutoRouteWrapper {
           const SizedBox(height: AppSpacing.xxl),
           const _SectionHeading('Playback'),
           const _PlaybackChoices(),
+          const _LockScreenRow(),
           const SizedBox(height: AppSpacing.xxl),
           const _SectionHeading('Library'),
           const _StorageRow(),
@@ -177,6 +181,71 @@ class _PlaybackChoices extends StatelessWidget {
 ///
 /// Imported audio is copied into the app, and removing a book is the only
 /// thing that gives that space back, so the row says so plainly.
+/// Whether a book will show up outside the app, and the way to fix it when it
+/// will not.
+///
+/// Playing a book and showing it are separate things: a book plays perfectly
+/// with the notification declined, which otherwise leaves a listener unable to
+/// tell a permission they said no to from something actually broken.
+class _LockScreenRow extends StatelessWidget {
+  const _LockScreenRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LockScreenCubit, LockScreenState>(
+      builder: (context, state) {
+        final row = _SettingsRow(
+          title: 'Lock screen controls',
+          subtitle: switch (state.status) {
+            LockScreenStatus.checking => 'Checking.',
+            LockScreenStatus.working =>
+              'A book you are listening to appears on the lock screen and in '
+                  'the notification shade, with its cover and its transport.',
+            LockScreenStatus.notPermitted =>
+              'Your book plays, but it cannot show itself: this app is not '
+                  'allowed to post notifications, and the lock screen '
+                  'controls are one.',
+            LockScreenStatus.unavailable =>
+              state.errorMessage ??
+                  'This device offers no place to put the player outside the '
+                      'app.',
+          },
+          value: switch (state.status) {
+            LockScreenStatus.checking => '—',
+            LockScreenStatus.working => 'On',
+            LockScreenStatus.notPermitted => 'Blocked',
+            LockScreenStatus.unavailable => 'Off',
+          },
+        );
+
+        if (state.status != LockScreenStatus.notPermitted) return row;
+
+        // The permission sheet only ever appears once, so the only way back is
+        // the system's own settings.
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            row,
+            Padding(
+              padding: const EdgeInsets.only(
+                top: AppSpacing.xs,
+                bottom: AppSpacing.xs,
+              ),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: FilledButton.tonal(
+                  onPressed: context.read<LockScreenCubit>().openSettings,
+                  child: const Text('Allow notifications'),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _StorageRow extends StatelessWidget {
   const _StorageRow();
 
