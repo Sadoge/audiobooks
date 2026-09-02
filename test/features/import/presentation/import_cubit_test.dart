@@ -147,6 +147,151 @@ void main() {
     await cubit.close();
   });
 
+  test('names a grouped book after the album its files agree on', () async {
+    const first = PickedAudioFile(
+      name: 'track01.mp3',
+      sizeBytes: 10,
+      extension: 'mp3',
+      path: '/picker/01.mp3',
+    );
+    const second = PickedAudioFile(
+      name: 'track02.mp3',
+      sizeBytes: 10,
+      extension: 'mp3',
+      path: '/picker/02.mp3',
+    );
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(files: const [first, second]),
+      repository,
+      const _FakeAudioMetadataService(
+        byPath: {
+          '/library/track01.mp3': AudioFileMetadata(
+            duration: Duration(minutes: 30),
+            title: 'Deep Water',
+            trackTitle: 'Chapter One',
+            author: 'A. Writer',
+          ),
+          '/library/track02.mp3': AudioFileMetadata(
+            duration: Duration(minutes: 30),
+            title: 'Deep Water',
+            trackTitle: 'Chapter Two',
+            author: 'A. Writer',
+          ),
+        },
+      ),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.importAsSingleBook();
+
+    final saved = repository.saved.single;
+    // Filenames that share nothing would have given a useless title.
+    expect(saved.title, 'Deep Water');
+    expect(saved.author, 'A. Writer');
+    expect(saved.chapters.map((chapter) => chapter.title), [
+      'Chapter One',
+      'Chapter Two',
+    ]);
+    // One chapter per file, each starting at the top of its own file.
+    expect(saved.chapters.map((chapter) => chapter.filePath), [
+      '/library/track01.mp3',
+      '/library/track02.mp3',
+    ]);
+    expect(
+      saved.chapters.map((chapter) => chapter.startPosition).toSet(),
+      {Duration.zero},
+    );
+    await cubit.close();
+  });
+
+  test('falls back to the filenames when the files name no one work', () async {
+    const first = PickedAudioFile(
+      name: 'Deep Water - 01.mp3',
+      sizeBytes: 10,
+      extension: 'mp3',
+      path: '/picker/01.mp3',
+    );
+    const second = PickedAudioFile(
+      name: 'Deep Water - 02.mp3',
+      sizeBytes: 10,
+      extension: 'mp3',
+      path: '/picker/02.mp3',
+    );
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(files: const [first, second]),
+      repository,
+      const _FakeAudioMetadataService(
+        byPath: {
+          '/library/Deep Water - 01.mp3': AudioFileMetadata(
+            duration: Duration(minutes: 30),
+            title: 'Deep Water, Part One',
+          ),
+          '/library/Deep Water - 02.mp3': AudioFileMetadata(
+            duration: Duration(minutes: 30),
+            title: 'Deep Water, Part Two',
+          ),
+        },
+      ),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.importAsSingleBook();
+
+    expect(repository.saved.single.title, 'Deep Water');
+    await cubit.close();
+  });
+
+  test('turns markers inside one MP3 into chapters, as for an M4B', () async {
+    const mp3 = PickedAudioFile(
+      name: 'The Long Walk.mp3',
+      sizeBytes: 10,
+      extension: 'mp3',
+      path: '/picker/walk.mp3',
+    );
+    final repository = _RecordingAudiobookRepository();
+    final cubit = ImportCubit(
+      _FakeDeviceFileGateway(files: const [mp3]),
+      repository,
+      const _FakeAudioMetadataService(
+        metadata: AudioFileMetadata(
+          duration: Duration(hours: 3),
+          title: 'The Long Walk',
+          trackTitle: 'Chapter 01',
+          author: 'Stephen King',
+          chapters: [
+            EmbeddedChapter(title: 'Opening', start: Duration.zero),
+            EmbeddedChapter(title: 'The Road', start: Duration(hours: 1)),
+            EmbeddedChapter(title: 'Home', start: Duration(hours: 2)),
+          ],
+        ),
+      ),
+    );
+
+    await cubit.chooseFiles();
+    await cubit.importSeparateBooks();
+
+    final saved = repository.saved.single;
+    // The album names the book; the track title would have called it
+    // "Chapter 01".
+    expect(saved.title, 'The Long Walk');
+    expect(saved.author, 'Stephen King');
+    expect(saved.chapters.map((chapter) => chapter.title), [
+      'Opening',
+      'The Road',
+      'Home',
+    ]);
+    expect(
+      saved.chapters.map((chapter) => chapter.filePath).toSet(),
+      {'/library/The Long Walk.mp3'},
+    );
+    expect(saved.chapters[1].startPosition, const Duration(hours: 1));
+    expect(saved.chapters.last.duration, const Duration(hours: 1));
+    await cubit.close();
+  });
+
+
   test('gives an imported book the artwork stored inside its file', () async {
     final repository = _RecordingAudiobookRepository();
     final cubit = ImportCubit(
@@ -257,14 +402,20 @@ final _art = CoverArt(
 class _FakeAudioMetadataService implements AudioMetadataService {
   const _FakeAudioMetadataService({
     this.metadata = const AudioFileMetadata(),
+    this.byPath = const {},
     this.coverArt,
   });
 
   final AudioFileMetadata metadata;
+
+  /// What individual files say about themselves, for a grouped import where
+  /// they do not all say the same thing.
+  final Map<String, AudioFileMetadata> byPath;
   final CoverArt? coverArt;
 
   @override
-  Future<AudioFileMetadata> read(String path) async => metadata;
+  Future<AudioFileMetadata> read(String path) async =>
+      byPath[path] ?? metadata;
 
   @override
   Future<CoverArt?> readCoverArt(String path) async => coverArt;

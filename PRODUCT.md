@@ -50,10 +50,15 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
 - Metadata failure must not block otherwise playable audio.
 - Inaccessible, moved, deleted, corrupt, or unsupported files produce a useful
   recovery state instead of a crash.
-- Embedded M4B chapters are read in Dart from the MP4 container itself, in both
-  the Nero and QuickTime layouts, so extraction behaves the same on every
-  platform. A file whose markers cannot be read still plays as one chapterless
-  book.
+- Embedded chapters are read in Dart from the container itself, so extraction
+  behaves the same on every platform: an M4B in both the Nero and QuickTime
+  layouts, an MP3 from ID3 chapter frames or the OverDrive markers a library
+  loan carries. A file whose markers cannot be read still plays as one
+  chapterless book.
+- Title, author, and narrator are read from the same tags, so a file is filed
+  as the work it is. A file that names itself only by its chapter does not lend
+  that name to the book, and a file that says nothing is filed under its
+  filename.
 - Cover art is read in Dart from ID3 and MP4 tags, or from an image beside the
   audio, and can be replaced by one the listener chooses at any time. A book
   without artwork still imports and plays.

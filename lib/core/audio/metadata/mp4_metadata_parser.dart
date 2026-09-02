@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:audiobooks/core/audio/metadata/audio_file_metadata.dart';
 import 'package:audiobooks/core/audio/metadata/byte_source.dart';
+import 'package:audiobooks/core/audio/metadata/chapter_markers.dart';
 import 'package:audiobooks/core/audio/metadata/cover_art.dart';
 
 /// Reads duration, tags, and chapter markers straight out of an MP4 container
@@ -36,9 +37,11 @@ class Mp4MetadataParser {
     return AudioFileMetadata(
       duration: duration,
       title: tags[_Tag.title],
+      // An MP4 names the work and the file alike, so one tag answers both.
+      trackTitle: tags[_Tag.title],
       author: tags[_Tag.author],
       narrator: tags[_Tag.narrator],
-      chapters: _sanitise(chapters, duration),
+      chapters: sanitiseChapters(chapters, duration),
     );
   }
 
@@ -78,30 +81,6 @@ class Mp4MetadataParser {
     final moov = topLevel.where((box) => box.type == 'moov').firstOrNull;
     if (moov == null) return null;
     return _boxes(source, moov.payloadStart, moov.end);
-  }
-
-  /// Drops markers that fall outside the media and orders what remains, so a
-  /// malformed tag can never produce an unseekable chapter.
-  List<EmbeddedChapter> _sanitise(
-    List<EmbeddedChapter> chapters,
-    Duration duration,
-  ) {
-    final kept =
-        chapters
-            .where((chapter) => !chapter.start.isNegative)
-            .where(
-              (chapter) => duration <= Duration.zero || chapter.start < duration,
-            )
-            .toList()
-          ..sort((a, b) => a.start.compareTo(b.start));
-
-    final unique = <EmbeddedChapter>[];
-    for (final chapter in kept) {
-      if (unique.isNotEmpty && unique.last.start == chapter.start) continue;
-      unique.add(chapter);
-    }
-    // A lone marker describes the whole file and is not worth a chapter list.
-    return unique.length < 2 ? const [] : unique;
   }
 
   Future<Duration> _readDuration(ByteSource source, List<_Box> moov) async {

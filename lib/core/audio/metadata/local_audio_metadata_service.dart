@@ -1,8 +1,10 @@
 import 'package:audiobooks/core/audio/metadata/audio_file_metadata.dart';
 import 'package:audiobooks/core/audio/metadata/audio_metadata_service.dart';
 import 'package:audiobooks/core/audio/metadata/byte_source.dart';
+import 'package:audiobooks/core/audio/metadata/chapter_markers.dart';
 import 'package:audiobooks/core/audio/metadata/cover_art.dart';
 import 'package:audiobooks/core/audio/metadata/id3_cover_art_parser.dart';
+import 'package:audiobooks/core/audio/metadata/id3_metadata_parser.dart';
 import 'package:audiobooks/core/audio/metadata/mp4_metadata_parser.dart';
 import 'package:injectable/injectable.dart';
 import 'package:just_audio/just_audio.dart';
@@ -11,22 +13,30 @@ import 'package:just_audio/just_audio.dart';
 /// anything the container did not answer.
 ///
 /// The container is tried first because it is cheap and it is the only place
-/// chapter markers live. The engine probe is the fallback for formats without
-/// a readable header, chiefly MP3.
+/// chapter markers live. The engine probe answers for a file whose header
+/// declares no duration, chiefly MP3: an ID3 tag names the book and its
+/// chapters but says nothing trustworthy about how long the audio runs.
 @LazySingleton(as: AudioMetadataService)
 class LocalAudioMetadataService implements AudioMetadataService {
   const LocalAudioMetadataService();
 
   static const _parser = Mp4MetadataParser();
   static const _id3 = Id3CoverArtParser();
+  static const _id3Metadata = Id3MetadataParser();
 
   @override
   Future<AudioFileMetadata> read(String path) async {
-    final parsed = await _readContainer(path);
-    if (parsed != null && parsed.duration > Duration.zero) return parsed;
+    final parsed = await _readContainer(path) ?? const AudioFileMetadata();
+    final duration = parsed.duration > Duration.zero
+        ? parsed.duration
+        : await _probeDuration(path);
 
-    final probed = await _probeDuration(path);
-    return (parsed ?? const AudioFileMetadata()).copyWith(duration: probed);
+    // Markers can only be measured against the media once its length is known,
+    // which for an MP3 is not until the engine has answered.
+    return parsed.copyWith(
+      duration: duration,
+      chapters: sanitiseChapters(parsed.chapters, duration),
+    );
   }
 
   /// MP3 keeps its artwork in an ID3 tag at the head of the file and MP4
@@ -36,13 +46,7 @@ class LocalAudioMetadataService implements AudioMetadataService {
     ByteSource? source;
     try {
       source = FileByteSource.open(path);
-      final head = await source.read(0, 3);
-      final tagged =
-          head.length == 3 &&
-          head[0] == 0x49 &&
-          head[1] == 0x44 &&
-          head[2] == 0x33;
-      return tagged
+      return await _isId3(source)
           ? await _id3.parse(source)
           : await _parser.parseCoverArt(source);
     } catch (_) {
@@ -56,12 +60,24 @@ class LocalAudioMetadataService implements AudioMetadataService {
     ByteSource? source;
     try {
       source = FileByteSource.open(path);
-      return await _parser.parse(source);
+      return await _isId3(source)
+          ? await _id3Metadata.parse(source)
+          : await _parser.parse(source);
     } catch (_) {
       return null;
     } finally {
       await source?.close();
     }
+  }
+
+  /// Whether the file opens with an ID3 tag, which is what tells an MP3 from
+  /// an MP4 before either reader is asked.
+  Future<bool> _isId3(ByteSource source) async {
+    final head = await source.read(0, 3);
+    return head.length == 3 &&
+        head[0] == 0x49 &&
+        head[1] == 0x44 &&
+        head[2] == 0x33;
   }
 
   Future<Duration> _probeDuration(String path) async {
