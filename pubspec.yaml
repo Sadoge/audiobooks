@@ -31,6 +31,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # The Storage Access Framework options file_picker takes on Android, which
+  # are what make the shared folder's grant outlive the process. file_picker
+  # depends on this package but does not re-export them.
+  android_file_picker: ^1.0.2
   audio_service: ^0.18.19
   audio_session: ^0.2.4
   auto_route: ^11.1.0

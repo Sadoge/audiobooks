@@ -29,6 +29,7 @@ class LibraryPage extends StatelessWidget {
     return Scaffold(
       appBar: LibraryAppBar(
         onImport: () => context.router.push(const ImportRoute()),
+        onShared: () => context.router.push(const ShelfRoute()),
         onSettings: () => context.router.push(const SettingsRoute()),
       ),
       // The strip sits under the library rather than over it, so a book near
@@ -78,6 +79,7 @@ class LibraryPage extends StatelessWidget {
                     onOpen: (book) =>
                         context.router.push(PlayerRoute(bookId: book.id)),
                     onChangeCover: context.read<LibraryCubit>().changeCover,
+                    onPublish: context.read<LibraryCubit>().publish,
                     onRemove: (book) => _confirmRemoval(context, book),
                   ),
                 },

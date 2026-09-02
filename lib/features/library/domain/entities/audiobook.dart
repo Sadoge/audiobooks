@@ -16,6 +16,11 @@ abstract class Audiobook with _$Audiobook {
     String? narrator,
     String? coverPath,
     String? sourcePath,
+
+    /// The key this book carries in the shared library folder, when it came
+    /// from there or was published to it. It is what lets the shelf tell that
+    /// this device already has the book and leave it off the list.
+    String? shelfKey,
     @Default(Duration.zero) Duration duration,
     @Default(Duration.zero) Duration currentPosition,
     DateTime? lastPlayedAt,

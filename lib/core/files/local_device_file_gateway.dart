@@ -3,14 +3,18 @@ import 'dart:io';
 import 'package:audiobooks/core/audio/metadata/cover_art.dart';
 import 'package:audiobooks/core/errors/app_failure.dart';
 import 'package:audiobooks/core/files/device_file_gateway.dart';
+import 'package:audiobooks/core/files/media_storage.dart';
 import 'package:audiobooks/core/files/picked_audio_file.dart';
 import 'package:audiobooks/core/images/square_cover_encoder.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
-import 'package:path_provider/path_provider.dart';
 
 @LazySingleton(as: DeviceFileGateway)
 class LocalDeviceFileGateway implements DeviceFileGateway {
+  LocalDeviceFileGateway(this._storage);
+
+  final MediaStorage _storage;
+
   static const _supportedExtensions = ['mp3', 'm4a', 'm4b', 'aac'];
   static const _square = SquareCoverEncoder();
 
@@ -79,7 +83,7 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
     }
 
     try {
-      final directory = await _bookDirectory(bookId);
+      final directory = await _storage.bookDirectory(bookId);
       final safeName = file.name.replaceAll(RegExp(r'[^a-zA-Z0-9._ -]'), '_');
       final destination = '${directory.path}${Platform.pathSeparator}$safeName';
       await File(sourcePath).copy(destination);
@@ -99,7 +103,7 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
   }) async {
     try {
       final art = await _square.square(cover) ?? cover;
-      final directory = await _bookDirectory(bookId);
+      final directory = await _storage.bookDirectory(bookId);
       final destination = _coverDestination(directory, art.extension);
       await File(destination).writeAsBytes(art.bytes, flush: true);
       await _removeOtherCovers(directory, keep: destination);
@@ -122,7 +126,7 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
       final extension = _imageExtensionOf(sourcePath);
       if (extension == null) return null;
 
-      final directory = await _bookDirectory(bookId);
+      final directory = await _storage.bookDirectory(bookId);
       // An image the picker or a folder handed over is squared like any
       // other; one this app cannot read is copied across untouched.
       final original = CoverArt.from(await source.readAsBytes());
@@ -178,8 +182,7 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
   @override
   Future<void> deleteBookFiles(String bookId) async {
     try {
-      final documents = await getApplicationDocumentsDirectory();
-      final directory = Directory(_bookPath(documents.path, bookId));
+      final directory = Directory(await _storage.bookPath(bookId));
       if (await directory.exists()) await directory.delete(recursive: true);
     } catch (_) {
       // The book is already out of the library; files left behind are only
@@ -190,8 +193,7 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
   @override
   Future<int?> storedMediaBytes() async {
     try {
-      final documents = await getApplicationDocumentsDirectory();
-      final media = Directory(_mediaPath(documents.path));
+      final media = await _storage.root();
       if (!await media.exists()) return 0;
 
       var total = 0;
@@ -210,19 +212,6 @@ class LocalDeviceFileGateway implements DeviceFileGateway {
   @override
   Future<bool> canRead(String durablePathOrUri) =>
       File(durablePathOrUri).exists();
-
-  Future<Directory> _bookDirectory(String bookId) async {
-    final documents = await getApplicationDocumentsDirectory();
-    return Directory(
-      _bookPath(documents.path, bookId),
-    ).create(recursive: true);
-  }
-
-  String _mediaPath(String documentsPath) =>
-      '$documentsPath${Platform.pathSeparator}media';
-
-  String _bookPath(String documentsPath, String bookId) =>
-      '${_mediaPath(documentsPath)}${Platform.pathSeparator}$bookId';
 
   /// Every cover gets a fresh name so that replacing one is visible
   /// immediately: Flutter caches decoded images by path.

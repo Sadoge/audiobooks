@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:audiobooks/core/audio/metadata/audio_file_metadata.dart';
 import 'package:audiobooks/core/audio/metadata/audio_metadata_service.dart';
 import 'package:audiobooks/core/audio/metadata/cover_art.dart';
+import 'package:audiobooks/core/errors/app_failure.dart';
 import 'package:audiobooks/core/files/device_file_gateway.dart';
 import 'package:audiobooks/core/files/picked_audio_file.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
@@ -12,24 +13,33 @@ import 'package:audiobooks/features/library/domain/entities/playback_progress.da
 import 'package:audiobooks/features/library/domain/repositories/audiobook_repository.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_cubit.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_state.dart';
+import 'package:audiobooks/core/shelf/shelf_folder.dart';
+import 'package:audiobooks/features/shelf/domain/entities/shelf_book.dart';
+import 'package:audiobooks/features/shelf/domain/repositories/shelf_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late _FakeAudiobookRepository repository;
   late _FakeDeviceFileGateway files;
+  late _FakeShelfRepository shelf;
 
   setUp(() {
     repository = _FakeAudiobookRepository();
     files = _FakeDeviceFileGateway();
+    shelf = _FakeShelfRepository();
   });
   // The fake's stream is never listened to by the tests that do not start
   // the cubit, and closing an unlistened controller never completes, so the
   // close is not waited on here.
   tearDown(() => unawaited(repository.dispose()));
 
-  LibraryCubit build({CoverArt? coverArt}) =>
-      LibraryCubit(repository, files, _FakeAudioMetadataService(coverArt));
+  LibraryCubit build({CoverArt? coverArt}) => LibraryCubit(
+    repository,
+    files,
+    _FakeAudioMetadataService(coverArt),
+    shelf,
+  );
 
   blocTest<LibraryCubit, LibraryState>(
     'emits loading then an empty ready library',
@@ -115,6 +125,47 @@ void main() {
     expect(repository.saved, isEmpty);
     await cubit.close();
   });
+
+  blocTest<LibraryCubit, LibraryState>(
+    'reports a book added to the shared library',
+    build: build,
+    act: (cubit) => cubit.publish(_book),
+    expect: () => [
+      isA<LibraryState>().having(
+        (state) => state.actionMessage,
+        'message',
+        contains('Adding'),
+      ),
+      isA<LibraryState>().having(
+        (state) => state.actionMessage,
+        'message',
+        contains('Added'),
+      ),
+    ],
+    verify: (_) => expect(shelf.published.single.id, _book.id),
+  );
+
+  blocTest<LibraryCubit, LibraryState>(
+    'explains a book that could not be added to the shared library',
+    build: build,
+    setUp: () => shelf.failure = const FileAccessFailure(
+      'That folder is no longer there.',
+    ),
+    act: (cubit) => cubit.publish(_book),
+    expect: () => [
+      isA<LibraryState>().having(
+        (state) => state.actionMessage,
+        'message',
+        contains('Adding'),
+      ),
+      isA<LibraryState>().having(
+        (state) => state.actionMessage,
+        'message',
+        'That folder is no longer there.',
+      ),
+    ],
+    verify: (_) => expect(shelf.published, isEmpty),
+  );
 }
 
 final _book = Audiobook(
@@ -128,10 +179,46 @@ final _book = Audiobook(
 
 final _art = CoverArt(
   bytes: Uint8List.fromList(const [
-    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+    0x89,
+    0x50,
+    0x4E,
+    0x47,
+    0x0D,
+    0x0A,
+    0x1A,
+    0x0A,
   ]),
   extension: 'png',
 );
+
+class _FakeShelfRepository implements ShelfRepository {
+  final published = <Audiobook>[];
+  Object? failure;
+
+  @override
+  Future<void> publish(Audiobook book) async {
+    if (failure case final error?) throw error;
+    published.add(book);
+  }
+
+  @override
+  Future<List<ShelfBook>> booksNotInLibrary() async => const [];
+
+  @override
+  Future<Audiobook> download(
+    String key, {
+    void Function(int copied, int total)? onProgress,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ShelfFolder?> folder() async => null;
+
+  @override
+  Future<ShelfFolder?> chooseFolder() async => null;
+
+  @override
+  Future<void> forgetFolder() async {}
+}
 
 class _FakeAudioMetadataService implements AudioMetadataService {
   const _FakeAudioMetadataService(this.coverArt);

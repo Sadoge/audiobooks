@@ -53,6 +53,16 @@ The foundation release includes:
   measures the chapter, as the player's own scrubber does.
 - Unit, widget, repository, and golden tests.
 
+- A shared library, for a collection kept on more than one device. Point the
+  app at a folder your own sync service keeps in step — iCloud Drive, Dropbox,
+  Syncthing — and the books in it appear under Shared Library, ready to bring
+  across one at a time. It is a shelf rather than a sync: there is no server
+  and no account, nothing merges, and your place in a book stays on the device
+  you listened on. The shelf lists only what this device has not got, so a
+  book already in the Library is never offered again, and a download writes
+  into storage of its own — nothing already here is written over. Publishing
+  a book into the folder leaves alone anything another device put there first.
+
 Selecting several files offers to import them as one book with a chapter per
 file, or as separate books. Books imported before covers were read pick up
 their artwork the next time the Library opens. Metadata editing, book details,
@@ -97,6 +107,22 @@ started.
 
 The macOS app uses a sandboxed native file picker and adapts from a compact
 single-column layout to desktop Library grids and a two-column listening view.
+Reaching the shared folder needs two entitlements beyond the picker's own:
+`files.user-selected.read-write`, without which a book cannot be published into
+the folder, and `files.bookmarks.app-scope`, without which the folder is
+forgotten at the next launch.
+
+On Android the folder is chosen through the Storage Access Framework, and the
+grant on it is taken persistently so it survives a reboot. A folder on the
+device's own storage — which is what a service that syncs to a real directory,
+such as Syncthing, gives you — is read directly. A folder belonging to a cloud
+app's own document store has no path behind it; the app says so rather than
+failing quietly, and asks for a different folder.
+
+Holding onto a chosen folder across launches is not finished on iOS: the path
+is remembered, but a proper security-scoped bookmark is not written yet, so a
+folder the system stops resolving is reported as none chosen and has to be
+picked again.
 
 ## Project documentation
 

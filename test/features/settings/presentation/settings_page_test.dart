@@ -10,6 +10,8 @@ import 'package:audiobooks/features/settings/domain/repositories/appearance_repo
 import 'package:audiobooks/features/settings/domain/repositories/playback_settings_repository.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/lock_screen_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/playback_settings_cubit.dart';
+import 'package:audiobooks/features/settings/presentation/cubit/shared_folder_cubit.dart';
+import 'package:audiobooks/features/shelf/domain/repositories/shelf_repository.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/storage_summary_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/pages/settings_page.dart';
@@ -21,6 +23,10 @@ import 'package:mocktail/mocktail.dart';
 class _MockAudiobookRepository extends Mock implements AudiobookRepository {}
 
 class _MockDeviceFileGateway extends Mock implements DeviceFileGateway {}
+
+/// A device with no shared folder nominated, which is how Settings opens
+/// until the listener chooses one.
+class _MockShelfRepository extends Mock implements ShelfRepository {}
 
 /// A device that took the player and shows it, which is the ordinary case.
 class _FakePermission implements PlaybackNotificationPermission {
@@ -38,6 +44,7 @@ void main() {
   late _FakePlaybackSettingsRepository playback;
   late _MockAudiobookRepository audiobooks;
   late _MockDeviceFileGateway files;
+  late _MockShelfRepository shelf;
 
   final book = Audiobook(
     id: 'book-1',
@@ -51,6 +58,8 @@ void main() {
     playback = _FakePlaybackSettingsRepository();
     audiobooks = _MockAudiobookRepository();
     files = _MockDeviceFileGateway();
+    shelf = _MockShelfRepository();
+    when(() => shelf.folder()).thenAnswer((_) async => null);
     when(() => audiobooks.watchAll()).thenAnswer((_) => Stream.value([book]));
     when(() => files.storedMediaBytes()).thenAnswer((_) async => 4194304);
   });
@@ -82,6 +91,7 @@ void main() {
             BlocProvider(
               create: (_) => StorageSummaryCubit(audiobooks, files)..measure(),
             ),
+            BlocProvider(create: (_) => SharedFolderCubit(shelf)..load()),
             BlocProvider(
               create: (_) => LockScreenCubit(
                 MediaSessionStatus()..record(MediaSessionOutcome.started),

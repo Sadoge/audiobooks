@@ -40,8 +40,13 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
 
 ## Capabilities and Constraints
 
-- Version one is entirely offline: no backend, authentication, sync, streaming,
-  external catalog, purchases, or recommendations.
+- Version one is entirely offline: no backend, authentication, streaming,
+  purchases, or recommendations. A library can be shared between a listener's
+  own devices through a folder they already own and already sync — iCloud
+  Drive, Dropbox, Syncthing — which the app reads and writes as ordinary
+  files. That is a shelf, not sync: there is no server, no account, and no
+  shared mutable state, so nothing is ever merged and no listening position
+  travels. The catalog is the listener's own folder, never an external one.
 - Imported media must be accessed durably without loading full files into
   memory; copying is used only where platform file access cannot be retained.
 - The local model supports both one-file books and ordered multi-file chapters.
@@ -73,6 +78,11 @@ adjust speed, set sleep timers, create bookmarks, and use system media controls.
   never played aloud to a room that did not ask for it.
 - Wherever a listener is in the app, they can tell what is playing and stop it
   without going back to the player.
+- A shared folder shows only what this device has not got. A book already in
+  the library never appears on the shelf, and downloading one writes into
+  storage of its own, so nothing already on the device is ever written over.
+  Publishing is the same courtesy in the other direction: a book another
+  device already put in the folder is left exactly as it is.
 
 ## Brand Commitments
 

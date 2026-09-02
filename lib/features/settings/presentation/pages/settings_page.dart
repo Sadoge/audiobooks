@@ -1,10 +1,13 @@
 import 'package:audiobooks/app/di/configure_dependencies.dart';
+import 'package:audiobooks/app/format/byte_size.dart';
 import 'package:audiobooks/app/theme/app_tokens.dart';
 import 'package:audiobooks/app/theme/retro_chrome.dart';
 import 'package:audiobooks/app/widgets/retro_widgets.dart';
 import 'package:audiobooks/features/settings/domain/entities/app_theme_preference.dart';
 import 'package:audiobooks/features/settings/domain/entities/playback_settings.dart';
+import 'package:audiobooks/core/shelf/shelf_folder.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/playback_settings_cubit.dart';
+import 'package:audiobooks/features/settings/presentation/cubit/shared_folder_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/lock_screen_cubit.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/lock_screen_state.dart';
 import 'package:audiobooks/features/settings/presentation/cubit/storage_summary_cubit.dart';
@@ -24,6 +27,7 @@ class SettingsPage extends StatelessWidget implements AutoRouteWrapper {
       BlocProvider(create: (_) => getIt<PlaybackSettingsCubit>()..load()),
       BlocProvider(create: (_) => getIt<StorageSummaryCubit>()..measure()),
       BlocProvider(create: (_) => getIt<LockScreenCubit>()..check()),
+      BlocProvider(create: (_) => getIt<SharedFolderCubit>()..load()),
     ],
     child: this,
   );
@@ -50,6 +54,7 @@ class SettingsPage extends StatelessWidget implements AutoRouteWrapper {
           const SizedBox(height: AppSpacing.xxl),
           const _SectionHeading('Library'),
           const _StorageRow(),
+          const _SharedFolderRow(),
           const SizedBox(height: AppSpacing.xxl),
           const _SectionHeading('About'),
           const _AboutRows(),
@@ -256,7 +261,7 @@ class _StorageRow extends StatelessWidget {
         final value = switch (state.status) {
           StorageSummaryStatus.loading => '—',
           StorageSummaryStatus.failure => 'Unknown',
-          StorageSummaryStatus.ready => _formatBytes(state.usedBytes),
+          StorageSummaryStatus.ready => formatByteSize(state.usedBytes),
         };
         final books = switch (state.bookCount) {
           0 => 'Nothing imported yet.',
@@ -274,6 +279,75 @@ class _StorageRow extends StatelessWidget {
               ? 'Measuring the audio copied into this app.'
               : books,
           value: value,
+        );
+      },
+    );
+  }
+}
+
+/// Where the shared library folder is, and how to change it.
+///
+/// The folder itself belongs to the listener's own sync service; all this app
+/// does is read it and write books into it. Forgetting it here leaves both the
+/// folder and every book already downloaded exactly as they are.
+class _SharedFolderRow extends StatelessWidget {
+  const _SharedFolderRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SharedFolderCubit, ShelfFolder?>(
+      builder: (context, folder) {
+        final cubit = context.read<SharedFolderCubit>();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _SettingsRow(
+              title: 'Shared library folder',
+              subtitle: switch (folder) {
+                null =>
+                  'Books your other devices publish appear under Shared '
+                      'Library, ready to download. Choose a folder your own '
+                      'sync service keeps in step.',
+                final chosen when !chosen.isReadable =>
+                  'This device will not let the app open that folder. Choose '
+                      'one your sync service keeps on the device itself.',
+                final chosen =>
+                  'Books published here appear on your other devices, and '
+                      'theirs appear under Shared Library. Keeping: '
+                      '${chosen.displayName}.',
+              },
+              value: switch (folder) {
+                null => 'None',
+                final chosen when !chosen.isReadable => 'Blocked',
+                _ => 'On',
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: AppSpacing.xs,
+                bottom: AppSpacing.xs,
+              ),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Wrap(
+                  spacing: AppSpacing.sm,
+                  children: [
+                    FilledButton.tonal(
+                      onPressed: cubit.choose,
+                      child: Text(
+                        folder == null ? 'Choose folder' : 'Change folder',
+                      ),
+                    ),
+                    if (folder != null)
+                      TextButton(
+                        onPressed: cubit.forget,
+                        child: const Text('Forget'),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -498,15 +572,3 @@ class _ExpandedThemeChoices extends StatelessWidget {
 /// the plain word for the one that does nothing.
 String _secondsLabel(Duration interval) =>
     interval <= Duration.zero ? 'Off' : '${interval.inSeconds}s';
-
-String _formatBytes(int bytes) {
-  if (bytes < 1024) return '$bytes B';
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  var value = bytes / 1024;
-  var unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit++;
-  }
-  return '${value.toStringAsFixed(value >= 10 ? 0 : 1)} ${units[unit]}';
-}

@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Audiobook {
 
- String get id; String get title; String get author; DateTime get dateAdded; AudioFileType get fileType; String? get narrator; String? get coverPath; String? get sourcePath; Duration get duration; Duration get currentPosition; DateTime? get lastPlayedAt; bool get isFinished; List<AudiobookChapter> get chapters;
+ String get id; String get title; String get author; DateTime get dateAdded; AudioFileType get fileType; String? get narrator; String? get coverPath; String? get sourcePath;/// The key this book carries in the shared library folder, when it came
+/// from there or was published to it. It is what lets the shelf tell that
+/// this device already has the book and leave it off the list.
+ String? get shelfKey; Duration get duration; Duration get currentPosition; DateTime? get lastPlayedAt; bool get isFinished; List<AudiobookChapter> get chapters;
 /// Create a copy of Audiobook
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +28,16 @@ $AudiobookCopyWith<Audiobook> get copyWith => _$AudiobookCopyWithImpl<Audiobook>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Audiobook&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.author, author) || other.author == author)&&(identical(other.dateAdded, dateAdded) || other.dateAdded == dateAdded)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&(identical(other.coverPath, coverPath) || other.coverPath == coverPath)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.lastPlayedAt, lastPlayedAt) || other.lastPlayedAt == lastPlayedAt)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&const DeepCollectionEquality().equals(other.chapters, chapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Audiobook&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.author, author) || other.author == author)&&(identical(other.dateAdded, dateAdded) || other.dateAdded == dateAdded)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&(identical(other.coverPath, coverPath) || other.coverPath == coverPath)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath)&&(identical(other.shelfKey, shelfKey) || other.shelfKey == shelfKey)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.lastPlayedAt, lastPlayedAt) || other.lastPlayedAt == lastPlayedAt)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&const DeepCollectionEquality().equals(other.chapters, chapters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,author,dateAdded,fileType,narrator,coverPath,sourcePath,duration,currentPosition,lastPlayedAt,isFinished,const DeepCollectionEquality().hash(chapters));
+int get hashCode => Object.hash(runtimeType,id,title,author,dateAdded,fileType,narrator,coverPath,sourcePath,shelfKey,duration,currentPosition,lastPlayedAt,isFinished,const DeepCollectionEquality().hash(chapters));
 
 @override
 String toString() {
-  return 'Audiobook(id: $id, title: $title, author: $author, dateAdded: $dateAdded, fileType: $fileType, narrator: $narrator, coverPath: $coverPath, sourcePath: $sourcePath, duration: $duration, currentPosition: $currentPosition, lastPlayedAt: $lastPlayedAt, isFinished: $isFinished, chapters: $chapters)';
+  return 'Audiobook(id: $id, title: $title, author: $author, dateAdded: $dateAdded, fileType: $fileType, narrator: $narrator, coverPath: $coverPath, sourcePath: $sourcePath, shelfKey: $shelfKey, duration: $duration, currentPosition: $currentPosition, lastPlayedAt: $lastPlayedAt, isFinished: $isFinished, chapters: $chapters)';
 }
 
 
@@ -45,7 +48,7 @@ abstract mixin class $AudiobookCopyWith<$Res>  {
   factory $AudiobookCopyWith(Audiobook value, $Res Function(Audiobook) _then) = _$AudiobookCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String author, DateTime dateAdded, AudioFileType fileType, String? narrator, String? coverPath, String? sourcePath, Duration duration, Duration currentPosition, DateTime? lastPlayedAt, bool isFinished, List<AudiobookChapter> chapters
+ String id, String title, String author, DateTime dateAdded, AudioFileType fileType, String? narrator, String? coverPath, String? sourcePath, String? shelfKey, Duration duration, Duration currentPosition, DateTime? lastPlayedAt, bool isFinished, List<AudiobookChapter> chapters
 });
 
 
@@ -62,7 +65,7 @@ class _$AudiobookCopyWithImpl<$Res>
 
 /// Create a copy of Audiobook
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? author = null,Object? dateAdded = null,Object? fileType = null,Object? narrator = freezed,Object? coverPath = freezed,Object? sourcePath = freezed,Object? duration = null,Object? currentPosition = null,Object? lastPlayedAt = freezed,Object? isFinished = null,Object? chapters = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? author = null,Object? dateAdded = null,Object? fileType = null,Object? narrator = freezed,Object? coverPath = freezed,Object? sourcePath = freezed,Object? shelfKey = freezed,Object? duration = null,Object? currentPosition = null,Object? lastPlayedAt = freezed,Object? isFinished = null,Object? chapters = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -72,6 +75,7 @@ as DateTime,fileType: null == fileType ? _self.fileType : fileType // ignore: ca
 as AudioFileType,narrator: freezed == narrator ? _self.narrator : narrator // ignore: cast_nullable_to_non_nullable
 as String?,coverPath: freezed == coverPath ? _self.coverPath : coverPath // ignore: cast_nullable_to_non_nullable
 as String?,sourcePath: freezed == sourcePath ? _self.sourcePath : sourcePath // ignore: cast_nullable_to_non_nullable
+as String?,shelfKey: freezed == shelfKey ? _self.shelfKey : shelfKey // ignore: cast_nullable_to_non_nullable
 as String?,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as Duration,currentPosition: null == currentPosition ? _self.currentPosition : currentPosition // ignore: cast_nullable_to_non_nullable
 as Duration,lastPlayedAt: freezed == lastPlayedAt ? _self.lastPlayedAt : lastPlayedAt // ignore: cast_nullable_to_non_nullable
@@ -162,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String author,  DateTime dateAdded,  AudioFileType fileType,  String? narrator,  String? coverPath,  String? sourcePath,  Duration duration,  Duration currentPosition,  DateTime? lastPlayedAt,  bool isFinished,  List<AudiobookChapter> chapters)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String author,  DateTime dateAdded,  AudioFileType fileType,  String? narrator,  String? coverPath,  String? sourcePath,  String? shelfKey,  Duration duration,  Duration currentPosition,  DateTime? lastPlayedAt,  bool isFinished,  List<AudiobookChapter> chapters)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Audiobook() when $default != null:
-return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType,_that.narrator,_that.coverPath,_that.sourcePath,_that.duration,_that.currentPosition,_that.lastPlayedAt,_that.isFinished,_that.chapters);case _:
+return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType,_that.narrator,_that.coverPath,_that.sourcePath,_that.shelfKey,_that.duration,_that.currentPosition,_that.lastPlayedAt,_that.isFinished,_that.chapters);case _:
   return orElse();
 
 }
@@ -183,10 +187,10 @@ return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String author,  DateTime dateAdded,  AudioFileType fileType,  String? narrator,  String? coverPath,  String? sourcePath,  Duration duration,  Duration currentPosition,  DateTime? lastPlayedAt,  bool isFinished,  List<AudiobookChapter> chapters)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String author,  DateTime dateAdded,  AudioFileType fileType,  String? narrator,  String? coverPath,  String? sourcePath,  String? shelfKey,  Duration duration,  Duration currentPosition,  DateTime? lastPlayedAt,  bool isFinished,  List<AudiobookChapter> chapters)  $default,) {final _that = this;
 switch (_that) {
 case _Audiobook():
-return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType,_that.narrator,_that.coverPath,_that.sourcePath,_that.duration,_that.currentPosition,_that.lastPlayedAt,_that.isFinished,_that.chapters);case _:
+return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType,_that.narrator,_that.coverPath,_that.sourcePath,_that.shelfKey,_that.duration,_that.currentPosition,_that.lastPlayedAt,_that.isFinished,_that.chapters);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +207,10 @@ return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String author,  DateTime dateAdded,  AudioFileType fileType,  String? narrator,  String? coverPath,  String? sourcePath,  Duration duration,  Duration currentPosition,  DateTime? lastPlayedAt,  bool isFinished,  List<AudiobookChapter> chapters)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String author,  DateTime dateAdded,  AudioFileType fileType,  String? narrator,  String? coverPath,  String? sourcePath,  String? shelfKey,  Duration duration,  Duration currentPosition,  DateTime? lastPlayedAt,  bool isFinished,  List<AudiobookChapter> chapters)?  $default,) {final _that = this;
 switch (_that) {
 case _Audiobook() when $default != null:
-return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType,_that.narrator,_that.coverPath,_that.sourcePath,_that.duration,_that.currentPosition,_that.lastPlayedAt,_that.isFinished,_that.chapters);case _:
+return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType,_that.narrator,_that.coverPath,_that.sourcePath,_that.shelfKey,_that.duration,_that.currentPosition,_that.lastPlayedAt,_that.isFinished,_that.chapters);case _:
   return null;
 
 }
@@ -218,7 +222,7 @@ return $default(_that.id,_that.title,_that.author,_that.dateAdded,_that.fileType
 
 
 class _Audiobook implements Audiobook {
-  const _Audiobook({required this.id, required this.title, required this.author, required this.dateAdded, required this.fileType, this.narrator, this.coverPath, this.sourcePath, this.duration = Duration.zero, this.currentPosition = Duration.zero, this.lastPlayedAt, this.isFinished = false, final  List<AudiobookChapter> chapters = const <AudiobookChapter>[]}): _chapters = chapters;
+  const _Audiobook({required this.id, required this.title, required this.author, required this.dateAdded, required this.fileType, this.narrator, this.coverPath, this.sourcePath, this.shelfKey, this.duration = Duration.zero, this.currentPosition = Duration.zero, this.lastPlayedAt, this.isFinished = false, final  List<AudiobookChapter> chapters = const <AudiobookChapter>[]}): _chapters = chapters;
   
 
 @override final  String id;
@@ -229,6 +233,10 @@ class _Audiobook implements Audiobook {
 @override final  String? narrator;
 @override final  String? coverPath;
 @override final  String? sourcePath;
+/// The key this book carries in the shared library folder, when it came
+/// from there or was published to it. It is what lets the shelf tell that
+/// this device already has the book and leave it off the list.
+@override final  String? shelfKey;
 @override@JsonKey() final  Duration duration;
 @override@JsonKey() final  Duration currentPosition;
 @override final  DateTime? lastPlayedAt;
@@ -251,16 +259,16 @@ _$AudiobookCopyWith<_Audiobook> get copyWith => __$AudiobookCopyWithImpl<_Audiob
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Audiobook&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.author, author) || other.author == author)&&(identical(other.dateAdded, dateAdded) || other.dateAdded == dateAdded)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&(identical(other.coverPath, coverPath) || other.coverPath == coverPath)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.lastPlayedAt, lastPlayedAt) || other.lastPlayedAt == lastPlayedAt)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&const DeepCollectionEquality().equals(other._chapters, _chapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Audiobook&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.author, author) || other.author == author)&&(identical(other.dateAdded, dateAdded) || other.dateAdded == dateAdded)&&(identical(other.fileType, fileType) || other.fileType == fileType)&&(identical(other.narrator, narrator) || other.narrator == narrator)&&(identical(other.coverPath, coverPath) || other.coverPath == coverPath)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath)&&(identical(other.shelfKey, shelfKey) || other.shelfKey == shelfKey)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.currentPosition, currentPosition) || other.currentPosition == currentPosition)&&(identical(other.lastPlayedAt, lastPlayedAt) || other.lastPlayedAt == lastPlayedAt)&&(identical(other.isFinished, isFinished) || other.isFinished == isFinished)&&const DeepCollectionEquality().equals(other._chapters, _chapters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,author,dateAdded,fileType,narrator,coverPath,sourcePath,duration,currentPosition,lastPlayedAt,isFinished,const DeepCollectionEquality().hash(_chapters));
+int get hashCode => Object.hash(runtimeType,id,title,author,dateAdded,fileType,narrator,coverPath,sourcePath,shelfKey,duration,currentPosition,lastPlayedAt,isFinished,const DeepCollectionEquality().hash(_chapters));
 
 @override
 String toString() {
-  return 'Audiobook(id: $id, title: $title, author: $author, dateAdded: $dateAdded, fileType: $fileType, narrator: $narrator, coverPath: $coverPath, sourcePath: $sourcePath, duration: $duration, currentPosition: $currentPosition, lastPlayedAt: $lastPlayedAt, isFinished: $isFinished, chapters: $chapters)';
+  return 'Audiobook(id: $id, title: $title, author: $author, dateAdded: $dateAdded, fileType: $fileType, narrator: $narrator, coverPath: $coverPath, sourcePath: $sourcePath, shelfKey: $shelfKey, duration: $duration, currentPosition: $currentPosition, lastPlayedAt: $lastPlayedAt, isFinished: $isFinished, chapters: $chapters)';
 }
 
 
@@ -271,7 +279,7 @@ abstract mixin class _$AudiobookCopyWith<$Res> implements $AudiobookCopyWith<$Re
   factory _$AudiobookCopyWith(_Audiobook value, $Res Function(_Audiobook) _then) = __$AudiobookCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String author, DateTime dateAdded, AudioFileType fileType, String? narrator, String? coverPath, String? sourcePath, Duration duration, Duration currentPosition, DateTime? lastPlayedAt, bool isFinished, List<AudiobookChapter> chapters
+ String id, String title, String author, DateTime dateAdded, AudioFileType fileType, String? narrator, String? coverPath, String? sourcePath, String? shelfKey, Duration duration, Duration currentPosition, DateTime? lastPlayedAt, bool isFinished, List<AudiobookChapter> chapters
 });
 
 
@@ -288,7 +296,7 @@ class __$AudiobookCopyWithImpl<$Res>
 
 /// Create a copy of Audiobook
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? author = null,Object? dateAdded = null,Object? fileType = null,Object? narrator = freezed,Object? coverPath = freezed,Object? sourcePath = freezed,Object? duration = null,Object? currentPosition = null,Object? lastPlayedAt = freezed,Object? isFinished = null,Object? chapters = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? author = null,Object? dateAdded = null,Object? fileType = null,Object? narrator = freezed,Object? coverPath = freezed,Object? sourcePath = freezed,Object? shelfKey = freezed,Object? duration = null,Object? currentPosition = null,Object? lastPlayedAt = freezed,Object? isFinished = null,Object? chapters = null,}) {
   return _then(_Audiobook(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -298,6 +306,7 @@ as DateTime,fileType: null == fileType ? _self.fileType : fileType // ignore: ca
 as AudioFileType,narrator: freezed == narrator ? _self.narrator : narrator // ignore: cast_nullable_to_non_nullable
 as String?,coverPath: freezed == coverPath ? _self.coverPath : coverPath // ignore: cast_nullable_to_non_nullable
 as String?,sourcePath: freezed == sourcePath ? _self.sourcePath : sourcePath // ignore: cast_nullable_to_non_nullable
+as String?,shelfKey: freezed == shelfKey ? _self.shelfKey : shelfKey // ignore: cast_nullable_to_non_nullable
 as String?,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as Duration,currentPosition: null == currentPosition ? _self.currentPosition : currentPosition // ignore: cast_nullable_to_non_nullable
 as Duration,lastPlayedAt: freezed == lastPlayedAt ? _self.lastPlayedAt : lastPlayedAt // ignore: cast_nullable_to_non_nullable

@@ -4,7 +4,14 @@
 <dict>
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
-	<key>com.apple.security.files.user-selected.read-only</key>
+	<!-- The shared library folder is chosen by the listener and lives in
+	     their own sync service. Reading it lists the shelf; writing it is
+	     what publishing a book into it needs. -->
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+	<!-- A folder chosen once has to still be there on the next launch, which
+	     is what an app-scoped bookmark keeps. -->
+	<key>com.apple.security.files.bookmarks.app-scope</key>
 	<true/>
 </dict>
 </plist>

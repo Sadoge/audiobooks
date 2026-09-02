@@ -141,6 +141,17 @@ class $AudiobookRowsTable extends AudiobookRows
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _shelfKeyMeta = const VerificationMeta(
+    'shelfKey',
+  );
+  @override
+  late final GeneratedColumn<String> shelfKey = GeneratedColumn<String>(
+    'shelf_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -155,6 +166,7 @@ class $AudiobookRowsTable extends AudiobookRows
     isFinished,
     fileType,
     sourcePath,
+    shelfKey,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -253,6 +265,12 @@ class $AudiobookRowsTable extends AudiobookRows
         sourcePath.isAcceptableOrUnknown(data['source_path']!, _sourcePathMeta),
       );
     }
+    if (data.containsKey('shelf_key')) {
+      context.handle(
+        _shelfKeyMeta,
+        shelfKey.isAcceptableOrUnknown(data['shelf_key']!, _shelfKeyMeta),
+      );
+    }
     return context;
   }
 
@@ -310,6 +328,10 @@ class $AudiobookRowsTable extends AudiobookRows
         DriftSqlType.string,
         data['${effectivePrefix}source_path'],
       ),
+      shelfKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shelf_key'],
+      ),
     );
   }
 
@@ -332,6 +354,10 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
   final bool isFinished;
   final String fileType;
   final String? sourcePath;
+
+  /// The book's key in the shared library folder, when it came from there or
+  /// was published to it. Null for a book that only ever lived on this device.
+  final String? shelfKey;
   const AudiobookRow({
     required this.id,
     required this.title,
@@ -345,6 +371,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
     required this.isFinished,
     required this.fileType,
     this.sourcePath,
+    this.shelfKey,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -368,6 +395,9 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
     map['file_type'] = Variable<String>(fileType);
     if (!nullToAbsent || sourcePath != null) {
       map['source_path'] = Variable<String>(sourcePath);
+    }
+    if (!nullToAbsent || shelfKey != null) {
+      map['shelf_key'] = Variable<String>(shelfKey);
     }
     return map;
   }
@@ -394,6 +424,9 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
       sourcePath: sourcePath == null && nullToAbsent
           ? const Value.absent()
           : Value(sourcePath),
+      shelfKey: shelfKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shelfKey),
     );
   }
 
@@ -415,6 +448,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
       isFinished: serializer.fromJson<bool>(json['isFinished']),
       fileType: serializer.fromJson<String>(json['fileType']),
       sourcePath: serializer.fromJson<String?>(json['sourcePath']),
+      shelfKey: serializer.fromJson<String?>(json['shelfKey']),
     );
   }
   @override
@@ -433,6 +467,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
       'isFinished': serializer.toJson<bool>(isFinished),
       'fileType': serializer.toJson<String>(fileType),
       'sourcePath': serializer.toJson<String?>(sourcePath),
+      'shelfKey': serializer.toJson<String?>(shelfKey),
     };
   }
 
@@ -449,6 +484,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
     bool? isFinished,
     String? fileType,
     Value<String?> sourcePath = const Value.absent(),
+    Value<String?> shelfKey = const Value.absent(),
   }) => AudiobookRow(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -462,6 +498,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
     isFinished: isFinished ?? this.isFinished,
     fileType: fileType ?? this.fileType,
     sourcePath: sourcePath.present ? sourcePath.value : this.sourcePath,
+    shelfKey: shelfKey.present ? shelfKey.value : this.shelfKey,
   );
   AudiobookRow copyWithCompanion(AudiobookRowsCompanion data) {
     return AudiobookRow(
@@ -487,6 +524,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
       sourcePath: data.sourcePath.present
           ? data.sourcePath.value
           : this.sourcePath,
+      shelfKey: data.shelfKey.present ? data.shelfKey.value : this.shelfKey,
     );
   }
 
@@ -504,7 +542,8 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
           ..write('lastPlayedAt: $lastPlayedAt, ')
           ..write('isFinished: $isFinished, ')
           ..write('fileType: $fileType, ')
-          ..write('sourcePath: $sourcePath')
+          ..write('sourcePath: $sourcePath, ')
+          ..write('shelfKey: $shelfKey')
           ..write(')'))
         .toString();
   }
@@ -523,6 +562,7 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
     isFinished,
     fileType,
     sourcePath,
+    shelfKey,
   );
   @override
   bool operator ==(Object other) =>
@@ -539,7 +579,8 @@ class AudiobookRow extends DataClass implements Insertable<AudiobookRow> {
           other.lastPlayedAt == this.lastPlayedAt &&
           other.isFinished == this.isFinished &&
           other.fileType == this.fileType &&
-          other.sourcePath == this.sourcePath);
+          other.sourcePath == this.sourcePath &&
+          other.shelfKey == this.shelfKey);
 }
 
 class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
@@ -555,6 +596,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
   final Value<bool> isFinished;
   final Value<String> fileType;
   final Value<String?> sourcePath;
+  final Value<String?> shelfKey;
   final Value<int> rowid;
   const AudiobookRowsCompanion({
     this.id = const Value.absent(),
@@ -569,6 +611,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
     this.isFinished = const Value.absent(),
     this.fileType = const Value.absent(),
     this.sourcePath = const Value.absent(),
+    this.shelfKey = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AudiobookRowsCompanion.insert({
@@ -584,6 +627,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
     this.isFinished = const Value.absent(),
     required String fileType,
     this.sourcePath = const Value.absent(),
+    this.shelfKey = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -603,6 +647,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
     Expression<bool>? isFinished,
     Expression<String>? fileType,
     Expression<String>? sourcePath,
+    Expression<String>? shelfKey,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -618,6 +663,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
       if (isFinished != null) 'is_finished': isFinished,
       if (fileType != null) 'file_type': fileType,
       if (sourcePath != null) 'source_path': sourcePath,
+      if (shelfKey != null) 'shelf_key': shelfKey,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -635,6 +681,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
     Value<bool>? isFinished,
     Value<String>? fileType,
     Value<String?>? sourcePath,
+    Value<String?>? shelfKey,
     Value<int>? rowid,
   }) {
     return AudiobookRowsCompanion(
@@ -650,6 +697,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
       isFinished: isFinished ?? this.isFinished,
       fileType: fileType ?? this.fileType,
       sourcePath: sourcePath ?? this.sourcePath,
+      shelfKey: shelfKey ?? this.shelfKey,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -693,6 +741,9 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
     if (sourcePath.present) {
       map['source_path'] = Variable<String>(sourcePath.value);
     }
+    if (shelfKey.present) {
+      map['shelf_key'] = Variable<String>(shelfKey.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -714,6 +765,7 @@ class AudiobookRowsCompanion extends UpdateCompanion<AudiobookRow> {
           ..write('isFinished: $isFinished, ')
           ..write('fileType: $fileType, ')
           ..write('sourcePath: $sourcePath, ')
+          ..write('shelfKey: $shelfKey, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2058,6 +2110,7 @@ typedef $$AudiobookRowsTableCreateCompanionBuilder =
       Value<bool> isFinished,
       required String fileType,
       Value<String?> sourcePath,
+      Value<String?> shelfKey,
       Value<int> rowid,
     });
 typedef $$AudiobookRowsTableUpdateCompanionBuilder =
@@ -2074,6 +2127,7 @@ typedef $$AudiobookRowsTableUpdateCompanionBuilder =
       Value<bool> isFinished,
       Value<String> fileType,
       Value<String?> sourcePath,
+      Value<String?> shelfKey,
       Value<int> rowid,
     });
 
@@ -2223,6 +2277,11 @@ class $$AudiobookRowsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get shelfKey => $composableBuilder(
+    column: $table.shelfKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> audiobookChapterRowsRefs(
     Expression<bool> Function($$AudiobookChapterRowsTableFilterComposer f) f,
   ) {
@@ -2367,6 +2426,11 @@ class $$AudiobookRowsTableOrderingComposer
     column: $table.sourcePath,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get shelfKey => $composableBuilder(
+    column: $table.shelfKey,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AudiobookRowsTableAnnotationComposer
@@ -2423,6 +2487,9 @@ class $$AudiobookRowsTableAnnotationComposer
     column: $table.sourcePath,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get shelfKey =>
+      $composableBuilder(column: $table.shelfKey, builder: (column) => column);
 
   Expression<T> audiobookChapterRowsRefs<T extends Object>(
     Expression<T> Function($$AudiobookChapterRowsTableAnnotationComposer a) f,
@@ -2546,6 +2613,7 @@ class $$AudiobookRowsTableTableManager
                 Value<bool> isFinished = const Value.absent(),
                 Value<String> fileType = const Value.absent(),
                 Value<String?> sourcePath = const Value.absent(),
+                Value<String?> shelfKey = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AudiobookRowsCompanion(
                 id: id,
@@ -2560,6 +2628,7 @@ class $$AudiobookRowsTableTableManager
                 isFinished: isFinished,
                 fileType: fileType,
                 sourcePath: sourcePath,
+                shelfKey: shelfKey,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2576,6 +2645,7 @@ class $$AudiobookRowsTableTableManager
                 Value<bool> isFinished = const Value.absent(),
                 required String fileType,
                 Value<String?> sourcePath = const Value.absent(),
+                Value<String?> shelfKey = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AudiobookRowsCompanion.insert(
                 id: id,
@@ -2590,6 +2660,7 @@ class $$AudiobookRowsTableTableManager
                 isFinished: isFinished,
                 fileType: fileType,
                 sourcePath: sourcePath,
+                shelfKey: shelfKey,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

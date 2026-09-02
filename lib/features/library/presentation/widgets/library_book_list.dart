@@ -13,6 +13,7 @@ class LibraryBookList extends StatelessWidget {
     required this.onOpen,
     required this.onChangeCover,
     required this.onRemove,
+    required this.onPublish,
     super.key,
   });
 
@@ -20,6 +21,10 @@ class LibraryBookList extends StatelessWidget {
   final ValueChanged<Audiobook> onOpen;
   final ValueChanged<Audiobook> onChangeCover;
   final ValueChanged<Audiobook> onRemove;
+
+  /// Copies the book into the shared folder, so the listener's other devices
+  /// can see it. Offered on a book that is not there already.
+  final ValueChanged<Audiobook> onPublish;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +54,7 @@ class LibraryBookList extends StatelessWidget {
                     onTap: () => onOpen(books[index]),
                     onChangeCover: () => onChangeCover(books[index]),
                     onRemove: () => onRemove(books[index]),
+                    onPublish: () => onPublish(books[index]),
                   ),
                 )
               : SliverList.separated(
@@ -96,6 +102,7 @@ class LibraryBookList extends StatelessWidget {
                             book: book,
                             onChangeCover: () => onChangeCover(book),
                             onRemove: () => onRemove(book),
+                            onPublish: () => onPublish(book),
                           ),
                           // Tapping the row opens the book, so it is marked
                           // the way a menu row was: with the arrow into it.
@@ -122,12 +129,14 @@ class _GridBookTile extends StatelessWidget {
     required this.onTap,
     required this.onChangeCover,
     required this.onRemove,
+    required this.onPublish,
   });
 
   final Audiobook book;
   final VoidCallback onTap;
   final VoidCallback onChangeCover;
   final VoidCallback onRemove;
+  final VoidCallback onPublish;
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +202,7 @@ class _GridBookTile extends StatelessWidget {
               book: book,
               onChangeCover: onChangeCover,
               onRemove: onRemove,
+              onPublish: onPublish,
             ),
           ),
         ),
@@ -321,11 +331,13 @@ class _BookMenu extends StatelessWidget {
     required this.book,
     required this.onChangeCover,
     required this.onRemove,
+    required this.onPublish,
   });
 
   final Audiobook book;
   final VoidCallback onChangeCover;
   final VoidCallback onRemove;
+  final VoidCallback onPublish;
 
   @override
   Widget build(BuildContext context) {
@@ -335,12 +347,20 @@ class _BookMenu extends StatelessWidget {
       onSelected: (action) => switch (action) {
         _BookAction.changeCover => onChangeCover(),
         _BookAction.remove => onRemove(),
+        _BookAction.publish => onPublish(),
       },
       itemBuilder: (context) => [
         PopupMenuItem(
           value: _BookAction.changeCover,
           child: Text(book.coverPath == null ? 'Add Cover' : 'Change Cover'),
         ),
+        // A book already in the shared folder is not offered again: what is
+        // there belongs to every device, and is never written over.
+        if (book.shelfKey == null)
+          const PopupMenuItem(
+            value: _BookAction.publish,
+            child: Text('Add to Shared Library'),
+          ),
         const PopupMenuItem(
           value: _BookAction.remove,
           child: Text('Remove from Library'),
@@ -350,4 +370,4 @@ class _BookMenu extends StatelessWidget {
   }
 }
 
-enum _BookAction { changeCover, remove }
+enum _BookAction { changeCover, publish, remove }

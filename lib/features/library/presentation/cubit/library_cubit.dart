@@ -1,21 +1,24 @@
 import 'dart:async';
 
 import 'package:audiobooks/core/audio/metadata/audio_metadata_service.dart';
+import 'package:audiobooks/core/errors/app_failure.dart';
 import 'package:audiobooks/core/files/device_file_gateway.dart';
 import 'package:audiobooks/features/library/domain/entities/audiobook.dart';
 import 'package:audiobooks/features/library/domain/repositories/audiobook_repository.dart';
 import 'package:audiobooks/features/library/presentation/cubit/library_state.dart';
+import 'package:audiobooks/features/shelf/domain/repositories/shelf_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class LibraryCubit extends Cubit<LibraryState> {
-  LibraryCubit(this._repository, this._files, this._metadata)
+  LibraryCubit(this._repository, this._files, this._metadata, this._shelf)
     : super(const LibraryState());
 
   final AudiobookRepository _repository;
   final DeviceFileGateway _files;
   final AudioMetadataService _metadata;
+  final ShelfRepository _shelf;
   StreamSubscription<List<Audiobook>>? _subscription;
 
   /// Books already looked at for artwork, so a book whose file carries none is
@@ -70,6 +73,40 @@ class LibraryCubit extends Cubit<LibraryState> {
     } catch (_) {
       if (!isClosed) {
         emit(state.copyWith(actionMessage: 'The cover could not be changed.'));
+      }
+    }
+  }
+
+  /// Copies a book into the shared folder, so the listener's other devices
+  /// can see it and bring it across.
+  ///
+  /// A book another device published under the same key is left exactly as it
+  /// is; publishing never writes over what is already in the folder.
+  Future<void> publish(Audiobook book) async {
+    emit(
+      state.copyWith(
+        actionMessage: 'Adding ${book.title} to the shared library.',
+      ),
+    );
+    try {
+      await _shelf.publish(book);
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            actionMessage: 'Added ${book.title} to the shared library.',
+          ),
+        );
+      }
+    } on AppFailure catch (failure) {
+      if (!isClosed) emit(state.copyWith(actionMessage: failure.message));
+    } catch (_) {
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            actionMessage:
+                'That book could not be added to the shared library.',
+          ),
+        );
       }
     }
   }

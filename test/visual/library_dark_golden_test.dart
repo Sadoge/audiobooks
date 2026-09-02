@@ -14,7 +14,11 @@ void main() {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.dark(),
         home: Scaffold(
-          appBar: LibraryAppBar(onImport: () {}, onSettings: () {}),
+          appBar: LibraryAppBar(
+            onImport: () {},
+            onShared: () {},
+            onSettings: () {},
+          ),
           body: CustomScrollView(
             slivers: [
               SliverFillRemaining(

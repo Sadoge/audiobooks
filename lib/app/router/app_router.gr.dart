@@ -105,3 +105,19 @@ class SettingsRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [ShelfPage]
+class ShelfRoute extends PageRouteInfo<void> {
+  const ShelfRoute({List<PageRouteInfo>? children})
+    : super(ShelfRoute.name, initialChildren: children);
+
+  static const String name = 'ShelfRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const ShelfPage());
+    },
+  );
+}

@@ -19,6 +19,10 @@ class AudiobookRows extends Table {
   TextColumn get fileType => text()();
   TextColumn get sourcePath => text().nullable()();
 
+  /// The book's key in the shared library folder, when it came from there or
+  /// was published to it. Null for a book that only ever lived on this device.
+  TextColumn get shelfKey => text().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
@@ -92,7 +96,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -112,6 +116,11 @@ class AppDatabase extends _$AppDatabase {
             },
           ),
         );
+      }
+      if (from < 3) {
+        // Books already in the library predate the shared folder, so they
+        // carry no key until one is published or downloaded.
+        await migrator.addColumn(audiobookRows, audiobookRows.shelfKey);
       }
     },
   );

@@ -71,6 +71,7 @@ class LocalAudiobookRepository implements AudiobookRepository {
                 isFinished: Value(audiobook.isFinished),
                 fileType: Value(audiobook.fileType.name),
                 sourcePath: Value(audiobook.sourcePath),
+                shelfKey: Value(audiobook.shelfKey),
               ),
             );
 
@@ -256,6 +257,7 @@ class LocalAudiobookRepository implements AudiobookRepository {
       isFinished: row.isFinished,
       fileType: AudioFileType.values.byName(row.fileType),
       sourcePath: row.sourcePath,
+      shelfKey: row.shelfKey,
       chapters: chapterRows
           .map(
             (chapter) => AudiobookChapter(
