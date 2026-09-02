@@ -119,10 +119,33 @@ such as Syncthing, gives you — is read directly. A folder belonging to a cloud
 app's own document store has no path behind it; the app says so rather than
 failing quietly, and asks for a different folder.
 
-Holding onto a chosen folder across launches is not finished on iOS: the path
-is remembered, but a proper security-scoped bookmark is not written yet, so a
-folder the system stops resolving is reported as none chosen and has to be
-picked again.
+On iOS and macOS the folder is asked for by the app itself, in
+`ShelfFolderBridge.swift`, rather than through the general file picker. Apple
+hands a chosen folder over inside a security scope: it can only be read while
+that scope is held, and the right to it ends with the process unless a bookmark
+is kept and resolved again on the next launch. A picker that returns nothing
+but a path gives back a folder that cannot be listed and is gone by morning, so
+the bridge claims the scope, keeps the bookmark, and reclaims it at startup —
+replacing the bookmark whenever the system reissues one because the folder
+moved.
+
+Which services can be chosen is decided by the platform, not by this app, and
+it is the one thing worth checking before settling on one:
+
+| | iOS | Android | macOS |
+| --- | --- | --- | --- |
+| iCloud Drive | yes | — | yes |
+| On My iPhone / local folder | yes | yes | yes |
+| Dropbox | **no** | limited | yes, as a folder on disk |
+| Google Drive | **no** | **no** | yes, as a folder on disk |
+| Nextcloud | yes | yes | yes |
+| Syncthing | — | yes | yes |
+
+iOS only offers folders from providers that vend directories, and Dropbox and
+Google Drive do not: they will not appear in the picker at all. Nothing in this
+app can change that — it is their file provider's decision — so on iPhone the
+shared folder has to live somewhere else. On a Mac either of them is an
+ordinary folder on disk and works normally.
 
 ## Project documentation
 

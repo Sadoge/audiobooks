@@ -11,6 +11,10 @@ class MainFlutterWindow: NSWindow {
     self.tabbingMode = .disallowed
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    // The shared library folder is asked for here rather than through the
+    // general file picker, which cannot hold onto a security-scoped folder.
+    ShelfFolderBridge.register(
+      with: flutterViewController.registrar(forPlugin: "ShelfFolderBridge"))
 
     super.awakeFromNib()
   }

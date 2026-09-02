@@ -25,6 +25,7 @@ import '../../core/files/device_file_gateway.dart' as _i306;
 import '../../core/files/local_device_file_gateway.dart' as _i804;
 import '../../core/files/media_storage.dart' as _i684;
 import '../../core/shelf/local_shelf_folder_gateway.dart' as _i327;
+import '../../core/shelf/shelf_folder_channel.dart' as _i345;
 import '../../core/shelf/shelf_folder_gateway.dart' as _i866;
 import '../../features/import/presentation/cubit/import_cubit.dart' as _i750;
 import '../../features/library/data/repositories/local_audiobook_repository.dart'
@@ -76,6 +77,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i86.MediaSessionStatus>(() => _i86.MediaSessionStatus());
     gh.lazySingleton<_i50.AppDatabase>(() => _i50.AppDatabase());
     gh.lazySingleton<_i684.MediaStorage>(() => const _i684.MediaStorage());
+    gh.lazySingleton<_i345.ShelfFolderChannel>(
+      () => const _i345.ShelfFolderChannel(),
+    );
     gh.lazySingleton<_i475.AppearanceRepository>(
       () => _i1004.SharedPreferencesAppearanceRepository(),
     );
@@ -87,9 +91,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i749.PlaybackNotificationPermission>(
       () => _i749.DevicePlaybackNotificationPermission(),
-    );
-    gh.lazySingleton<_i866.ShelfFolderGateway>(
-      () => _i327.LocalShelfFolderGateway(),
     );
     gh.lazySingleton<_i491.AudioMetadataService>(
       () => const _i798.LocalAudioMetadataService(),
@@ -115,26 +116,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1069.AudiobookRepository>(
       () => _i409.LocalAudiobookRepository(gh<_i50.AppDatabase>()),
     );
-    gh.lazySingleton<_i231.ShelfRepository>(
-      () => _i6.FolderShelfRepository(
-        gh<_i866.ShelfFolderGateway>(),
-        gh<_i1069.AudiobookRepository>(),
-        gh<_i684.MediaStorage>(),
-        gh<_i491.AudioMetadataService>(),
-      ),
+    gh.lazySingleton<_i866.ShelfFolderGateway>(
+      () => _i327.LocalShelfFolderGateway(gh<_i345.ShelfFolderChannel>()),
     );
     gh.factory<_i1058.LockScreenCubit>(
       () => _i1058.LockScreenCubit(
         gh<_i86.MediaSessionStatus>(),
         gh<_i749.PlaybackNotificationPermission>(),
-      ),
-    );
-    gh.factory<_i196.LibraryCubit>(
-      () => _i196.LibraryCubit(
-        gh<_i1069.AudiobookRepository>(),
-        gh<_i306.DeviceFileGateway>(),
-        gh<_i491.AudioMetadataService>(),
-        gh<_i231.ShelfRepository>(),
       ),
     );
     gh.factory<_i809.StorageSummaryCubit>(
@@ -163,11 +151,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i579.PlaybackSettingsRepository>(),
       ),
     );
-    gh.factory<_i520.SharedFolderCubit>(
-      () => _i520.SharedFolderCubit(gh<_i231.ShelfRepository>()),
-    );
-    gh.factory<_i485.ShelfCubit>(
-      () => _i485.ShelfCubit(gh<_i231.ShelfRepository>()),
+    gh.lazySingleton<_i231.ShelfRepository>(
+      () => _i6.FolderShelfRepository(
+        gh<_i866.ShelfFolderGateway>(),
+        gh<_i1069.AudiobookRepository>(),
+        gh<_i684.MediaStorage>(),
+        gh<_i491.AudioMetadataService>(),
+      ),
     );
     gh.factory<_i387.PlayerCubit>(
       () => _i387.PlayerCubit(
@@ -181,6 +171,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1009.PlayerRepository>(),
         gh<_i1069.AudiobookRepository>(),
       ),
+    );
+    gh.factory<_i196.LibraryCubit>(
+      () => _i196.LibraryCubit(
+        gh<_i1069.AudiobookRepository>(),
+        gh<_i306.DeviceFileGateway>(),
+        gh<_i491.AudioMetadataService>(),
+        gh<_i231.ShelfRepository>(),
+      ),
+    );
+    gh.factory<_i520.SharedFolderCubit>(
+      () => _i520.SharedFolderCubit(gh<_i231.ShelfRepository>()),
+    );
+    gh.factory<_i485.ShelfCubit>(
+      () => _i485.ShelfCubit(gh<_i231.ShelfRepository>()),
     );
     return this;
   }

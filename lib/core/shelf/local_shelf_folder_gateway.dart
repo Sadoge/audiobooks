@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:android_file_picker/android_file_picker.dart';
 import 'package:audiobooks/core/shelf/shelf_folder.dart';
+import 'package:audiobooks/core/shelf/shelf_folder_channel.dart';
 import 'package:audiobooks/core/shelf/shelf_folder_gateway.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
@@ -9,8 +12,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: ShelfFolderGateway)
 class LocalShelfFolderGateway implements ShelfFolderGateway {
+  LocalShelfFolderGateway(this._apple);
+
+  /// Apple's own picker, which is the only one that can hand over a folder
+  /// this app is allowed to read. Unused on every other platform.
+  final ShelfFolderChannel _apple;
+
   static const _locationKey = 'shelf.folder.location';
   static const _accessKey = 'shelf.folder.access';
+
+  /// The token that gets an Apple folder back after the process has ended.
+  static const _bookmarkKey = 'shelf.folder.bookmark';
+
+  /// Whether this platform hands folders over inside a security scope, which
+  /// has to be claimed before the folder can be read and claimed again on
+  /// every launch.
+  static bool get _isApple => Platform.isIOS || Platform.isMacOS;
 
   /// Document trees the platform stores on the device itself, whose URIs name
   /// a path that ordinary file APIs can open. A tree from any other provider —
@@ -21,6 +38,8 @@ class LocalShelfFolderGateway implements ShelfFolderGateway {
 
   @override
   Future<ShelfFolder?> current() async {
+    if (_isApple) return _restoreApple();
+
     final location = await _preferences.getString(_locationKey);
     if (location == null || location.isEmpty) return null;
 
@@ -45,6 +64,8 @@ class LocalShelfFolderGateway implements ShelfFolderGateway {
 
   @override
   Future<ShelfFolder?> choose() async {
+    if (_isApple) return _chooseApple();
+
     final chosen = await FilePicker.getDirectoryPath(
       dialogTitle: 'Choose your shared library folder',
       // Android hands back a document tree rather than a directory, and the
@@ -68,8 +89,62 @@ class LocalShelfFolderGateway implements ShelfFolderGateway {
 
   @override
   Future<void> forget() async {
+    if (_isApple) await _apple.release();
     await _preferences.remove(_locationKey);
     await _preferences.remove(_accessKey);
+    await _preferences.remove(_bookmarkKey);
+  }
+
+  /// Asks Apple's picker for a folder, and keeps the bookmark that gets it
+  /// back. The scope is claimed by the native side before this returns, so the
+  /// folder is readable the moment the listener has chosen it.
+  Future<ShelfFolder?> _chooseApple() async {
+    final grant = await _apple.choose();
+    if (grant == null) return null;
+    await _rememberApple(grant);
+    return ShelfFolder(
+      location: grant.path,
+      access: ShelfFolderAccess.directory,
+    );
+  }
+
+  /// Claims the folder chosen on an earlier run.
+  ///
+  /// A grant the system will no longer honour is the same situation as never
+  /// having chosen a folder: there is nothing for the listener to repair
+  /// except choosing it again, which is what the empty state asks for. The
+  /// stale grant is dropped rather than left to fail on every launch.
+  Future<ShelfFolder?> _restoreApple() async {
+    final stored = await _preferences.getString(_bookmarkKey);
+    if (stored == null || stored.isEmpty) return null;
+
+    final Uint8List bookmark;
+    try {
+      bookmark = base64Decode(stored);
+    } catch (_) {
+      await forget();
+      return null;
+    }
+
+    final grant = await _apple.resolve(bookmark);
+    if (grant == null) {
+      await forget();
+      return null;
+    }
+
+    // Apple reissues a bookmark when the folder has moved, so what came back
+    // is kept in place of what was stored.
+    await _rememberApple(grant);
+    return ShelfFolder(
+      location: grant.path,
+      access: ShelfFolderAccess.directory,
+    );
+  }
+
+  Future<void> _rememberApple(ShelfFolderGrant grant) async {
+    await _preferences.setString(_locationKey, grant.path);
+    await _preferences.setString(_accessKey, ShelfFolderAccess.directory.name);
+    await _preferences.setString(_bookmarkKey, base64Encode(grant.bookmark));
   }
 
   /// Reads what the picker gave back. Everywhere but Android that is already a

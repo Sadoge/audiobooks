@@ -12,5 +12,9 @@ import UIKit
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    // The shared library folder is asked for here rather than through the
+    // general file picker, which cannot hold onto a security-scoped folder.
+    ShelfFolderBridge.register(
+      with: engineBridge.pluginRegistry.registrar(forPlugin: "ShelfFolderBridge")!)
   }
 }
